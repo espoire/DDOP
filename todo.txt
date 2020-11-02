@@ -1,0 +1,117 @@
+Back up to GitHub
+
+Clean up JSON implementation
+    HTML --> JSON, no layover in wikiitem files.
+
+Fix default spellpower typing
+    Current: Enhancement (default, common)
+    Reality: Equipment (default, common), Enhancement (almost stacking, belts + LGS only)
+
+Implement minor artifact flagging
+    Pull Minor Artifacts list from URL = https://ddowiki.com/page/Minor_Artifact#List_of_artifacts
+    Associate links from above list to item links being read during update
+        Save item URL in item data
+        Add Minor Artifact tag to items with URL on that list
+
+Pull in U47 items
+    Automate fetching latest named items page?
+        Clean up gear definition updates:
+            Force update items whose UPDATED_ITEMS files were force updated
+            error text sources:
+                Minimum Level = null
+                File already exists
+                Unrecognised item slot:
+                    cosmetic headwear
+                    cosmetic cloak
+    Automate fetch all named items
+        Overwrite item WGet script file
+        Provide console command to invoke script
+            ? Run command automatically?
+        Detect recent rerun; parse HTML without code modification
+        ? Parse directly to JSON, without .wikiitem layover?
+
+Implement minor artifact exclusion
+    CANNOT equip two items with this flag
+
+Implement elemental absorbs / resistance / DR valuation
+
+Improve optimizer:
+    Profile execution
+
+    Limit attribute copying overhead
+
+    encode loadouts as a series of indices
+    cache previously-tested serials
+
+    if trials > permutations, swap to exhaustive search
+
+    add logic to try 1-3 slot adjustments from the known maximum
+
+Implement Augments
+
+Implement item categories / generators
+    Cannith Crafted
+    Legendary Green Steel
+    Slavers
+    Randomgen
+
+Mechanics Updates:
+    Dodge absolute 95% cap
+    Incorp/Concealment reduced in reaper?
+        Placeholder one-quarter-total reduction in r1+, needs correction.
+    Docent PRR
+        Mithral Body + Light Armor Prof.   - 1.0 * BAB
+        Adamantine Body + Heavy Armor Prof - 2.0 * BAB
+
+
+Cleanup unruly mods:
+	enhanced ki
+		Shows as:
+			"ki" x (enhancement)
+		Should be:
+			"enhanced ki" x
+	main hand:
+	off hand:
+	either hand:
+	better offhanded: while this item is in your offhand, it gains +2[w].
+		Some item functions differently based on which hand it is in.
+		Split into two items at compile time?
+	enhancement bonus
+		Convert into (weapon) (armor) or (shield) variants
+	x augment slot
+		Needs to stack
+
+Stat conversions:
+	shining silver scales
+	    "cold absorption" X (default)
+	lesser fire resistance
+	    fire resistance 5 (enhancement)
+	fire resistance (default magnitude: 10)
+	improved fire resistance
+	    fire resistance 20 (enhancement)
+	greater fire resistance
+	    fire resistance 30 (enhancement)
+	superior fire resistance
+	    fire resistance 40 (enhancement)
+	enhanced ghostly
+	    incorporeality 15 (default)
+	protection from evil (default magnitude: 2)
+	    saves vs evil X (resistance)
+	    ac X (deflection)
+	    command immunity
+
+NYI stats:
+    command immunity
+    speed (if roman numerals, X alacrity + 2X movement BUT if arabic numerals, 0.5X alacrity + X movement)
+    raging strength
+	extra smites
+	cold vulnerability
+		vulnerability (boolean)
+	frostbite
+		vulnerability (boolean)
+		On Vorpal: Applies a stack of Lethargy (-1 to all Saving Throws. Non-bosses also move and attack 5% slower. This effect stacks up to 5 times.)
+	fetters of unreality
+		vulnerability (boolean)
+	crippling flames
+		5%: 2 negs
+		Crit: 135-325 Fire damage
