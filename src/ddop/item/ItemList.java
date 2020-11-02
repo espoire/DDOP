@@ -14,7 +14,12 @@ import java.util.*;
 public class ItemList implements Cloneable, Iterable<Item> {
 	private static ItemList allNamedItems = null;
 	private ArrayList<Item> items = new ArrayList<>();
-	
+
+	private ItemList() {}
+	public ItemList(List<Item> items) {
+		for(Item i : items) this.addItem(i);
+	}
+
 	public static ItemList loadWikiitemsDirectory(String directoryPath) {
 		ItemList ret = new ItemList();
 		

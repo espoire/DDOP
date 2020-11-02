@@ -1,8 +1,3 @@
-Back up to GitHub
-
-Clean up JSON implementation
-    HTML --> JSON, no layover in wikiitem files.
-
 Fix default spellpower typing
     Current: Enhancement (default, common)
     Reality: Equipment (default, common), Enhancement (almost stacking, belts + LGS only)

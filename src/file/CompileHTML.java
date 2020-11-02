@@ -1,26 +1,23 @@
 package file;
 
 import ddop.item.Item;
-import ddop.Settings;
 
 import java.nio.file.attribute.FileTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
-/** This class compiles all downloaded "Item:" HTML files into a short wiki summary file in the directory specified by Settings.ITEM_DIRECTORY.
+/** This class compiles all downloaded "Item:" HTML files into a List of Items.
  * 
  * @author Espoire
  *
  */
 public class CompileHTML {
-	public static void main(String... s) {
-		CompileHTML.compileAll(Settings.OUTPUT_DIRECTORY);
-	}
-	
-	/** Accepts a directory, and compiles all files within it into wiki summaries.
+	/** Accepts a directory, and compiles all files within it into a List of Items.
 	 * 
 	 * @param directory - The directory to look in (non-recursive).
 	 */
-	public static void compileAll(String directory) {
+	public static List<Item> loadAllItems(String directory) {
 		System.out.println("Attempting to compile to item summaries all files in: " + directory);
 		
 		Set<String> files = Directory.getContents(directory);
@@ -28,55 +25,42 @@ public class CompileHTML {
 		
 		System.out.println(filesRead + " files found. Compiling...");
 		
-		int filesWritten = 0;
+		List<Item> ret = new ArrayList<>();
 		
 		for(String filename : files) {
-			boolean writeSuccessful = CompileHTML.compile(directory, filename);
-			if(writeSuccessful) filesWritten++;
+			Item i = CompileHTML.loadItemFromHTML(directory, filename);
+			if(i != null) ret.add(i);
 		}
-		
-		if(filesWritten > 0) {
-			System.out.println("Finished! " + filesWritten + " item files updated.");
-		} else {
-			System.out.println("Finished! No files needed to be updated.");
-		}
+
+		System.out.println("Finished! " + ret.size() + " items loaded.");
+		return ret;
 	}
 
-	/** Attempts to compile a single specified file into a wiki summary, and save it into the directory specified by Settings.ITEM_DIRECTORY.
+	/** Attempts to compile a single specified file into an Item.
 	 * 
 	 * @param directory - The directory that the file is in.
 	 * @param filename - The specific file's name.
-	 * @return <b>true</b> if successful, <b>false</b> otherwise.
+	 * @return Item, or null if failed.
 	 */
-	private static boolean compile(String directory, String filename) {
-		if(filename == null) return false;
+	private static Item loadItemFromHTML(String directory, String filename) {
+		if(filename == null) return null;
 		if(filename.length() > 100) {
 			System.err.println("Filename exceeds 100 characters, skipping file: " + filename);
-			return false;
+			return null;
 		}
 		
 		String name = getItemNameFromFilename(filename);
-		if(name == null || name.length() > 100) return false;
+		if(name == null || name.length() > 100) return null;
 		
 		String filePath = directory + "\\" + filename;
 		String html = file.Reader.getEntireFile(filePath);
 		FileTime sourceTimestamp = file.Reader.getModifiedTime(filePath);
 		String wikiItemSummary = ItemReader.cleanupHTML(html);
 		
-		if(wikiItemSummary == null) return false;
+		if(wikiItemSummary == null) return null;
 		Item i = ItemReader.loadFromWikiSummary(wikiItemSummary, filePath);
-		if(i == null) return false;
-		
-		String outputFilePath = Settings.ITEM_DIRECTORY + "\\" + name + ".wikiitem";
-		
-		boolean writeSuccessful = false;
-		if(Writer.isFirstNewer(filePath, outputFilePath)) {
-			writeSuccessful = Writer.overwrite(outputFilePath, wikiItemSummary);
-			if(writeSuccessful) Writer.setFileTime(outputFilePath, sourceTimestamp);
-			System.out.println(" . " + filename);
-		}
 
-		return writeSuccessful;
+		return i;
 	}
 
 	private static String getItemNameFromFilename(String filename) {

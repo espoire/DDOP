@@ -1,11 +1,13 @@
 package ddop.item.sources.wiki;
 
 import ddop.Settings;
+import ddop.item.Item;
 import ddop.item.ItemList;
 import file.CompileHTML;
 import file.Directory;
 import file.LinkReader;
 
+import java.util.List;
 import java.util.Set;
 
 public class UpdateItemFiles {
@@ -20,14 +22,15 @@ public class UpdateItemFiles {
 			System.out.println("Please run the above batch script, then rerun the UpdateGearDefinitions program.");
 		} else {
 			System.out.println("All raw item HTMLs up to date.");
-			System.out.println("Compiling HTMLs to wikiitem summaries...");
-			CompileHTML.compileAll(Settings.OUTPUT_DIRECTORY);
-			convertWikiItemsToJson();
+			System.out.println("Compiling HTMLs to JSON summary...");
+			List<Item> allItems = CompileHTML.loadAllItems(Settings.OUTPUT_DIRECTORY);
+			String json = convertToJson(allItems);
+			file.Writer.overwrite(Settings.ITEM_JSON, json);
 		}
 	}
 
-	public static void convertWikiItemsToJson() {
-		String json = ItemList.loadWikiitemsDirectory(Settings.ITEM_DIRECTORY).toJson();
-		file.Writer.overwrite(Settings.ITEM_JSON, json);
+	public static String convertToJson(List<Item> allItems) {
+		String json = (new ItemList(allItems)).toJson();
+		return json;
 	}
 }
