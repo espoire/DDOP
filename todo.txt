@@ -1,7 +1,3 @@
-Fix default spellpower typing
-    Current: Enhancement (default, common)
-    Reality: Equipment (default, common), Enhancement (almost stacking, belts + LGS only)
-
 Implement minor artifact flagging
     Pull Minor Artifacts list from URL = https://ddowiki.com/page/Minor_Artifact#List_of_artifacts
     Associate links from above list to item links being read during update

@@ -3,10 +3,7 @@ package ddop.stat;
 import ddop.stat.conversions.NamedStat;
 import util.RomanNumeral;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Stat {
 	public final String category;
@@ -19,7 +16,7 @@ public class Stat {
 	}
 	
 	public Stat(String category, double magnitude) {
-		this(category, "Default", magnitude);
+		this(category, getDefaultBonusTypeForCategory(category), magnitude);
 	}
 	
 	public Stat(String category, String bonusType, double magnitude) {
@@ -96,6 +93,34 @@ public class Stat {
 
 	private boolean isCraftablePlaceholder() {
 		return util.Array.contains(CRAFTABLE_PLACEHOLDERS, this.category);
+	}
+
+	private static final Map<String, String> DEFAULT_TYPES = generateDefaultTypesMap();
+	private static String getDefaultBonusTypeForCategory(String category) {
+		category = category.toLowerCase();
+
+		String ret = DEFAULT_TYPES.get(category);
+
+		if(ret == null) return "default";
+		return ret;
+	}
+
+	private static Map<String, String> generateDefaultTypesMap() {
+		Map<String, String> ret = new HashMap<>();
+
+		ret.put("potency", "equipment");
+		ret.put("combustion", "equipment");
+		ret.put("corrosion", "equipment");
+		ret.put("devotion", "equipment");
+		ret.put("glaciation", "equipment");
+		ret.put("impulse", "equipment");
+		ret.put("magnetism", "equipment");
+		ret.put("nullification", "equipment");
+		ret.put("radiance", "equipment");
+		ret.put("reconstruction", "equipment");
+		ret.put("resonance", "equipment");
+
+		return ret;
 	}
 
 	public String toString() {
@@ -195,26 +220,27 @@ public class Stat {
 			}
 		}
 		
-		StringBuilder category = new StringBuilder();
+		StringBuilder categoryBuilder = new StringBuilder();
 		boolean firstToken = true;
 		for (String token : tokens) {
 			if (token == null) continue;
 
-			if (!firstToken) category.append(" ");
+			if (!firstToken) categoryBuilder.append(" ");
 			firstToken = false;
 
-			category.append(token);
+			categoryBuilder.append(token);
 		}
+		String category = categoryBuilder.toString();
 		
 		Stat ret;
 		if(magnitude != null) {
 			if(bonusType != null) {
-				ret = new Stat(category.toString(), bonusType, magnitude);
+				ret = new Stat(category, bonusType, magnitude);
 			} else {
-				ret = new Stat(category.toString(), magnitude);
+				ret = new Stat(category, magnitude);
 			}
 		} else {
-			ret = new Stat(category.toString());
+			ret = new Stat(category);
 		}
 		
 		return ret;
