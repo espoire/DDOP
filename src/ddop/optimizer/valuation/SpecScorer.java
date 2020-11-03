@@ -61,7 +61,7 @@ public abstract class SpecScorer extends StatScorer {
 								SIM_ENEMY_SR_LOW	        = 45,
 								SIM_ENEMY_SR_MED	        = 60,
 								SIM_ENEMY_SR_HIGH	        = 70,
-								SIM_DAMAGE_SIZE            = 1000;
+								SIM_DAMAGE_SIZE            = 4800;
 	protected static final double	SIM_ENEMY_SAVES_LOW_PORTION		= 0.15,
 									SIM_ENEMY_SAVES_MED_PORTION		= 0.7,
 									SIM_ENEMY_SAVES_HIGH_PORTION	= 0.15,
@@ -105,6 +105,20 @@ public abstract class SpecScorer extends StatScorer {
 								SIM_ENEMY_DCS_HIGH         = 100,  // Sharn normal raid, 119 saves.
 								SIM_ENEMY_DCS_VERY_HIGH    = 125;  // Sharn r1 raid, 120 does not save.
 	private static final double SIM_SAVES_SPELL_PORTION    = 0.5;
+	private static final double SIM_MAGIC_DAMAGE_PORTION_FIRE     = 0.14,
+								SIM_MAGIC_DAMAGE_PORTION_COLD     = 0.17,
+								SIM_MAGIC_DAMAGE_PORTION_ACID     = 0.11,
+								SIM_MAGIC_DAMAGE_PORTION_ELECTRIC = 0.14,
+								SIM_MAGIC_DAMAGE_PORTION_SONIC    = 0.04,
+								SIM_MAGIC_DAMAGE_PORTION_NEGATIVE = 0.005,
+								SIM_MAGIC_DAMAGE_PORTION_FORCE    = 0.14,
+								SIM_MAGIC_DAMAGE_PORTION_POISON   = 0.04,
+								SIM_MAGIC_DAMAGE_PORTION_LIGHT    = 0.04,
+								SIM_MAGIC_DAMAGE_PORTION_LAW      = 0.005,
+								SIM_MAGIC_DAMAGE_PORTION_CHAOS    = 0.04,
+								SIM_MAGIC_DAMAGE_PORTION_EVIL     = 0.08,
+								SIM_MAGIC_DAMAGE_PORTION_GOOD     = 0.01,
+								SIM_MAGIC_DAMAGE_PORTION_BANE     = 0.04;
 	
 	protected static final double VALUATION_UNCONSCIOUSNESS = 0.2,
 								VALUATION_HP             = 1,
@@ -375,13 +389,57 @@ public abstract class SpecScorer extends StatScorer {
 		if(adjustedFortification > 100) return 100;
 		return adjustedFortification;
 	}
-	
+
+	private double getElementalMultiplier(String type, StatTotals stats) {
+		type = type.trim().toLowerCase();
+
+		double resistanceMultiplier = 1.0 - stats.getDouble(type + " resistance") / SIM_DAMAGE_SIZE;
+		double absorptionMultiplier = 1.0 - stats.getInt(type + " absorption") / 100.0;
+
+		if(resistanceMultiplier < 0.0) resistanceMultiplier = 0.0;
+
+		return resistanceMultiplier * absorptionMultiplier;
+	}
+
+	private double getAllElementalMultiplier(StatTotals stats) {
+		double fireMultiplier     = getElementalMultiplier("fire",     stats);
+		double coldMultiplier     = getElementalMultiplier("cold",     stats);
+		double elecMultiplier     = getElementalMultiplier("electric", stats);
+		double acidMultiplier     = getElementalMultiplier("acid",     stats);
+		double sonicMultiplier    = getElementalMultiplier("sonic",    stats);
+		double negativeMultiplier = getElementalMultiplier("negative", stats);
+		double forceMultiplier    = getElementalMultiplier("force",    stats);
+		double poisonMultiplier   = getElementalMultiplier("poison",   stats);
+		double lightMultiplier    = getElementalMultiplier("light",    stats);
+		double lawMultiplier      = getElementalMultiplier("law",      stats);
+		double chaosMultiplier    = getElementalMultiplier("chaos",    stats);
+		double evilMultiplier     = getElementalMultiplier("evil",     stats);
+		double goodMultiplier     = getElementalMultiplier("good",     stats);
+		// Bane, but nothing reduces it.
+
+		double elementalMultiplier = fireMultiplier * SIM_MAGIC_DAMAGE_PORTION_FIRE +
+									 coldMultiplier * SIM_MAGIC_DAMAGE_PORTION_COLD +
+									 elecMultiplier * SIM_MAGIC_DAMAGE_PORTION_ELECTRIC +
+									 acidMultiplier * SIM_MAGIC_DAMAGE_PORTION_ACID +
+									 sonicMultiplier * SIM_MAGIC_DAMAGE_PORTION_SONIC +
+									 negativeMultiplier * SIM_MAGIC_DAMAGE_PORTION_NEGATIVE +
+									 forceMultiplier * SIM_MAGIC_DAMAGE_PORTION_FORCE +
+									 poisonMultiplier * SIM_MAGIC_DAMAGE_PORTION_POISON +
+									 lightMultiplier * SIM_MAGIC_DAMAGE_PORTION_LIGHT +
+									 lawMultiplier * SIM_MAGIC_DAMAGE_PORTION_LAW +
+									 chaosMultiplier * SIM_MAGIC_DAMAGE_PORTION_CHAOS +
+									 evilMultiplier * SIM_MAGIC_DAMAGE_PORTION_EVIL +
+									 goodMultiplier * SIM_MAGIC_DAMAGE_PORTION_GOOD;
+
+		return elementalMultiplier;
+	}
+
 	protected double scoreDamageReducers(StatTotals stats) {
 		double physicalPortion = (1 - SIM_MAGIC_DAMAGE_PORTION);
 		double magicalPortion  = SIM_MAGIC_DAMAGE_PORTION;
 		
 		double prrReduction       = 1 / (1 + this.getPRR(stats) / 100.0);												// Starts at 1, ~0.4   in Sharn gear
-		double drReduction        = (1 - this.getDR(stats) / SIM_DAMAGE_SIZE * (1 - SIM_DR_BYPASSED_PORTION));			// Starts at 1, ~0.993 in Sharn gear
+		double drReduction        = (1 - (double) this.getDR(stats) / SIM_DAMAGE_SIZE * (1 - SIM_DR_BYPASSED_PORTION)); // Starts at 1, ~0.993 in Sharn gear
 		double enemyCrit          = (SIM_ENEMY_CRIT_RATE * (SIM_ENEMY_CRIT_MULTIPLIER - 1) * VALUATION_FORTIFICATION);
 		double enemyCritAfterFort = enemyCrit * (1 - this.getFortification(stats) / 100.0);
 		double fortReduction      = (1 + enemyCritAfterFort) / (1 + enemyCrit);                                         // Starts at 1, ~0.73 at uncrittable
@@ -396,14 +454,15 @@ public abstract class SpecScorer extends StatScorer {
 		double physicalReduction = prrReduction * drReduction * fortReduction * enemyWeaponPowerReductionReduction;
 		
 		double mrrReduction = 1 / (1 + this.getMRR(stats) / 100.0);
-		
-		// TODO elemental resists, absorbs
-		
-		double resultingDamage = physicalPortion * physicalReduction + magicalPortion * mrrReduction;
+		double elementalMultiplier = getAllElementalMultiplier(stats);
+
+		double magicalReduction = mrrReduction * elementalMultiplier;
+
+		double resultingDamage = physicalPortion * physicalReduction + magicalPortion * magicalReduction;
 		
 		return 1 / resultingDamage;
 	}
-	
+
 	private int getAC(StatTotals stats) {
 		return this.getAbilityMod(AbilityScore.DEXTERITY, stats) +
 					   this.getAbilityMod(AbilityScore.WISDOM, stats) +

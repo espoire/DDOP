@@ -24,8 +24,6 @@ Pull in U47 items
 Implement minor artifact exclusion
     CANNOT equip two items with this flag
 
-Implement elemental absorbs / resistance / DR valuation
-
 Improve optimizer:
     Profile execution
 
