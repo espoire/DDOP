@@ -1,6 +1,8 @@
 package ddop.dto;
 
+import ddop.constants.Time;
 import ddop.optimizer.ScoredLoadout;
+import util.NumberFormat;
 
 public class SimResultContext {
     public final ScoredLoadout best;
@@ -29,7 +31,15 @@ public class SimResultContext {
             count++;
         }
 
-        System.out.println("Merged results from " + count + " threads.");
+        System.out.println("\n\nMerged results from " + count + " threads.");
         return new SimResultContext(best, trialsCompleted, elapsedTime);
+    }
+
+    public void printSimCompleteMessage() {
+        System.out.println();
+        System.out.println("Completed loadout sim.");
+        System.out.println("Tested " + NumberFormat.readableLargeNumber(trialsCompleted) + " loadouts over " + NumberFormat.readableLongTime(elapsedTime));
+        System.out.println("Throughput: " + NumberFormat.readableLargeNumber(trialsCompleted * Time.MINUTE / elapsedTime) + " loadouts/minute.");
+        System.out.println();
     }
 }

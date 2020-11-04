@@ -22,6 +22,10 @@ public class RunnableSim implements Runnable {
     public boolean isMasterThread = false;
     public SimResultContext result;
 
+    private int trialsCompleted = 0, percent = 0;
+    private long startTime, elapsedTime = 0;
+    private double progress = 0.0;
+
     public RunnableSim(StatScorer ss, List<Item> fixedItems, List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap, ExecutionSession session) {
         this.ss = ss;
         this.fixedItems = fixedItems;
@@ -32,33 +36,31 @@ public class RunnableSim implements Runnable {
 
     @Override
     public void run() {
-        this.result = RunnableSim.runSim(this.ss, this.fixedItems, this.skippedItemSlots, this.itemMap, this.session, this.isMasterThread);
-    }
-
-    private static SimResultContext runSim(StatScorer ss, List<Item> fixedItems, List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap, ExecutionSession session, boolean showConsoleLog) {
         ScoredLoadout best = new ScoredLoadout();
-        long startTime = System.currentTimeMillis();
-
-        int trialsCompleted = 0;
-        long elapsedTime = 0;
-
-        int percent = 0;
-        double progress = 0.0;
+        this.startTime = System.currentTimeMillis();
 
         while(progress < 1.0) {
-            for (int i = 0; i < 10000; i++) {
-                ScoredLoadout trial = simLoadout(ss, fixedItems, skippedItemSlots, itemMap);
-                if (trial.score > best.score) best = trial;
-            }
+            best = simAndSaveBest(this.ss, this.fixedItems, this.skippedItemSlots, this.itemMap, best);
+            this.progress = this.updateProgress(this.session);
 
-            trialsCompleted += 10000;
-            elapsedTime = System.currentTimeMillis() - startTime;
-            progress = session.getCompletion(trialsCompleted, elapsedTime);
-
-            if(showConsoleLog) percent = printProgressMessage(percent, progress);
+            if(this.isMasterThread) this.printProgressMessage();
         }
 
-        return new SimResultContext(best, trialsCompleted, elapsedTime);
+        this.result = new SimResultContext(best, this.trialsCompleted, this.elapsedTime);
+    }
+
+    private double updateProgress(ExecutionSession session) {
+        this.trialsCompleted++;
+        this.elapsedTime = System.currentTimeMillis() - this.startTime;
+
+        return session.getCompletion(this.trialsCompleted, this.elapsedTime);
+    }
+
+    private static ScoredLoadout simAndSaveBest(StatScorer ss, List<Item> fixedItems, List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap, ScoredLoadout best) {
+        ScoredLoadout trial = simLoadout(ss, fixedItems, skippedItemSlots, itemMap);
+        if (trial.score > best.score) best = trial;
+
+        return best;
     }
 
     private static ScoredLoadout simLoadout(StatScorer ss, List<Item> fixedItems, List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap) {
@@ -76,22 +78,22 @@ public class RunnableSim implements Runnable {
                 trialLoadout.put(item);
             }
         }
+
         return trialLoadout;
     }
 
-    private static int printProgressMessage(int previousPercentageComplete, double completeZeroToOne) {
-        int percentageComplete = (int) (completeZeroToOne * 100);
+    private void printProgressMessage() {
+        int percentageComplete = (int) (this.progress * 100);
 
-        if(percentageComplete > previousPercentageComplete) {
+        if(percentageComplete > this.percent) {
             System.out.print(percentageComplete + "% ");
-            if(percentageComplete % 10 == 0) System.out.println();
+            if(percentageComplete / 10 > this.percent / 10) System.out.println();
         }
 
-        return percentageComplete;
+        this.percent = percentageComplete;
     }
 
     private static int getNumberOfUnskippedSlots(List<ItemSlot> skipSlots, ItemSlot slot) {
-        int limit = slot.limit - Array.containsCount(skipSlots, slot);
-        return limit;
+        return slot.limit - Array.containsCount(skipSlots, slot);
     }
 }

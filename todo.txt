@@ -29,12 +29,31 @@ Improve optimizer:
 
     Limit attribute copying overhead
 
-    encode loadouts as a series of indices
-    cache previously-tested serials
+    Improved random algorithm:
+        encode loadouts as a series of indices
+        cache previously-tested serials
 
-    if trials > permutations, swap to exhaustive search
+        if trials > permutations, swap to exhaustive search
 
-    add logic to try 1-3 slot adjustments from the known maximum
+        add logic to try 1-3 slot adjustments from the known maximum
+
+    Alternate algorithm:
+        Implement "look ahead"
+        Divide remaining run time / trials proportionally to the candidate items for the first item slot, based on their relative scores.
+        For each of those item, time/trial budget pairs:
+            Add that item to the working build.
+            If this WAS the last slot: score, return build:score pair.
+            If this wasn't the last slot:
+                If the remaining budget is X (small constant) trials or less: break to random search, return best build:score pair found.
+                Divide remaining budget proportionally to the candidate items for the next item slot, based on their relative scores.
+                For each of those item, time/trial budget pairs:
+                    Recurse.
+                    Receive from each a completed build:score pair.
+                Iterate over the resulting collection of build:score pairs.
+                Return the best build:score pair.
+        We should now have an exceedingly good build.
+
+
 
 Implement Augments
 

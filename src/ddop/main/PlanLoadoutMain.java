@@ -1,5 +1,6 @@
 package ddop.main;
 
+import ddop.constants.Time;
 import ddop.dto.SimResultContext;
 import ddop.item.Item;
 import ddop.item.ItemList;
@@ -16,22 +17,18 @@ import ddop.optimizer.valuation.StatScorer;
 import ddop.optimizer.valuation.ValuationContext;
 import ddop.threading.RunnableSim;
 import util.Array;
-import util.NumberFormat;
 
 import java.util.*;
 
 @SuppressWarnings("unused")
 public class PlanLoadoutMain {
-	private static final long SECOND = 1000;
-	private static final long MINUTE = 60 * SECOND;
-	private static final long HOUR = 60 * MINUTE;
 	private static final int MILLION = 1000000;
 
 	private static final ExecutionSession EXECUTION_LENGTH =
-			new DurationSession((long) (15 * SECOND));
-//			new DurationSession((long) (5 * MINUTE));
-//			new DurationSession((long) (1 * HOUR));
-//			new DurationSession((long) (8 * HOUR));
+			new DurationSession((long) (30 * Time.SECOND));
+//			new DurationSession((long) (5 * Time.MINUTE));
+//			new DurationSession((long) (1 * Time.HOUR));
+//			new DurationSession((long) (8 * Time.HOUR));
 
 	private static final boolean MULTI_THREAD = true;
 	private static final int THREADS =
@@ -130,8 +127,15 @@ public class PlanLoadoutMain {
 			threads[i].start();
 		}
 
-		SimResultContext[] results = new SimResultContext[numThreads];
-		for(int i = 0; i < numThreads; i++) {
+		SimResultContext result = awaitResult(threads, sims);
+
+		result.printSimCompleteMessage();
+		return result.best;
+	}
+
+	private static SimResultContext awaitResult(Thread[] threads, RunnableSim[] sims) {
+		SimResultContext[] results = new SimResultContext[threads.length];
+		for(int i = 0; i < threads.length; i++) {
 			try {
 				threads[i].join();
 			} catch(Exception e) {
@@ -141,11 +145,7 @@ public class PlanLoadoutMain {
 			results[i] = sims[i].result;
 		}
 
-		SimResultContext result = SimResultContext.merge(results);
-
-		printSimCompleteMessage(result.trialsCompleted, result.elapsedTime);
-
-		return result.best;
+		return SimResultContext.merge(results);
 	}
 
 	private static void printSimStartMessage(Map<ItemSlot, RandomAccessScoredItemList> itemMap) {
@@ -160,14 +160,6 @@ public class PlanLoadoutMain {
 		System.out.println("Beginning loadout sim.");
 		EXECUTION_LENGTH.printSimStartMessage(totalItemsConsidered, totalCombinations);
 
-		System.out.println();
-	}
-
-	private static void printSimCompleteMessage(int trialsCompleted, long elapsedTime) {
-		System.out.println();
-		System.out.println("Completed loadout sim.");
-		System.out.println("Tested " + NumberFormat.readableLargeNumber(trialsCompleted) + " loadouts over " + NumberFormat.readableLongTime(elapsedTime));
-		System.out.println("Throughput: " + NumberFormat.readableLargeNumber(trialsCompleted * MINUTE / elapsedTime) + " loadouts/minute.");
 		System.out.println();
 	}
 	
