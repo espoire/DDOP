@@ -57,6 +57,7 @@ public class VerboseStatList extends AbstractStatList implements StatSource {
 	}
 	
 	private void applyStatConversions() {
+		this.all = SetBonus.convertAll(this.all);
 		this.all = NamedStat.convertAll(this.all);
 	}
 	
@@ -66,29 +67,7 @@ public class VerboseStatList extends AbstractStatList implements StatSource {
 		this.best = new ArrayList<>();
 		this.redundant = new ArrayList<>();
 		
-		List<Stat> conversions = SetBonus.getBonuses(this.all);
-		
 		for(Stat s : this.all) {
-			Vector2<String, String> categoryType = new Vector2<>(s.category, s.bonusType);
-			if(best.containsKey(categoryType)) {
-				if(s.stacks()) {
-					double previousMagnitude = best.get(categoryType).magnitude;
-					best.put(categoryType, new Stat(s.category, s.bonusType, s.magnitude + previousMagnitude));
-				} else {
-					double bestMagnitude = best.get(categoryType).magnitude;
-					if(s.magnitude > bestMagnitude) {
-						Stat oldBest = best.put(categoryType, s);
-						this.redundant.add(oldBest);
-					} else if(s.magnitude <= bestMagnitude) {
-						this.redundant.add(s);
-					}
-				}
-			} else {
-				best.put(categoryType, s);
-			}
-		}
-		
-		for(Stat s : conversions) {
 			Vector2<String, String> categoryType = new Vector2<>(s.category, s.bonusType);
 			if(best.containsKey(categoryType)) {
 				if(s.stacks()) {

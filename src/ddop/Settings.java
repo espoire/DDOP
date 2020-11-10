@@ -3,11 +3,20 @@ package ddop;
 public class Settings {
 	public static final String PROJECT_ROOT = "X:\\src\\DDOP";
 
-	public static final String WORK_DIRECTORY = PROJECT_ROOT + "\\DDOP Loader";
+	public static final String WORK_DIRECTORY    = PROJECT_ROOT + "\\DDOP Loader";
+	public static final String JSON_DIRECTORY    = PROJECT_ROOT + "\\itemDefinitions";
 	public static final String SOURCE_DIRECTORY  = WORK_DIRECTORY + "\\src";
 	public static final String OUTPUT_DIRECTORY  = WORK_DIRECTORY + "\\out";
-	public static final String ITEM_DIRECTORY    = WORK_DIRECTORY + "\\out\\items";
-	public static final String ITEM_JSON = PROJECT_ROOT + "\\itemDefinitions\\items.json";
+	public static final String WIKI_ITEMS_JSON                  = JSON_DIRECTORY + "\\wiki.json";
+	public static final String MANUAL_ITEMS_JSON                = JSON_DIRECTORY + "\\manual.json";
+	public static final String NEARLY_FINISHED_DEFINITIONS_JSON = JSON_DIRECTORY + "\\nearlyFinishedDefinitions.json";
+	public static final String NEARLY_FINISHED_OPTIONS_JSON     = JSON_DIRECTORY + "\\nearlyFinishedOptions.json";
+
+	public static final String[] ITEM_SOURCES_JSON = new String[] {
+			WIKI_ITEMS_JSON,
+			MANUAL_ITEMS_JSON,
+			NEARLY_FINISHED_OPTIONS_JSON
+	};
 
 	public static final boolean IGNORE_SET_BONUSES = false;
 	public static final boolean IGNORE_DAMAGE_TYPES = true;

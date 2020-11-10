@@ -1,14 +1,16 @@
 package ddop.stat.list;
 
 import ddop.stat.Stat;
+import ddop.stat.StatMap;
 import ddop.stat.StatSource;
+import ddop.stat.conversions.NamedStat;
+import ddop.stat.conversions.SetBonus;
 import util.StatTotals;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class FastStatList extends AbstractStatList {
-    private Map<String, Map<String, Double>> stats;
+    private StatMap stats;
 
     public FastStatList(StatSource... sources) {
         super(sources);
@@ -16,41 +18,26 @@ public class FastStatList extends AbstractStatList {
 
     @Override
     protected void init() {
-        this.stats = new HashMap<>();
+        this.stats = new StatMap();
     }
 
     @Override
     public AbstractStatList add(Stat s) {
-        if(!this.stats.containsKey(s.category)) this.stats.put(s.category, new HashMap<>());
-        Map<String, Double> sub = this.stats.get(s.category);
+        if(NamedStat.isNamed(s)) return this.addAll(NamedStat.convert(s));
 
-        if(!sub.containsKey(s.bonusType)) {
-            sub.put(s.bonusType, s.magnitude);
-        } else {
-            double prior = sub.get(s.bonusType);
-            if(s.stacks()) {
-                sub.put(s.bonusType, prior + s.magnitude);
-            } else if(s.magnitude > prior) {
-                sub.put(s.bonusType, s.magnitude);
-            }
-        }
+        this.stats.put(s);
 
         return this;
     }
 
     @Override
     public StatTotals getStatTotals() {
-        StatTotals ret = new StatTotals();
+        this.applyStatConversions();
+        return this.stats.getTotals();
+    }
 
-        for(String category : this.stats.keySet()) {
-            Map<String, Double> sub = this.stats.get(category);
-            double total = 0;
-
-            for(Double d : sub.values()) total += d;
-
-            ret.put(category, total);
-        }
-
-        return ret;
+    private void applyStatConversions() {
+        List<Stat> stats = SetBonus.getBonuses(this.stats);
+        this.addAll(stats);
     }
 }

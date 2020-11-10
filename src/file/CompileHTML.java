@@ -29,7 +29,13 @@ public class CompileHTML {
 		
 		for(String filename : files) {
 			Item i = CompileHTML.loadItemFromHTML(directory, filename);
-			if(i != null) ret.add(i);
+
+			if(i == null) continue;
+			for(Item existing : ret)
+				if(existing.name == i.name && existing.minLevel == i.minLevel)
+					continue;
+
+			ret.add(i);
 		}
 
 		System.out.println("Finished! " + ret.size() + " items loaded.");
@@ -42,7 +48,7 @@ public class CompileHTML {
 	 * @param filename - The specific file's name.
 	 * @return Item, or null if failed.
 	 */
-	private static Item loadItemFromHTML(String directory, String filename) {
+	public static Item loadItemFromHTML(String directory, String filename) {
 		if(filename == null) return null;
 		if(filename.length() > 100) {
 			System.err.println("Filename exceeds 100 characters, skipping file: " + filename);

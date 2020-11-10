@@ -1,8 +1,21 @@
-Implement minor artifact flagging
+TODO
+    Clean up Nearly Finished implementation.
+        Clean code.
+        Filter un-crafted nearly finished item bases out of wiki.json at compile time.
+    Clean up wiki.json.
+        Add "Accepts Sentience?" field. (check spelling on wiki)
+        Drop useless/default data points.
+        Clean up erroneous data.
+            Name should only have one value, for example.
+    Need to build cannith crafted + slavers item sources.
+    Slavers first (PoC)
+    Then Cannith
+    Feywild sets
+
+Implement automatic minor artifact flagging
     Pull Minor Artifacts list from URL = https://ddowiki.com/page/Minor_Artifact#List_of_artifacts
-    Associate links from above list to item links being read during update
-        Save item URL in item data
-        Add Minor Artifact tag to items with URL on that list
+    Write above list to minorArtifacts.json
+    Update MinorArtifact.java to use the json file.
 
 Pull in U47 items
     Automate fetching latest named items page?
@@ -21,21 +34,8 @@ Pull in U47 items
         Detect recent rerun; parse HTML without code modification
         ? Parse directly to JSON, without .wikiitem layover?
 
-Implement minor artifact exclusion
-    CANNOT equip two items with this flag
-
 Improve optimizer:
     Profile execution
-
-    Limit attribute copying overhead
-
-    Improved random algorithm:
-        encode loadouts as a series of indices
-        cache previously-tested serials
-
-        if trials > permutations, swap to exhaustive search
-
-        add logic to try 1-3 slot adjustments from the known maximum
 
     Alternate algorithm:
         Implement "look ahead"
@@ -71,6 +71,20 @@ Mechanics Updates:
         Mithral Body + Light Armor Prof.   - 1.0 * BAB
         Adamantine Body + Heavy Armor Prof - 2.0 * BAB
 
+Discard:
+    Hardness
+    Durability
+    Binding
+    Base Value
+    Description
+    Weight
+    Tips
+    Use Magical Device DC
+    (Anything empty or containing a default value.)
+
+Add to nearly finished:
+    Heroic items
+    The Eclipse Itself - Wiki missing bonus magnitudes.
 
 Cleanup unruly mods:
 	enhanced ki
@@ -109,10 +123,14 @@ Stat conversions:
 	    command immunity
 
 NYI stats:
+    soundproof
     command immunity
     speed (if roman numerals, X alacrity + 2X movement BUT if arabic numerals, 0.5X alacrity + X movement)
     raging strength
 	extra smites
+
+    conjure radiant bolt
+    utter disintegration
 	cold vulnerability
 		vulnerability (boolean)
 	frostbite

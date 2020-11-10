@@ -50,6 +50,11 @@ public class NamedStat {
 		return ret;
 	}
 
+	public static boolean isNamed(Stat s) {
+		NamedStat ns = NamedStat.all.get(s.category);
+		return ns != null;
+	}
+
 	/** Returns a Stat instance for the given source stat and conversion template.
 	 * Uses the template's category.
 	 * Uses the template's bonus type, if available, otherwise the source's bonus type.
@@ -189,7 +194,7 @@ public class NamedStat {
 			.addBonus(new Stat("transmutation focus",	null, 0));
 		new NamedStat("deific focus").addBonus(new Stat("spell focus mastery", "sacred", 0));
 		new NamedStat("lifesealed").addBonus(new Stat("deathblock",					"default", 1))
-								   .addBonus(new Stat("negative energy absorption", "defualt", 50));
+								   .addBonus(new Stat("negative absorption", "default", 50));
 		new NamedStat("build combat mastery").addBonus(new Stat("combat mastery", null, 0))
 											 .addBonus(new Stat("qp dc",          null, 0));
 		new NamedStat("inherent elemental resistance").addBonus(new Stat("acid resistance",        "competence", 0))
@@ -202,7 +207,13 @@ public class NamedStat {
 											 .addBonus(new Stat("fire resistance",        null, 0))
 											 .addBonus(new Stat("sonic resistance",       null, 0));
 		new NamedStat("songblade").addBonus(new Stat("perform", "enhancement", 2));
+		new NamedStat("alchemical conservation").addBonus(new Stat("ki", 					"enhancement", 1))
+												.addBonus(new Stat("extra action boost", 	"default",     1))
+												.addBonus(new Stat("turn undead attempt", 	"default",     1))
+												.addBonus(new Stat("bard songs", 			"default",     1));
+		new NamedStat("completed weapon").addBonus(new Stat("[w]", "completed weapon", 0.5));
 
+//		new NamedStat("").addBonus(new Stat("", "", 0));
 //		new NamedStat("").addBonus(new Stat("", "", 0));
 	}
 }

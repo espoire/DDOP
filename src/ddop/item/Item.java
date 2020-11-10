@@ -1,9 +1,11 @@
 package ddop.item;
 
+import ddop.constants.MinorArtifacts;
 import ddop.optimizer.valuation.ArmorType;
 import ddop.optimizer.valuation.ShieldType;
 import ddop.stat.Stat;
 import ddop.stat.StatSource;
+import util.Array;
 import util.Json;
 
 import java.util.ArrayList;
@@ -19,6 +21,7 @@ public class Item implements StatSource {
 	final ArmorType armorType;
 	final ShieldType shieldType;
 
+	public PropertiesList getPropsClone() { return (PropertiesList) this.props.clone(); }
 	public String toJson() {
 		return Json.formatMapRemoveEmptyLists(this.props);
 	}
@@ -30,6 +33,9 @@ public class Item implements StatSource {
 		this.slot = ItemSlot.getSlot(pl);
 		this.minLevel = pl.getInt("Minimum Level");
 		this.stats = Stat.getStats(pl.get("Enchantments"), this.name);
+
+		if(Array.contains(MinorArtifacts.NAMES, this.name))
+			this.stats.add(new Stat("minor artifact", "stacking", 1));
 
 		this.armorType = ArmorType.get(pl.getString("Armor Type"), this.name);
 		if(this.armorType == ArmorType.LIGHT)  this.stats.add(new Stat("light armor"));

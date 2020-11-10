@@ -5,6 +5,7 @@ import ddop.stat.list.VerboseStatList;
 import ddop.stat.StatSource;
 
 import java.util.Collection;
+import java.util.Set;
 
 public class ValuationContext {
     private final StatScorer scorer;
@@ -29,4 +30,6 @@ public class ValuationContext {
         VerboseStatList sl = new VerboseStatList(this.stats, statsToScore);
         return scorer.score(sl) - this.baseScore;
     }
+
+    public Set<ArmorType> getAllowedArmorTypes() { return this.scorer.getAllowedArmorTypes(); }
 }

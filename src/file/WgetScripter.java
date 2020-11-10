@@ -2,7 +2,7 @@ package file;
 
 import java.util.*;
 
-class WgetScripter {
+public class WgetScripter {
 	private static final String WIKI_ITEM_LINK_REGEX = "/page/Item:";
 	private static final String WIKI_ITEM_LINK_SHORT_FORM = "/page/I:";
 	private static final String WIKI_BASE_URL = "https://ddowiki.com";
@@ -99,7 +99,7 @@ class WgetScripter {
 	 * @param urls - An ArrayList&lt;String> containing one full URL per String in the same format as example: <b>https://ddowiki.com/page/I:Duality,_the_Moral_Compass</b>
 	 * @return A String containing a Windows 7 batch script, intended to be saved an ran as a .bat file.
 	 */
-	static String generateWgetScript(Collection<String> urls) {
+	public static String generateWgetScript(Collection<String> urls) {
 		StringBuilder script = new StringBuilder();
 		
 		script.append(SCRIPT_HEADER);

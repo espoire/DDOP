@@ -26,7 +26,7 @@ public class Stat {
 	public Stat(String category, String bonusType, double magnitude, String source) {
 		this.category = category.toLowerCase();
 
-		if(this.isSetBonus() || this.isAugmentSlot() || this.isCraftablePlaceholder()) bonusType = "Stacking";
+		if(this.isSetBonus() || this.isAugmentSlot() || this.isCraftablePlaceholder()) bonusType = "stacking";
 
 		this.bonusType = bonusType;
 		this.magnitude = magnitude;
@@ -41,8 +41,9 @@ public class Stat {
 	public String getSource() {
 		return this.source;
 	}
-	
-	public static final String[] SET_BONUSES = new String[] {
+
+
+	public static final String[] SET_BONUSES = new String[] { // TODO make this generated
 			"adherent of the mists set (heroic)",
 			"adherent of the mists set (legendary)",
 			"beacon of magic set (heroic)",
@@ -66,6 +67,21 @@ public class Stat {
 			"wayward warrior",
 			"wayward warrior (legendary)",
 			"pain and suffering",
+
+			// U47
+			"legacy of lorikk",
+			"legacy of levikk",
+			"mind and matter",
+			"legacy of tharne",
+			"anger of the avalanche",
+			"mantle of suulomades",
+			"one with the swarm",
+			"chained elementals",
+			"tyrannical tinkerer",
+			"masterful magewright",
+			"fastidious fabricator",
+			"astute alchemist",
+			"conduit of the titans",
 	};
 	
 	private boolean isSetBonus() {
@@ -119,6 +135,8 @@ public class Stat {
 		ret.put("radiance", "equipment");
 		ret.put("reconstruction", "equipment");
 		ret.put("resonance", "equipment");
+
+		ret.put("minor artifact", "stacking");
 
 		return ret;
 	}
@@ -247,14 +265,18 @@ public class Stat {
 	}
 	
 	private static final String[] STACKING_BONUS_TYPES = new String[] {
-		"Stacking",
-		"Mythic",
-		"Reaper",
-		"In-Reaper",
-		"Untyped"
+		"stacking",
+		"mythic",
+		"reaper",
+		"in-reaper",
+		"untyped"
 	};
-	
+
 	public boolean stacks() {
-		return util.Array.contains(STACKING_BONUS_TYPES, this.bonusType);
+		return Stat.stacks(this.bonusType);
+	}
+
+	public static boolean stacks(String bonusType) {
+		return util.Array.contains(STACKING_BONUS_TYPES, bonusType);
 	}
 }

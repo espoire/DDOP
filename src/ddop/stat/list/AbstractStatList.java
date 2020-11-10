@@ -29,6 +29,11 @@ public abstract class AbstractStatList {
         return this;
     }
 
+    protected AbstractStatList addAll(Collection<Stat> stats) {
+        for(Stat s : stats) this.add(s);
+        return this;
+    }
+
     protected abstract void init();
     public abstract AbstractStatList add(Stat s);
     public abstract StatTotals getStatTotals();

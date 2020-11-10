@@ -4,12 +4,15 @@ import ddop.builds.ReaperBuild;
 import ddop.builds.adventurerClass.BaseAttackBonusProgression;
 import ddop.optimizer.valuation.damage.DamageSource;
 import ddop.stat.AbilityScore;
-import ddop.stat.list.AbstractStatList;
 import ddop.stat.StatSource;
+import ddop.stat.list.AbstractStatList;
 import util.NumberFormat;
+import util.Pair;
 import util.StatTotals;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public abstract class SpecScorer extends StatScorer {
 	private static final int EPIC_HIT_DIE = 10;
@@ -30,7 +33,8 @@ public abstract class SpecScorer extends StatScorer {
 		this.build = this.getBuild();
 		this.reaperBuild = this.getReaperBuild();
 	}
-	
+
+	abstract Set<ArmorType> getAllowedArmorTypes();
 	abstract BaseAttackBonusProgression getBABProgression();
 	abstract StatSource getBuild();
 	abstract ReaperBuild getReaperBuild();
@@ -123,7 +127,7 @@ public abstract class SpecScorer extends StatScorer {
 	protected static final double VALUATION_UNCONSCIOUSNESS = 0.2,
 								VALUATION_HP             = 1,
 								VALUATION_FORTIFICATION  = 2.5, // Value crit damage as being more threatening than usual, due to damage spikiness.
-								VALUATION_HEAL_AMP       = 0.35, // Multiplier for heal amp worth. Generally below 1, since heals overheal.
+								VALUATION_HEAL_AMP       = 0.20, // Multiplier for heal amp worth. Generally below 1, since heals overheal.
 								VALUATION_DEATH          = 1,
 								VALUATION_STUN           = 0.35,
 								VALUATION_JADE           = 0.45,
@@ -169,8 +173,14 @@ public abstract class SpecScorer extends StatScorer {
 		
 		double offenseScoreTotal = (offensiveScore + 2*DCs/3) * (0.33 + 0.67 * saves);
 		double defenseScoreTotal = (defenses       +   DCs/3) * (0.67 + 0.33 * saves);
-		
-		double score = offenseScoreTotal * defenseScoreTotal;
+
+		List<Pair<String, Double>> penalties = this.getPenalties(totals);
+
+		double penaltyMultiplier = 1.0;
+		for(Pair<String, Double> penalty : penalties) penaltyMultiplier *= penalty.getValue();
+
+
+		double score = offenseScoreTotal * defenseScoreTotal * penaltyMultiplier;
 		if(scoreToNormalizeTo == null) scoreToNormalizeTo = score;
 		
 		if(this.verbose) {
@@ -180,6 +190,13 @@ public abstract class SpecScorer extends StatScorer {
 			if(this.hasDCs()) debugLog += "DCs:       " + NumberFormat.readableLargeNumber(DCs) + "\n";
 			debugLog += "Defenses:  " + NumberFormat.readableLargeNumber(defenses) + "\n";
 			debugLog += "Saves:     " + NumberFormat.percent(saves)                + "\n";
+
+			if(penalties.size() > 0) {
+				debugLog += "Penalties:     " + NumberFormat.percent(penaltyMultiplier - 1) + "\n";
+				for(Pair<String, Double> penalty : penalties)
+					debugLog += "               " + penalty.getKey() + " (" + NumberFormat.percent(penalty.getValue() - 1) + ")\n";
+			}
+
 			debugLog += "Total:     " + NumberFormat.readableLargeNumber(score)    + "(" + NumberFormat.percent(score / scoreToNormalizeTo) + ")\n";
 			
 			System.out.println(debugLog);
@@ -187,7 +204,17 @@ public abstract class SpecScorer extends StatScorer {
 		
 		return score;
 	}
-	
+
+	protected List<Pair<String, Double>> getPenalties(StatTotals stats) {
+		List<Pair<String, Double>> ret = new ArrayList<>();
+
+		int minorArtifactCount = stats.getInt("minor artifact");
+		if(minorArtifactCount < 1) ret.add(new Pair<>("Not wearing a minor artifact.", 0.8));
+		if(minorArtifactCount > 1) ret.add(new Pair<>("Wearing" + minorArtifactCount + " minor artifacts.", 1 - (0.2 * minorArtifactCount)));
+
+		return ret;
+	}
+
 	int getClassLevel() { return Math.min(20, this.characterLevel);      }
 	int getEpicLevel()  { return Math.max(0,  this.characterLevel - 20); }
 
@@ -464,9 +491,13 @@ public abstract class SpecScorer extends StatScorer {
 	}
 
 	private int getAC(StatTotals stats) {
-		return this.getAbilityMod(AbilityScore.DEXTERITY, stats) +
-					   this.getAbilityMod(AbilityScore.WISDOM, stats) +
+		int baseAc = this.getAbilityMod(AbilityScore.DEXTERITY, stats) +
+					   this.getAbilityMod(AbilityScore.WISDOM, stats) + // TODO move wisdom to monk
 					   stats.getInt("ac");
+		int percentAc = stats.getInt("%ac");
+		double acMultiplier = 1 + (percentAc / 100.0);
+
+		return (int) (baseAc * acMultiplier);
 	}
 	
 	private double getACAvoidance(StatTotals stats) {

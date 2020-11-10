@@ -25,7 +25,7 @@ public class UpdateItemFiles {
 			System.out.println("Compiling HTMLs to JSON summary...");
 			List<Item> allItems = CompileHTML.loadAllItems(Settings.OUTPUT_DIRECTORY);
 			String json = convertToJson(allItems);
-			file.Writer.overwrite(Settings.ITEM_JSON, json);
+			file.Writer.overwrite(Settings.WIKI_ITEMS_JSON, json);
 		}
 	}
 

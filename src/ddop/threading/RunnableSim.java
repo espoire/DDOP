@@ -1,85 +1,61 @@
 package ddop.threading;
 
 import ddop.dto.SimResultContext;
-import ddop.item.Item;
-import ddop.item.ItemSlot;
-import ddop.item.loadout.EquipmentLoadout;
 import ddop.main.session.ExecutionSession;
-import ddop.optimizer.RandomAccessScoredItemList;
 import ddop.optimizer.ScoredLoadout;
-import ddop.optimizer.valuation.StatScorer;
-import util.Array;
 
-import java.util.List;
-import java.util.Map;
-
-public class RunnableSim implements Runnable {
-    private final StatScorer ss;
-    private final List<Item> fixedItems;
-    private final List<ItemSlot> skippedItemSlots;
-    private final Map<ItemSlot, RandomAccessScoredItemList> itemMap;
+public abstract class RunnableSim implements Runnable {
     private final ExecutionSession session;
-    public boolean isMasterThread = false;
+
+    private boolean isMasterThread = false;
+
+    private int trialsCompleted, percent;
+    private long startTime, elapsedTime;
+    private double progress;
+
     public SimResultContext result;
 
-    private int trialsCompleted = 0, percent = 0;
-    private long startTime, elapsedTime = 0;
-    private double progress = 0.0;
+    protected double getProgress() { return this.progress; }
+    protected boolean isDone() { return this.progress >= 1.0; }
+    public void makeMasterThread() { this.isMasterThread = true; }
 
-    public RunnableSim(StatScorer ss, List<Item> fixedItems, List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap, ExecutionSession session) {
-        this.ss = ss;
-        this.fixedItems = fixedItems;
-        this.skippedItemSlots = skippedItemSlots;
-        this.itemMap = itemMap;
+    protected RunnableSim(ExecutionSession session) {
         this.session = session;
     }
 
     @Override
     public void run() {
-        ScoredLoadout best = new ScoredLoadout();
-        this.startTime = System.currentTimeMillis();
-
-        while(progress < 1.0) {
-            best = simAndSaveBest(this.ss, this.fixedItems, this.skippedItemSlots, this.itemMap, best);
-            this.progress = this.updateProgress(this.session);
-
-            if(this.isMasterThread) this.printProgressMessage();
-        }
-
-        this.result = new SimResultContext(best, this.trialsCompleted, this.elapsedTime);
+        this.initialize();
+        this.result = this.produceResult();
     }
 
-    private double updateProgress(ExecutionSession session) {
+    protected void initialize() {
+        this.trialsCompleted = 0;
+        this.elapsedTime = 0;
+        this.percent = 0;
+        this.progress = 0.0;
+        this.startTime = System.currentTimeMillis();
+    }
+
+    protected SimResultContext produceResult() {
+        while(! this.isDone()) {
+            this.iterate();
+            this.updateProgress();
+        }
+
+        return this.getResult();
+    }
+
+    protected abstract void iterate();
+    protected abstract SimResultContext getResult();
+
+    protected void updateProgress() {
         this.trialsCompleted++;
         this.elapsedTime = System.currentTimeMillis() - this.startTime;
 
-        return session.getCompletion(this.trialsCompleted, this.elapsedTime);
-    }
+        this.progress = this.session.getCompletion(this.trialsCompleted, this.elapsedTime);
 
-    private static ScoredLoadout simAndSaveBest(StatScorer ss, List<Item> fixedItems, List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap, ScoredLoadout best) {
-        ScoredLoadout trial = simLoadout(ss, fixedItems, skippedItemSlots, itemMap);
-        if (trial.score > best.score) best = trial;
-
-        return best;
-    }
-
-    private static ScoredLoadout simLoadout(StatScorer ss, List<Item> fixedItems, List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap) {
-        EquipmentLoadout trialLoadout = fillTrialEquipmentLoadout(fixedItems, skippedItemSlots, itemMap);
-        return ScoredLoadout.score(trialLoadout, ss);
-    }
-
-    private static EquipmentLoadout fillTrialEquipmentLoadout(List<Item> fixedItems, List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap) {
-        EquipmentLoadout trialLoadout = new EquipmentLoadout(fixedItems);
-
-        for(ItemSlot slot : itemMap.keySet()) {
-            int limit = getNumberOfUnskippedSlots(skippedItemSlots, slot);
-            for(int i = 0; i < limit; i++) {
-                Item item = itemMap.get(slot).getRandom();
-                trialLoadout.put(item);
-            }
-        }
-
-        return trialLoadout;
+        if(this.isMasterThread) this.printProgressMessage();
     }
 
     private void printProgressMessage() {
@@ -93,7 +69,7 @@ public class RunnableSim implements Runnable {
         this.percent = percentageComplete;
     }
 
-    private static int getNumberOfUnskippedSlots(List<ItemSlot> skipSlots, ItemSlot slot) {
-        return slot.limit - Array.containsCount(skipSlots, slot);
+    protected SimResultContext generateResultContext(ScoredLoadout best) {
+        return new SimResultContext(best, this.trialsCompleted, this.elapsedTime);
     }
 }

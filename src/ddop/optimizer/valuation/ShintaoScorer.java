@@ -8,6 +8,9 @@ import ddop.stat.AbilityScore;
 import util.NumberFormat;
 import util.StatTotals;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @SuppressWarnings("unused")
 public class ShintaoScorer extends SpecScorer {
 	public ShintaoScorer(int simCharacterLevel) {
@@ -15,7 +18,7 @@ public class ShintaoScorer extends SpecScorer {
 		this.hitDie = 6;
 		this.addDamageSource(new CenteredUnarmedFalconer());
 	}
-	
+
 	private static final boolean MASS_FROG = false; // TODO - -2 all DCs, plus MF valuation
 	private static final boolean GLOBE_OF_TRUE_IMPERIAL_BLOOD = true,
 								 DIAMOND_OF_FESTIVE_WISDOM    = true,
@@ -23,8 +26,18 @@ public class ShintaoScorer extends SpecScorer {
 								 SAPPHIRE_OF_GOOD_LUCK_2      = true,
 								 YUGO_POT_WIS                 = true;
 
-	private static final boolean DUALITY_THE_MORAL_COMPASS = true;
-	
+	private static final boolean DUALITY_THE_MORAL_COMPASS = false;
+
+
+	@Override
+	Set<ArmorType> getAllowedArmorTypes() {
+		Set<ArmorType> ret = new HashSet<>();
+
+		ret.add(ArmorType.CLOTH);
+		
+		return ret;
+	}
+
 	@Override
 	BaseAttackBonusProgression getBABProgression() {
 		return BaseAttackBonusProgression.MEDIUM;
@@ -75,7 +88,7 @@ public class ShintaoScorer extends SpecScorer {
 		build.addStat("dr",                     10, "default");
 		build.addStat("physical sheltering",    94);
 		build.addStat("magical sheltering",     39);
-		build.addStat("mrr cap",                40);
+		build.addStat("mrr cap",                40, "nystul");
 		build.addStat("healing amplification", 120);
 		build.addStat("dodge",                  34);
 		build.addStat("maximum dodge",          44);

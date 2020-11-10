@@ -15,6 +15,7 @@ import ddop.optimizer.ScoredLoadout;
 import ddop.optimizer.valuation.ShintaoScorer;
 import ddop.optimizer.valuation.StatScorer;
 import ddop.optimizer.valuation.ValuationContext;
+import ddop.threading.RunnableAnnealingSim;
 import ddop.threading.RunnableSim;
 import util.Array;
 
@@ -25,8 +26,8 @@ public class PlanLoadoutMain {
 	private static final int MILLION = 1000000;
 
 	private static final ExecutionSession EXECUTION_LENGTH =
-			new DurationSession((long) (30 * Time.SECOND));
-//			new DurationSession((long) (5 * Time.MINUTE));
+			new DurationSession((long) (15 * Time.SECOND));
+//			new DurationSession((long) (15 * Time.MINUTE));
 //			new DurationSession((long) (1 * Time.HOUR));
 //			new DurationSession((long) (8 * Time.HOUR));
 
@@ -37,8 +38,8 @@ public class PlanLoadoutMain {
 	
 	private static final double ITEM_QUALITY_MINIMUM_RATIO = 0.05;
 
-	private static final int TARGET_ITEMS_MIN_LEVEL = 15,
-							 TARGET_ITEMS_MAX_LEVEL = 26;
+	private static final int TARGET_ITEMS_MIN_LEVEL = 26,
+							 TARGET_ITEMS_MAX_LEVEL = 30;
 
 	private static final ItemSlot[] IGNORED_SLOTS = new ItemSlot[] {
 			ItemSlot.MAIN_HAND, ItemSlot.OFF_HAND,
@@ -70,10 +71,13 @@ public class PlanLoadoutMain {
 ////			"epic marguerite's necklace",
 
 		"quiver of alacrity",
-		"legendary turncoat",
-		"legendary family recruit sigil",
-		"legendary hammerfist",
-		"radiant ring of taer valaestas",
+//		"legendary turncoat",
+//		"legendary family recruit sigil",
+//		"legendary hammerfist",
+			"legendary omniscience",
+			"legendary tumbleweed",
+
+//		"radiant ring of taer valaestas",
 //
 //		"legendary celestial ruby ring dex version",
 //		"legendary collective sight con iwis version",
@@ -120,8 +124,8 @@ public class PlanLoadoutMain {
 		Thread[] threads = new Thread[numThreads];
 		RunnableSim[] sims = new RunnableSim[numThreads];
 		for(int i = 0; i < numThreads; i++) {
-			sims[i] = new RunnableSim(ss, fixedItems, skippedItemSlots, itemMap, session);
-			if(i == 0) sims[i].isMasterThread = true;
+			sims[i] = new RunnableAnnealingSim(ss, fixedItems, skippedItemSlots, itemMap, session);
+			if(i == 0) sims[i].makeMasterThread();
 
 			threads[i] = new Thread(sims[i]);
 			threads[i].start();
@@ -171,20 +175,23 @@ public class PlanLoadoutMain {
 		return skipSlots;
 	}
 	
-	private static Map<ItemSlot, RandomAccessScoredItemList> getItemSlotScoredItemListMap
-            (ValuationContext vc, List<ItemSlot> skipSlots) {
-		Map<ItemSlot, ItemList>       rawItemMap = ItemList.getAllNamedItems().filterByLevel(TARGET_ITEMS_MIN_LEVEL, TARGET_ITEMS_MAX_LEVEL).mapBySlot();
-		Map<ItemSlot, RandomAccessScoredItemList> itemMap    = new HashMap<>();
-		
+	private static Map<ItemSlot, RandomAccessScoredItemList> getItemSlotScoredItemListMap (ValuationContext vc, List<ItemSlot> skipSlots) {
+		ItemList candidates = ItemList.getAllNamedItems()
+				.filterByLevel(TARGET_ITEMS_MIN_LEVEL, TARGET_ITEMS_MAX_LEVEL)
+				.filterBy(vc.getAllowedArmorTypes());
+		Map<ItemSlot, ItemList>                rawItemMap = candidates.mapBySlot();
+
+		Map<ItemSlot, RandomAccessScoredItemList> ret = new HashMap<>();
+
 		for(ItemSlot slot : rawItemMap.keySet()) {
 			int limit = getNumberOfUnskippedSlots(skipSlots, slot);
 			if(limit > 0) {
 				ScoredItemList options = new ScoredItemList(rawItemMap.get(slot), vc).trim(ITEM_QUALITY_MINIMUM_RATIO);
-				itemMap.put(slot, new RandomAccessScoredItemList(options));
+				ret.put(slot, new RandomAccessScoredItemList(options));
 			}
 		}
 		
-		return itemMap;
+		return ret;
 	}
 
 	public static ArrayList<Item> getFixedItems() {

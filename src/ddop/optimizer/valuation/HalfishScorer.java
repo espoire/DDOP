@@ -12,6 +12,8 @@ import util.StatTotals;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class HalfishScorer extends SpecScorer {
 	private final WeaponAttack weaponAttack;
@@ -28,60 +30,6 @@ public class HalfishScorer extends SpecScorer {
 		
 		this.addDamageSource(this.weaponAttack);
 	}
-	
-	/* Sentient build plans
-	 * Fili			Set(s)			Set Bonus				DPS%	Survival%	Agg.DPS	Agg.Survival
-	 *	
-	 * 10 RP		Wreath / Spines							3.7					3.7
-	 *  5 RP		Wreath			5% fire abs				1.8		1.2			2.8		0.6
-	 *  5 RP		Spines			2 deadly				3.1					3.4
-	 *  1 hit/dmg 	Spines			3% deflect missiles		1		1			2.6		0.33
-	 *  2 Reflex	Spines			10 RP					3.7					2.9		0.25
-	 * 
-	 *  5 RP		Long Shadow								1.8					1.8
-	 *  1 hit/dmg	Long Shadow		5 RP					2.8					2.3
-	 *  2 Reflex	Long Shadow		45.5 non-scaling acid	5					3.2
-	 * 
-	 *  5 RP		Deadly Rain								1.8					1.8
-	 *  1 hit/dmg	Deadly Rain		5 RP					2.8					2.3
-	 *  1 WIS		Deadly Rain		2 deadly				2					2.2
-	 * 
-	 *  5 RP		Crackshot								1.8					1.8
-	 *  1 hit/dmg	Crackshot		10 diplomacy			1					1.4
-	 *  5 diplo		Crackshot		15 RP					5.5					2.8
-	 *  2 Reflex	Crackshot		5% doubleshot			3.2					2.9
-	 * 
-	 * 	5 RP		Shattered								1.8					1.8
-	 * 	1 hit/dmg	Shattered		3 hit/dmg				4					2.9
-	 * 	5 ArP		Shattered		3% doubleshot			2.6					2.8
-	 * 	3/2 PRR/MRR	Shattered		-10 PRR/MRR, 50% up		5		2.3			3.4		0.6
-	 *  2/3 PRR/MRR	Shattered		-10 MP/RP,   50% up				5			2.7		1.5
-	 * 
-	 * Set 1			34.6 / 3
-	 * Shattered 4		3.4 / 0.6
-	 * Spines 2			3.4
-	 * Long Shadow 3	3.2
-	 * Spines 3-4		2.3 / 0.3
-	 * 
-	 * Set 2			31.9 / 7.5
-	 * Shattered 5		2.7 / 1.5
-	 * Spines 2			3.4
-	 * Crackshot 4		2.9
-	 * 
-	 * Total Set 2
-	 * 40 RP
-	 *  5 accuracy
-	 *  7 deadly
-	 *  8 % doubleshot
-	 *  5 % armor-piercing
-	 *  15 PRR
-	 *  7 MRR
-	 *  2 reflex saves
-	 *  5 % fire abs
-	 * 15 diplomacy
-	 * 10 -PRR/MRR, 50% up
-	 * 10 -MP/RP,   50% up
-	 */
 	
 	private static final boolean GLOBE_OF_TRUE_IMPERIAL_BLOOD	= false,
 								 DIAMOND_OF_FESTIVE_WISDOM		= false,
@@ -113,7 +61,18 @@ public class HalfishScorer extends SpecScorer {
 	private static final double ASSUMED_UPTIME_DPS	= 0.5,
 								ASSUMED_UPTIME_HEAL	= 0.5,
 								ASSUMED_UPTIME_CC	= 0.0;
-	
+
+	@Override
+	Set<ArmorType> getAllowedArmorTypes() {
+		Set<ArmorType> ret = new HashSet<>();
+
+		ret.add(ArmorType.CLOTH);
+		ret.add(ArmorType.LIGHT);
+		ret.add(ArmorType.MEDIUM);
+
+		return ret;
+	}
+
 	@Override
 	BaseAttackBonusProgression getBABProgression() {
 		return BaseAttackBonusProgression.MEDIUM;

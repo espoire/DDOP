@@ -31,17 +31,23 @@ public class ItemList implements Cloneable, Iterable<Item> {
 		return ret;
 	}
 
-	private static ItemList loadJsonFile(String jsonFilePath) {
-		List<Map<String, List<String>>> content = ItemReader.loadItemJsonFile(jsonFilePath);
+	private static ItemList loadJsonFile(String... jsonFilePaths) {
 		ItemList ret = new ItemList();
+
+		for(String jsonFilePath : jsonFilePaths)
+			ret.addJsonFile(jsonFilePath);
+
+		return ret;
+	}
+
+	private void addJsonFile(String jsonFilePath) {
+		List<Map<String, List<String>>> content = ItemReader.loadItemJsonFile(jsonFilePath);
 
 		for(Map<String, List<String>> itemProps : content) {
 			PropertiesList pl = new PropertiesList(itemProps);
-			Item i = new Item(pl);
-			ret.addItem(i);
+			Item           i  = new Item(pl);
+			this.addItem(i);
 		}
-
-		return ret;
 	}
 
 	private void addItem(Item i) {
@@ -69,6 +75,18 @@ public class ItemList implements Cloneable, Iterable<Item> {
 			if(i.slot == ItemSlot.ARMOR && i.armorType == armorType) ret.addItem(i);
 		}
 		
+		return ret;
+	}
+
+	public ItemList filterBy(Set<ArmorType> allowedArmorTypes) {
+		if(allowedArmorTypes == null || allowedArmorTypes.size() == 0) return this;
+
+		ItemList ret = new ItemList();
+
+		for(Item i : items)
+			if(i.slot != ItemSlot.ARMOR || allowedArmorTypes.contains(i.armorType))
+				ret.addItem(i);
+
 		return ret;
 	}
 	
@@ -166,7 +184,7 @@ public class ItemList implements Cloneable, Iterable<Item> {
 	}
 
 	private static void populateAllNamedItemsList() {
-		ItemList.allNamedItems = ItemList.loadJsonFile(Settings.ITEM_JSON);
+		ItemList.allNamedItems = ItemList.loadJsonFile(Settings.ITEM_SOURCES_JSON);
 	}
 
 	public String toString() {

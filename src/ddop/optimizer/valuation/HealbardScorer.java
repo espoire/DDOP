@@ -13,6 +13,8 @@ import util.StatTotals;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class HealbardScorer extends SpecScorer {
 	public HealbardScorer(int simCharacterLevel) {
@@ -29,26 +31,6 @@ public class HealbardScorer extends SpecScorer {
 		greaterShout.cooldown = 6 / 0.5; // 6 base / 50% (estimate, potion of the time that it's safe to get close)
 		this.addDamageSource(greaterShout);
 	}
-
-	/* Filigree plans:
-	 *
-	 * Splendid Cacophony x4
-	 * +12 Devotion
-	 * +1 CHA			+2% doublestrike & doubleshot
-	 * +1 CON			+20 Devotion
-	 * +3 MRR			+1 Inspire Courage
-	 *
-	 * Hell & Back / Embraced by Light x2
-	 * +2 CHA			+5 Heal Amp
-	 * +2 CHA			+5 PRR
-	 *
-	 * Embraced by Light x3
-	 * +12 Devotion		+10 Spellpower
-	 *
-	 * Hell & Back x3
-	 * +1 CHA			+10 MRR
-	 *
-	 */
 	
 	private static final boolean GLOBE_OF_TRUE_IMPERIAL_BLOOD	= false,
 								 YUGO_POT_CHA					= false,
@@ -62,6 +44,17 @@ public class HealbardScorer extends SpecScorer {
 	private static final double	TARGETS_MASS_HOLD	= 6,
 								TARGETS_CAPERING	= 1,
 								TARGETS_OTTOS_IRR	= 1;
+
+	@Override
+	Set<ArmorType> getAllowedArmorTypes() {
+		Set<ArmorType> ret = new HashSet<>();
+
+		ret.add(ArmorType.CLOTH);
+		ret.add(ArmorType.LIGHT);
+		ret.add(ArmorType.MEDIUM);
+
+		return ret;
+	}
 
 	@Override
 	BaseAttackBonusProgression getBABProgression() {
