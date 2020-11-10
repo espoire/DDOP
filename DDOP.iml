@@ -6,6 +6,8 @@
       <sourceFolder url="file://$MODULE_DIR$/itemDefinitions" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/saved builds" type="java-resource" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
+      <excludeFolder url="file://$MODULE_DIR$/DDOP Loader" />
+      <excludeFolder url="file://$MODULE_DIR$/lib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

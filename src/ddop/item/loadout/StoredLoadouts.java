@@ -61,16 +61,16 @@ public class StoredLoadouts {
     
     public static NamedLoadout getShintaoSoulSplitterGear() {
         String[] itemNames = new String[] {
-                "legendary collective sight con iwis version",
+                "legendary collective sight ([constitution +21, insightful wisdom +10] version)",
                 "legendary turncoat",
                 "radiant ring of taer valaestas",
-                "legendary celestial ruby ring dex version",
+                "legendary celestial ruby ring ([dexterity +21] version)",
                 "legendary hammerfist",
-                "the cornerstone champion qwis version",
+                "the cornerstone champion ([quality wisdom +5] version)",
                 "legendary family recruit sigil",
                 "legendary umber brim",
                 "azure guard",
-                "silver dragonscale capelet idex version",
+                "silver dragonscale capelet ([insightful dexterity +10] version)",
                 "cc trinket ds resistance icon version",
                 "legendary moonrise bracers",
         };

@@ -1,6 +1,6 @@
-/DDOP Loader/src/
-/DDOP Loader/out/
 *.exe
 /out/
 /.idea/
 /lib/
+/DDOP Loader/
+/DDOP.iml
