@@ -1,0 +1,110 @@
+{
+  "heroic": {
+    "level": 8,
+    "options": {
+      "prefix": [
+        "strength +5",
+        "dexterity +5",
+        "constitution +5",
+        "intelligence +5",
+        "wisdom +5",
+        "charisma +5",
+        "false life +18",
+        "fortification +70%",
+        "sheltering +12",
+        "wizardry +96"
+      ],
+      "suffix": [
+        "accuracy 8",
+        "armor-piercing 8",
+        // TODO: Damage Guards 2d8
+        "deadly +4",
+        "deception +3",
+        "resistance +4",
+        "seeker +5"
+        // TODO: Single Element Spell Lore +10
+        // TODO: Single Element Spell Power +70
+      ],
+      "extra": [
+        // TODO: Skill (except UMD) +10
+        "umd +1",
+        "shatter +6",
+        "spell focus mastery +2",
+        "spell penetration +2",
+        "stunning +6",
+        "tendon slice 4%",
+        "vertigo +6"
+      ],
+      "bonus": [
+        "quality strength +1",
+        "quality dexterity +1",
+        "quality constitution +1",
+        "quality intelligence +1",
+        "quality wisdom +1",
+        "quality charisma +1",
+        "quality false life +4",
+        "quality fortification +17%",
+        "quality mrr +2",
+        "quality prr +2",
+        // TODO: Quality Skills +2
+      ],
+      "augment": [
+        "empty green augment slot"
+      ]
+    }
+  },
+  "legendary": {
+    "level": 28,
+    "options": {
+      "prefix": [
+        "strength +17",
+        "dexterity +17",
+        "constitution +17",
+        "intelligence +17",
+        "wisdom +17",
+        "charisma +17",
+        "false life +68",
+        "fortification +185%",
+        "sheltering +45",
+        "wizardry +371"
+      ],
+      "suffix": [
+        "accuracy +28",
+        "armor-piercing +28%",
+        // TODO: Damage Guards 8d8
+        "deadly +14",
+        "deception +14",
+        "resistance +14",
+        "seeker +17"
+        // TODO: Single Element Spell Lore +27
+        // TODO: Single Element Spell Power +185
+      ],
+      "extra": [
+        // TODO: Skill (except UMD) +22
+        "umd +7",
+        "shatter +20",
+        "spell focus mastery +6",
+        "spell penetration +7",
+        "stunning +20",
+        "tendon slice 14%",
+        "vertigo +20"
+      ],
+      "bonus": [
+        "quality strength +4",
+        "quality dexterity +4",
+        "quality constitution +4",
+        "quality intelligence +4",
+        "quality wisdom +4",
+        "quality charisma +4",
+        "quality false life +16",
+        "quality fortification +45%",
+        "quality mrr +11",
+        "quality prr +11",
+        // TODO: Quality Skills +5
+      ],
+      "augment": [
+        "empty green augment slot"
+      ]
+    }
+  }
+}
