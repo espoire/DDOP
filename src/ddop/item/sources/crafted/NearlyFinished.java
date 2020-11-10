@@ -6,129 +6,136 @@ import ddop.Settings;
 import ddop.item.Item;
 import ddop.item.ItemList;
 import ddop.item.PropertiesList;
-import util.Pair;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class NearlyFinished {
+    // Update nearlyFinishedOptions file. Reads from wiki items file, and nearlyFinishedDefinitions file.
     public static void main(String... s) {
-        NearlyFinished.printAllNearlyFinishedOptions();
+        NearlyFinished.generateJsonFile();
     }
 
-    private static final Map<String, Map<String, List<String>>> all = loadMap();
-    // Item name 1
-    //   Nearly Finished
-    //     Stat Option 1
-    //     Stat Option 2
-    //     ...
-    //   Almost There
-    //     Stat Options...
-    //   Finishing Touch
-    //     ...
-
-    private static Map<String, Map<String, List<String>>> loadMap() {
+    /* Format example:
+     *
+     * Item name 1
+     *   Nearly Finished
+     *     Stat Option 1
+     *     Stat Option 2
+     *     ...
+     *   Almost There
+     *     Stat Options...
+     *   Finishing Touch
+     *     ...
+     */
+    private static final Map<String, Map<String, List<String>>> OPTIONS = readNearlyFinishedOptionsJson();
+    private static Map<String, Map<String, List<String>>> readNearlyFinishedOptionsJson() {
         String json = file.Reader.getEntireFile(Settings.NEARLY_FINISHED_DEFINITIONS_JSON);
         Type type = new TypeToken<Map<String, Map<String, List<String>>>>() {}.getType();
         return new Gson().fromJson(json, type);
     }
 
-    public static void printAllNearlyFinishedOptions() {
-        List<String> errors = new ArrayList<>();
+    public static void generateJsonFile() {
+        List<String> itemVersionJsons = generateItemVersionJsons();
+        String       jsonFileContent  = generateJsonFileContent(itemVersionJsons);
+
+        file.Writer.overwrite(Settings.NEARLY_FINISHED_OPTIONS_JSON, jsonFileContent);
+    }
+
+    private static String generateJsonFileContent(List<String> allJsons) {
+        StringBuilder nearlyFinishedOptionsJson = new StringBuilder();
+
+        nearlyFinishedOptionsJson.append("[");
+        for(int i = 0; i < allJsons.size(); i++) {
+            if(i != 0) nearlyFinishedOptionsJson.append(", ");
+            nearlyFinishedOptionsJson.append(allJsons.get(i));
+        }
+        nearlyFinishedOptionsJson.append("]");
+
+        return nearlyFinishedOptionsJson.toString();
+    }
+
+    private static List<String> generateItemVersionJsons() {
         List<String> allJsons = new ArrayList<>();
 
-        for(String itemName : all.keySet()) {
-            Item item = ItemList.getNamedItem(itemName);
-            if(item == null) {
-                errors.add("Could not find item by name: " + itemName);
-                continue;
-            }
+        for(Map.Entry<String, Map<String, List<String>>> nearlyFinishedOption : NearlyFinished.OPTIONS.entrySet()) {
+            Map<String, List<String>> craftingOptions = nearlyFinishedOption.getValue();
+            String                    itemName        = nearlyFinishedOption.getKey();
+            PropertiesList            itemTemplate    = getItemTemplate(itemName);
+            if(itemTemplate == null) continue;
 
-            PropertiesList template = item.getPropsClone();
-            Map<String, List<String>> fullOptions = all.get(itemName);
+            List<String> itemVersionJsons = applyAllEnchantmentOptions(itemTemplate, craftingOptions);
 
-            for(String craftableModName : fullOptions.keySet()) {
-                List<String> enchantments = template.get("enchantments");
-
-                for(int i = 0; i < enchantments.size(); i++) {
-                    String mod = enchantments.get(i);
-                    if(mod.contains(craftableModName)) enchantments.remove(i--);
-                }
-            }
-            template.remove("upgradeable?");
-
-            template.remove("durability");
-            template.remove("binding");
-            template.remove("weight");
-            template.remove("description");
-            template.remove("base value");
-            template.remove("hardness");
-            template.remove("tips");
-            template.remove("use magical device dc");
-
-            String race = template.getFirst("race absolutely required");
-            if(race != null) if(race.equals("none") || race.equals("[[:]]")) template.remove("race absolutely required");
-
-            String trait = template.getFirst("required trait");
-            if(trait != null) if(trait.equals("none")) template.remove("required trait");
-
-            List<List<String>> options = new ArrayList<>(fullOptions.values());
-            List<String> jsons = doTheThing(template, options);
-
-            allJsons.addAll(jsons);
+            allJsons.addAll(itemVersionJsons);
         }
 
-        String nearlyFinishedOptionsJson = "";
-
-        nearlyFinishedOptionsJson += "[";
-        for(int i = 0; i < allJsons.size(); i++) {
-            if(i != 0) nearlyFinishedOptionsJson += ", ";
-            nearlyFinishedOptionsJson += allJsons.get(i);
-        }
-        nearlyFinishedOptionsJson += "]";
-
-        file.Writer.overwrite(Settings.NEARLY_FINISHED_OPTIONS_JSON, nearlyFinishedOptionsJson);
-
-        for(String error : errors) System.err.println(error);
+        return allJsons;
     }
 
-    private static List<String> doTheThing(PropertiesList template, List<List<String>> fullOptions) {
-        return doTheThing(template, fullOptions, (String) null, 0);
+    private static PropertiesList getItemTemplate(String itemName) {
+        Item item = ItemList.getNamedItem(itemName);
+
+        if(item == null) return null;
+        return item.getPropsClone();
     }
 
-    private static List<String> doTheThing(PropertiesList template, List<List<String>> fullOptions, String versionTag, int i) {
+    private static List<String> applyAllEnchantmentOptions(PropertiesList itemTemplate, Map<String, List<String>> craftingOptions) {
+        Set<String>        craftingTags       =                 craftingOptions.keySet();
+        List<List<String>> enchantmentOptions = new ArrayList<>(craftingOptions.values());
+
+        cleanup(itemTemplate, craftingTags);
+
+        return recursiveApplyEnchantmentOptions(itemTemplate, enchantmentOptions, null, 0);
+    }
+
+    private static void cleanup(PropertiesList itemTemplate, Set<String> craftingTags) {
+        removeUnneededInfo(itemTemplate);
+        removeCraftingTags(itemTemplate, craftingTags);
+    }
+
+    // TODO move to item, or even item loading from HTML
+    private static void removeUnneededInfo(PropertiesList template) {
+        template.remove("durability");
+        template.remove("binding");
+        template.remove("weight");
+        template.remove("description");
+        template.remove("base value");
+        template.remove("hardness");
+        template.remove("tips");
+        template.remove("use magical device dc");
+
+        String race = template.getFirst("race absolutely required");
+        if(race != null) if(race.equals("none") || race.equals("[[:]]")) template.remove("race absolutely required");
+
+        String trait = template.getFirst("required trait");
+        if(trait != null) if(trait.equals("none")) template.remove("required trait");
+    }
+    private static void removeCraftingTags(PropertiesList template, final Set<String> tags) {
+        List<String> enchantments = template.get("enchantments");
+
+        for(String tag : tags)
+            enchantments.removeIf(mod -> mod.contains(tag));
+
+        template.remove("upgradeable?");
+    }
+
+    private static List<String> recursiveApplyEnchantmentOptions(PropertiesList itemTemplate, List<List<String>> enchantmentOptions, String versionTag, int listPosition) {
         List<String> ret = new ArrayList<>();
+        List<String> enchantments = enchantmentOptions.get(listPosition++);
 
-        List<String> options = fullOptions.get(i);
+        for(String enchantment : enchantments) {
+            PropertiesList version = (PropertiesList) itemTemplate.clone();
 
-        for(String option : options) {
-            PropertiesList version = (PropertiesList) template.clone();
-            version.put("enchantments", new ArrayList<>(version.get("enchantments")));
+            insertEnchantment(version, enchantment);
+            String tag = extendTag(versionTag, enchantment);
 
-            String tag = versionTag;
+            if(listPosition == enchantmentOptions.size()) {
+                tag = finishTag(tag);
+                insertVersionTag(version, tag);
 
-            version.get("enchantments").add(option);
-            if(tag == null) {
-                tag = " ([";
+                ret.add(version.toJson());
             } else {
-                tag += ", ";
-            }
-            tag += option;
-
-            if(i + 1 == fullOptions.size()) {
-                tag += "] version)";
-
-                String versionName = version.getFirst("name");
-                version.put("name", Collections.singletonList(versionName + tag));
-
-                Item item = new Item(version);
-                String json = item.toJson();
-                ret.add(json);
-            } else {
-                List<String> jsons = doTheThing(version, fullOptions, tag, i+1);
+                List<String> jsons = recursiveApplyEnchantmentOptions(version, enchantmentOptions, tag, listPosition);
                 ret.addAll(jsons);
             }
         }
@@ -136,42 +143,29 @@ public class NearlyFinished {
         return ret;
     }
 
-    public static void printLegendaryCollectiveSightOptions() {
-        List<Pair<String, String>> nearlyFinishedOptions = new ArrayList<>();
-        nearlyFinishedOptions.add(new Pair<>("Strength +21", "str"));
-        nearlyFinishedOptions.add(new Pair<>("Dexterity +21", "dex"));
-        nearlyFinishedOptions.add(new Pair<>("Constitution +21", "con"));
-        nearlyFinishedOptions.add(new Pair<>("Intelligence +21", "int"));
-        nearlyFinishedOptions.add(new Pair<>("Wisdom +21", "wis"));
-        nearlyFinishedOptions.add(new Pair<>("Charisma +21", "cha"));
+    private static void insertEnchantment(PropertiesList version, String enchantment) {
+        List<String> versionEnchantments = new ArrayList<>(version.get("enchantments"));
+        versionEnchantments.add(enchantment);
+        version.put("enchantments", versionEnchantments);
+    }
 
-        List<Pair<String, String>> almostThereOptions = new ArrayList<>();
-        almostThereOptions.add(new Pair<>("Insightful Strength +10", "istr"));
-        almostThereOptions.add(new Pair<>("Insightful Dexterity +10", "idex"));
-        almostThereOptions.add(new Pair<>("Insightful Constitution +10", "icon"));
-        almostThereOptions.add(new Pair<>("Insightful Intelligence +10", "iint"));
-        almostThereOptions.add(new Pair<>("Insightful Wisdom +10", "iwis"));
-        almostThereOptions.add(new Pair<>("Insightful Charisma +10", "icha"));
+    private static String finishTag(String tag) {
+        tag += "] version)";
+        return tag;
+    }
 
-        System.out.println("[");
-        for(Pair<String, String> nf : nearlyFinishedOptions) {
-            for(Pair<String, String> at : almostThereOptions) {
-                System.out.println("  {");
-                System.out.println("    \"name\":[\"legendary collective sight " + nf.getValue() + " " + at.getValue() + " version\"],");
-                System.out.println("    \"minimum level\":[\"29\"],");
-                System.out.println("    \"item type\":[\"jewelry / goggles\"],");
-                System.out.println("    \"slot\":[\"eye\"],");
-                System.out.println("    \"enchantments\":[");
-                System.out.println("      \"" + nf.getKey() + "\",");
-                System.out.println("      \"" + at.getKey() + "\",");
-                System.out.println("      \"quality resistance +4\",");
-                System.out.println("      \"temperance of belief\",");
-                System.out.println("      \"empty blue augment slot\"");
-                System.out.println("    ],");
-                System.out.println("    \"location\":[\"blown deadline, end chest\"]");
-                System.out.println("  },");
-            }
+    private static void insertVersionTag(PropertiesList version, String tag) {
+        version.put("name", version.getFirst("name") + tag);
+    }
+
+    private static String extendTag(String versionTag, String enchantment) {
+        String tag = versionTag;
+        if(tag == null) {
+            tag = " ([";
+        } else {
+            tag += ", ";
         }
-        System.out.println("]");
+        tag += enchantment;
+        return tag;
     }
 }

@@ -1,5 +1,6 @@
 package ddop.item;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,11 @@ public class PropertiesList extends HashMap<String, List<String>> {
     public String toString() {
 		return this.toString((String[]) null);
 	}
-	
+
+	public List<String> get(String key) {
+		return super.get(key.toLowerCase());
+	}
+
 	public String getFirst(String key) {
 		key = key.toLowerCase();
 		
@@ -40,6 +45,10 @@ public class PropertiesList extends HashMap<String, List<String>> {
 			System.err.println("Invalid number format for key '" + key + "': " + value);
 		}
 		return 0;
+	}
+
+	public List<String> put(String key, String value) {
+		return super.put(key, Collections.singletonList(value));
 	}
 	
 	public String toString(String... keys) {
@@ -72,8 +81,8 @@ public class PropertiesList extends HashMap<String, List<String>> {
 		
 		return ret;
 	}
-	
-	public List<String> get(String key) {
-		return super.get(key.toLowerCase());
+
+	public String toJson() {
+		return new Item(this).toJson();
 	}
 }
