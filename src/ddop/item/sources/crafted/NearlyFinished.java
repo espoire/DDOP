@@ -149,15 +149,6 @@ public class NearlyFinished {
         version.put("enchantments", versionEnchantments);
     }
 
-    private static String finishTag(String tag) {
-        tag += "] version)";
-        return tag;
-    }
-
-    private static void insertVersionTag(PropertiesList version, String tag) {
-        version.put("name", version.getFirst("name") + tag);
-    }
-
     private static String extendTag(String versionTag, String enchantment) {
         String tag = versionTag;
         if(tag == null) {
@@ -167,5 +158,14 @@ public class NearlyFinished {
         }
         tag += enchantment;
         return tag;
+    }
+
+    private static String finishTag(String tag) {
+        tag += "] version)";
+        return tag;
+    }
+
+    private static void insertVersionTag(PropertiesList version, String tag) {
+        version.put("name", version.getFirst("name") + tag);
     }
 }
