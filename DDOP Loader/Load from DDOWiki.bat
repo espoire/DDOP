@@ -11,7 +11,11 @@ ECHO Estimated time to download: 19s
 TIMEOUT 10
 
 TIMEOUT /T 1 /NOBREAK > NUL
-wget -q -nc -P out -E --no-check-certificate https://ddowiki.com/page/I:Celestial_Emerald_Ring
+wget -q -nc -P out -E --no-check-certificate https://ddowiki.com/page/I:Arm_of_the_Archons
+ECHO 13 of 16 downloaded. (81%%)
+
+TIMEOUT /T 1 /NOBREAK > NUL
+wget -q -nc -P out -E --no-check-certificate https://ddowiki.com/page/I:Machination_of_Madness
 ECHO 13 of 16 downloaded. (81%%)
 
 

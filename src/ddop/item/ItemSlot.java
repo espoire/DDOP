@@ -49,7 +49,10 @@ public class ItemSlot {
 		if(pl.containsKey("required trait") && pl.getFirst("required trait") != null && pl.getFirst("required trait").equals("artificer rune arm use")) return ItemSlot.OFF_HAND;
 		
 		String slot = pl.getFirst("Slot");
+
 		if(slot != null) {
+			if(slot.contains("cosmetic")) return null;
+
 			ItemSlot ret = ItemSlot.byName.get(slot);
 			if(ret != null) return ret;
 			System.err.println("Unrecognised item slot: " + slot);

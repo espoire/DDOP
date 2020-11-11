@@ -55,6 +55,7 @@ public class ArmorType {
                 return ArmorType.MEDIUM;
             case "heavy armor":
             case "full plate":
+            case "banded mail":
                 return ArmorType.HEAVY;
             case "docent":
                 return ArmorType.DOCENT;

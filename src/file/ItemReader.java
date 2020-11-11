@@ -4,11 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import ddop.Settings;
 import ddop.item.Item;
+import ddop.item.ItemSlot;
 import ddop.item.PropertiesList;
 import ddop.stat.Stat;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,78 +87,134 @@ public class ItemReader {
 		return loadFromWikiSummary(summary.split("\n"), filepath);
 	}
 	
-	private static final String[] KEYS = new String[] {
-			"proficiency class",
-			"damage and type",
-			"critical threat range",
-			"weapon type",
-			"slot",
-			"race absolutely required",
-			"minimum level",
-			"required trait",
-			"use magical device dc",
-			"handedness",
-			"attack mod",
-			"damage mod",
-			"binding",
-			"durability",
-			"made from",
-			"hardness",
-			"base value",
-			"weight",
-			"location",
-			"enchantments",
-			"upgradeable?",
-			"description",
-			"tips",
-			"item type",
-			"material",
-			"armor type",
-			"feat requirement",
-			"race absolutely excluded",
-			"armor bonus",
-			"maximum dexterity Bonus",
-			"armor check penalty",
-			"arcane spell failure",
-			"notes",
-			"shield type",
-			"proficiency",
-			"shield bonus",
-			"max dex bonus",
-			"damage reduction",
-			"damage",
-			"critical roll",
-			"enhancements",
-			"this item cannot be fed to sentient jewels.",
-			"unique item capacity",
-			"max stack size",
-			"this item currently cannot be fed to sentient jewels and probably should be able to.",
-	};
+	private static Map<String, Integer> KEYS;
+	private static Map<String, Integer> generateKeysMap() {
+		Map<String, Integer> ret = new HashMap<>();
+
+		ret.put("name", 1);
+		ret.put("damage", 1);
+		ret.put("damage and type", 1);
+		ret.put("critical roll", 1);
+		ret.put("critical threat range", 1);
+		ret.put("weapon type", 1);
+		ret.put("slot", ItemSlot.getAll().length);
+		ret.put("minimum level", 1);
+		ret.put("handedness", 1);
+		ret.put("attack mod", 1);
+		ret.put("damage mod", 1);
+		ret.put("made from", 1);
+		ret.put("material", 1);
+		ret.put("location", 1);
+		ret.put("enchantments", Integer.MAX_VALUE);
+		ret.put("enhancements", Integer.MAX_VALUE);
+		ret.put("upgradeable?", 1);
+		ret.put("item type", 1);
+		ret.put("armor type", 1);
+		ret.put("feat requirement", 1);
+		ret.put("required trait", 1);
+		ret.put("race absolutely excluded", 1);
+		ret.put("armor bonus", 2);
+		ret.put("maximum dexterity bonus", 1);
+		ret.put("max dex bonus", 1);
+		ret.put("armor check penalty", 1);
+		ret.put("arcane spell failure", 1);
+		ret.put("shield type", 1);
+		ret.put("proficiency class", 1);
+		ret.put("proficiency", 1);
+		ret.put("shield bonus", 1);
+		ret.put("damage reduction", 1);
+		ret.put("accepts sentience?", 1);
+
+		ret.put("unique item capacity", 0);
+		ret.put("max stack size", 0);
+		ret.put("race absolutely required", 0);
+		ret.put("use magical device dc", 0);
+		ret.put("notes", 0);
+		ret.put("description", 0);
+		ret.put("tips", 0);
+		ret.put("hardness", 0);
+		ret.put("base value", 0);
+		ret.put("weight", 0);
+		ret.put("binding", 0);
+		ret.put("durability", 0);
+
+		ret.put("this item cannot be fed to sentient jewels.", 0);
+		ret.put("this item currently cannot be fed to sentient jewels and probably should be able to.", 0);
+
+		return ret;
+	}
 
 	private static Item loadFromWikiSummary(String[] lines, String filepath) {
+		if(ItemReader.KEYS == null) ItemReader.KEYS = generateKeysMap();
 		PropertiesList wikiProperties = new PropertiesList();
 		
 		String key = "name";
-		ArrayList<String> values = new ArrayList<>();
+		List<String> values = new ArrayList<>();
 		
 		for(String line : lines) {
 			line = line.toLowerCase();
 			
-			if(util.Array.contains(KEYS, line)) {
-				wikiProperties.put(key, values);
+			if(util.Array.contains(KEYS.keySet(), line)) {
+				if(shouldDrop(key, values)) return null;
+				if(shouldSave(key, values)) {
+					if(values.size() > KEYS.get(key))
+						values = values.subList(0, KEYS.get(key));
+					wikiProperties.put(key, values);
+				}
 				
-				key = line;
-				values = new ArrayList<String>();
+				if(KEYS.get(line) > 0) {
+					key = line;
+				} else {
+					key = null;
+				}
+
+				values = new ArrayList<>();
 			} else {
 				values.add(line);
 			}
 		}
-		wikiProperties.put(key, values);
+
+		if(shouldSave(key, values)) {
+			if(values.size() > KEYS.get(key))
+				values = values.subList(0, KEYS.get(key));
+			wikiProperties.put(key, values);
+		}
 		
 		wikiProperties = cleanup(wikiProperties);
 		if(wikiProperties == null) return null;
 		
 		return new Item(wikiProperties);
+	}
+
+	private static boolean shouldSave(String key, List<String> values) {
+		if(key == null || key.equals("null")) return false;
+		if(values.size() == 0) return false;
+
+		if(key.equals("attack mod") && values.get(0).equals("str")) return false;
+		if(key.equals("damage mod") && values.get(0).equals("str")) return false;
+		if(key.equals("upgradeable?") && values.get(0).equals("not upgradeable")) return false;
+		if(key.equals("feat requirement") && values.get(0).equals("cloth armor proficiency")) return false;
+		if(key.equals("maximum dexterity bonus") && values.get(0).equals("none")) return false;
+		if(key.equals("maximum dex bonus") && values.get(0).equals("none")) return false;
+		if(key.equals("armor check penalty") && values.get(0).equals("0")) return false;
+		if(key.equals("arcane spell failure") && values.get(0).equals("0")) return false;
+		if(key.equals("arcane spell failure") && values.get(0).equals("0%")) return false;
+		if(key.equals("proficiency class") && values.get(0).equals("simple weapon proficiency")) return false;
+		if(key.equals("shield bonus") && values.get(0).equals("0")) return false;
+		if(key.equals("shield bonus") && values.get(0).equals("+0")) return false;
+		if(key.equals("damage reduction") && values.get(0).equals("none")) return false;
+		if(key.equals("material") && values.get(0).equals("none")) return false;
+
+		return true;
+	}
+
+	private static boolean shouldDrop(String key, List<String> values) {
+		if(key == null) return false;
+
+		if(key.equals("feat requirement") && values.get(0).equals("cosmetic armor proficiency")) return true;
+		if(key.equals("shield type") && values.get(0).equals("cosmetic shield")) return true;
+
+		return false;
 	}
 
 	private static final String[] RANDOM_MODS_REGEX = new String[] {"mythic (weapon|armor|belt|hands|ring|trinket|goggle|boot|wrist|neck|cloak|head) boost.*"};

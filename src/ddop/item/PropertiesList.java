@@ -36,7 +36,7 @@ public class PropertiesList extends HashMap<String, List<String>> {
 
 	public int getInt(String key) {
 		String value = this.getFirst(key);
-		if(value != null && value.equals("none")) return 0;
+		if(value == null || value.equals("none")) return 0;
 		
 		try {
 			int ret = Integer.parseInt(value);

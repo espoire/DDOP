@@ -27,13 +27,13 @@ public class CompileHTML {
 		
 		List<Item> ret = new ArrayList<>();
 		
-		for(String filename : files) {
+outer:	for(String filename : files) {
 			Item i = CompileHTML.loadItemFromHTML(directory, filename);
 
 			if(i == null) continue;
 			for(Item existing : ret)
 				if(existing.name == i.name && existing.minLevel == i.minLevel)
-					continue;
+					continue outer;
 
 			ret.add(i);
 		}
@@ -50,13 +50,13 @@ public class CompileHTML {
 	 */
 	public static Item loadItemFromHTML(String directory, String filename) {
 		if(filename == null) return null;
-		if(filename.length() > 100) {
-			System.err.println("Filename exceeds 100 characters, skipping file: " + filename);
+		if(filename.length() > 60) {
+			System.err.println("Filename exceeds 60 characters, skipping file: " + filename);
 			return null;
 		}
 		
 		String name = getItemNameFromFilename(filename);
-		if(name == null || name.length() > 100) return null;
+		if(name == null || name.length() > 60) return null;
 		
 		String filePath = directory + "\\" + filename;
 		String html = file.Reader.getEntireFile(filePath);
