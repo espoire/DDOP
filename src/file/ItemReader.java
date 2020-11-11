@@ -193,7 +193,9 @@ public class ItemReader {
 		if(key.equals("attack mod") && values.get(0).equals("str")) return false;
 		if(key.equals("damage mod") && values.get(0).equals("str")) return false;
 		if(key.equals("upgradeable?") && values.get(0).equals("not upgradeable")) return false;
+		if(key.equals("upgradeable?") && values.get(0).equals("fully upgraded")) return false;
 		if(key.equals("feat requirement") && values.get(0).equals("cloth armor proficiency")) return false;
+		if(key.equals("required trait") && values.get(0).equals("none")) return false;
 		if(key.equals("maximum dexterity bonus") && values.get(0).equals("none")) return false;
 		if(key.equals("maximum dex bonus") && values.get(0).equals("none")) return false;
 		if(key.equals("armor check penalty") && values.get(0).equals("0")) return false;
@@ -204,6 +206,7 @@ public class ItemReader {
 		if(key.equals("shield bonus") && values.get(0).equals("+0")) return false;
 		if(key.equals("damage reduction") && values.get(0).equals("none")) return false;
 		if(key.equals("material") && values.get(0).equals("none")) return false;
+		if(key.equals("race absolutely excluded") && values.get(0).equals("none")) return false;
 
 		return true;
 	}

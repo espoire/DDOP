@@ -1,13 +1,19 @@
 TODO
-    Clean up wiki.json.
-        Add "Accepts Sentience?" field. (check spelling on wiki)
-        Drop useless/default data points.
-        Clean up erroneous data.
-            Name should only have one value, for example.
-    Need to build cannith crafted + slavers item sources.
-    Slavers first (PoC)
-    Then Cannith
+    Crafted item sources
+        Slavers first (PoC)
+            Update StatScorers to declare which stats they monitor
+                Optimize: at sim start, drop all stats from items, build, reaper build, etc. which are not declared.
+                Metrics: add tool to list stats in wiki.json which are not read by a provided StatScorer set.
+            Generate Slavers item list at runtime
+                Accept StatScorer declared stats set
+                Filter options which are not declared
+                Recursively build items
+                Return item list
+        Then Cannith
     Feywild sets
+    Import Feywild items
+    Metrics: list the normalized score by slot for items in final set.
+    Implement weapon stats, particularly Duality vs Fetters
 
 Implement automatic minor artifact flagging
     Pull Minor Artifacts list from URL = https://ddowiki.com/page/Minor_Artifact#List_of_artifacts

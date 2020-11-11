@@ -7,6 +7,7 @@ import ddop.item.sources.crafted.NearlyFinished;
 import file.CompileHTML;
 import file.Directory;
 import file.LinkReader;
+import util.NumberFormat;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,11 +31,21 @@ public class UpdateItemFiles {
 
 			List<Item> noCraftable = new ArrayList<>(allItems);
 			noCraftable.removeIf(item -> NearlyFinished.appliesTo(item));
-			file.Writer.overwrite(Settings.WIKI_ITEMS_JSON, convertToJson(noCraftable));
+			String noCraftableJson = convertToJson(noCraftable);
+			file.Writer.overwrite(Settings.WIKI_ITEMS_JSON, noCraftableJson);
+			System.out.println("\nWrote non-crafting items to " + Settings.WIKI_ITEMS_JSON);
+			System.out.println("Items: " + noCraftable.size());
+			System.out.println("Length: " + NumberFormat.readableLargeNumber(noCraftableJson.length()));
 
 			List<Item> nearlyFinishedBases = new ArrayList<>(allItems);
 			nearlyFinishedBases.removeIf(item -> ! NearlyFinished.appliesTo(item));
-			file.Writer.overwrite(Settings.NEARLY_FINISHED_BASE_ITEMS_JSON, convertToJson(nearlyFinishedBases));
+			String nearlyFinishedBasesJson = convertToJson(nearlyFinishedBases);
+			file.Writer.overwrite(Settings.NEARLY_FINISHED_BASE_ITEMS_JSON, nearlyFinishedBasesJson);
+			System.out.println("\nWrote nearly finished base items to " + Settings.NEARLY_FINISHED_BASE_ITEMS_JSON);
+			System.out.println("Items: " + nearlyFinishedBases.size());
+			System.out.println("Length: " + NumberFormat.readableLargeNumber(nearlyFinishedBasesJson.length()));
+
+			NearlyFinished.generateJsonFile();
 		}
 	}
 

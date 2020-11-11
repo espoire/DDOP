@@ -4,7 +4,7 @@ public class Settings {
 	public static final String PROJECT_ROOT = "X:\\src\\DDOP";
 
 	public static final String WORK_DIRECTORY    = PROJECT_ROOT + "\\DDOP Loader";
-	public static final String JSON_DIRECTORY    = PROJECT_ROOT + "\\itemDefinitions";
+	public static final String JSON_DIRECTORY    = PROJECT_ROOT + "\\itemJsons";
 	public static final String SOURCE_DIRECTORY  = WORK_DIRECTORY + "\\src";
 	public static final String OUTPUT_DIRECTORY  = WORK_DIRECTORY + "\\out";
 	public static final String WIKI_ITEMS_JSON                         = JSON_DIRECTORY + "\\wiki.json";

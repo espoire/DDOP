@@ -6,16 +6,12 @@ import ddop.Settings;
 import ddop.item.Item;
 import ddop.item.ItemList;
 import ddop.item.PropertiesList;
+import util.NumberFormat;
 
 import java.lang.reflect.Type;
 import java.util.*;
 
 public class NearlyFinished {
-    // Update nearlyFinishedOptions file. Reads from wiki items file, and nearlyFinishedDefinitions file.
-    public static void main(String... s) {
-        NearlyFinished.generateJsonFile();
-    }
-
     /* Format example:
      *
      * Item name 1
@@ -35,11 +31,18 @@ public class NearlyFinished {
         return new Gson().fromJson(json, type);
     }
 
+    // Update nearlyFinishedOptions file. Reads from wiki items file, and nearlyFinishedDefinitions file.
     public static void generateJsonFile() {
+        System.out.println("Generating Nearly Finished item versions...");
+
         List<String> itemVersionJsons = generateItemVersionJsons();
         String       jsonFileContent  = generateJsonFileContent(itemVersionJsons);
 
         file.Writer.overwrite(Settings.NEARLY_FINISHED_COMPLETED_ITEMS_JSON, jsonFileContent);
+
+        System.out.println("\nWrote nearly finished item versions to " + Settings.NEARLY_FINISHED_COMPLETED_ITEMS_JSON);
+        System.out.println("Items: " + itemVersionJsons.size());
+        System.out.println("Length: " + NumberFormat.readableLargeNumber(jsonFileContent.length()));
     }
 
     private static String generateJsonFileContent(List<String> allJsons) {
