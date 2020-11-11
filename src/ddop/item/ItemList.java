@@ -31,7 +31,7 @@ public class ItemList implements Cloneable, Iterable<Item> {
 		return ret;
 	}
 
-	private static ItemList loadJsonFile(String... jsonFilePaths) {
+	public static ItemList loadJsonFile(String... jsonFilePaths) {
 		ItemList ret = new ItemList();
 
 		for(String jsonFilePath : jsonFilePaths)
@@ -140,9 +140,9 @@ public class ItemList implements Cloneable, Iterable<Item> {
 	public Item getRandom() {
 		return (Item) Random.random(this.items);
 	}
-	
-	public static Item getNamedItem(String name) {
-		List<Item> ret = ItemList.getAllNamedItems().getItem(name);
+
+	public Item getNamedItem(String name) {
+		List<Item> ret = this.getItem(name);
 
 		if(ret.size() != 1) {
 			System.err.println("Found " + ret.size() + " named items called \"" + name + "\"...");
@@ -151,6 +151,7 @@ public class ItemList implements Cloneable, Iterable<Item> {
 
 		return ret.get(0);
 	}
+
 	private List<Item> getItem(String name) {
 		List<Item> ret = new ArrayList<>();
 		
@@ -166,10 +167,10 @@ public class ItemList implements Cloneable, Iterable<Item> {
 	
 	public static Collection<Item> toNamedItems(String[] names) {
 		Collection<Item> ret = new ArrayList<>();
-		
-		for(String name : names) {
-			ret.add(ItemList.getNamedItem(name));
-		}
+
+		ItemList items = ItemList.getAllNamedItems();
+		for(String name : names)
+			ret.add(items.getNamedItem(name));
 		
 		return ret;
 	}

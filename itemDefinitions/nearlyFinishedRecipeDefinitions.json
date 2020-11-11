@@ -1,9 +1,23 @@
 {
+  "resplendant fury": {
+    "nearly finished": [
+      "insightful intelligence +3",
+      "insightful wisdom +3",
+      "insightful charisma +3"
+    ]
+  },
   "legendary resplendant fury": {
     "nearly finished": [
       "insightful intelligence +10",
       "insightful wisdom +10",
       "insightful charisma +10"
+    ]
+  },
+  "stygian wrath": {
+    "nearly finished": [
+      "insightful intelligence +3",
+      "insightful wisdom +3",
+      "insightful charisma +3"
     ]
   },
   "legendary stygian wrath": {
@@ -13,11 +27,25 @@
       "insightful charisma +10"
     ]
   },
+  "black satin waist": {
+    "nearly finished": [
+      "quality intelligence +1",
+      "quality wisdom +1",
+      "quality charisma +1"
+    ]
+  },
   "legendary black satin waist": {
     "nearly finished": [
       "quality intelligence +5",
       "quality wisdom +5",
       "quality charisma +5"
+    ]
+  },
+  "celestial amethyst ring": {
+    "nearly finished": [
+      "strength +8",
+      "intelligence +8",
+      "charisma +8"
     ]
   },
   "legendary celestial amethyst ring": {
@@ -27,11 +55,25 @@
       "charisma +21"
     ]
   },
+  "celestial emerald ring": {
+    "nearly finished": [
+      "strength +8",
+      "constitution +8",
+      "wisdom +8"
+    ]
+  },
   "legendary celestial emerald ring": {
     "nearly finished": [
       "strength +21",
       "constitution +21",
       "wisdom +21"
+    ]
+  },
+  "celestial sapphire ring": {
+    "nearly finished": [
+      "dexterity +8",
+      "constitution +8",
+      "intelligence +8"
     ]
   },
   "legendary celestial sapphire ring": {
@@ -41,11 +83,25 @@
       "intelligence +21"
     ]
   },
+  "celestial ruby ring": {
+    "nearly finished": [
+      "strength +8",
+      "dexterity +8",
+      "intelligence +8"
+    ]
+  },
   "legendary celestial ruby ring": {
     "nearly finished": [
       "strength +21",
       "dexterity +21",
       "intelligence +21"
+    ]
+  },
+  "celestial topaz ring": {
+    "nearly finished": [
+      "intelligence +8",
+      "wisdom +8",
+      "charisma +8"
     ]
   },
   "legendary celestial topaz ring": {
@@ -55,11 +111,36 @@
       "charisma +21"
     ]
   },
+  "the shattered onyx": {
+    "nearly finished": [
+      "insightful intelligence +3",
+      "insightful wisdom +3",
+      "insightful charisma +3"
+    ]
+  },
   "the legendary shattered onyx": {
     "nearly finished": [
       "insightful intelligence +10",
       "insightful wisdom +10",
       "insightful charisma +10"
+    ]
+  },
+  "collective sight": {
+    "nearly finished": [
+      "strength +8",
+      "dexterity +8",
+      "constitution +8",
+      "intelligence +8",
+      "wisdom +8",
+      "charisma +8"
+    ],
+    "almost there": [
+      "insightful strength +3",
+      "insightful dexterity +3",
+      "insightful constitution +3",
+      "insightful intelligence +3",
+      "insightful wisdom +3",
+      "insightful charisma +3"
     ]
   },
   "legendary collective sight": {
@@ -251,11 +332,25 @@
       "completed weapon"
     ]
   },
+  "cloak of balance": {
+    "nearly finished": [
+      "quality strength +1",
+      "quality dexterity +1",
+      "quality constitution +1"
+    ]
+  },
   "legendary cloak of balance": {
     "nearly finished": [
       "quality strength +5",
       "quality dexterity +5",
       "quality constitution +5"
+    ]
+  },
+  "concentrated chaos": {
+    "nearly finished": [
+      "quality intelligence +1",
+      "quality wisdom +1",
+      "quality charisma +1"
     ]
   },
   "legendary concentrated chaos": {
@@ -265,11 +360,25 @@
       "quality charisma +5"
     ]
   },
+  "solid sound": {
+    "nearly finished": [
+      "insightful intelligence +3",
+      "insightful wisdom +3",
+      "insightful charisma +3"
+    ]
+  },
   "legendary solid sound": {
     "nearly finished": [
       "quality intelligence +5",
       "quality wisdom +5",
       "quality charisma +5"
+    ]
+  },
+  "sunken chains": {
+    "nearly finished": [
+      "quality strength +1",
+      "quality dexterity +1",
+      "quality intelligence +1"
     ]
   },
   "legendary sunken chains": {
@@ -279,11 +388,32 @@
       "quality intelligence +5"
     ]
   },
+  "sunken slippers": {
+    "nearly finished": [
+      "quality intelligence +1",
+      "quality wisdom +1",
+      "quality charisma +1"
+    ]
+  },
   "legendary sunken slippers": {
     "nearly finished": [
       "quality intelligence +5",
       "quality wisdom +5",
       "quality charisma +5"
+    ]
+  },
+  "legendary alchemist's crown": {
+    "nearly finished": [
+      "wisdom +21",
+      "insightful wisdom +10",
+      "quality wisdom +5"
+    ]
+  },
+  "legendary alchemist's pendant": {
+    "nearly finished": [
+      "constitution +21",
+      "insightful constitution +10",
+      "quality constitution +5"
     ]
   }
 }

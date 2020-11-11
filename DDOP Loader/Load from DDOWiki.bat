@@ -11,7 +11,7 @@ ECHO Estimated time to download: 19s
 TIMEOUT 10
 
 TIMEOUT /T 1 /NOBREAK > NUL
-wget -q -nc -P out -E --no-check-certificate https://ddowiki.com/page/I:The_Shattered_Hilt_of_Constellation
+wget -q -nc -P out -E --no-check-certificate https://ddowiki.com/page/I:Celestial_Emerald_Ring
 ECHO 13 of 16 downloaded. (81%%)
 
 

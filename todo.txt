@@ -1,8 +1,4 @@
 TODO
-    Clean up Nearly Finished implementation.
-        Clean code.
-        Filter un-crafted nearly finished item bases out of wiki.json at compile time.
-            BUG! Current code seems to be treating base items as though they had ALL options.
     Clean up wiki.json.
         Add "Accepts Sentience?" field. (check spelling on wiki)
         Drop useless/default data points.

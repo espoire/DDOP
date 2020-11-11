@@ -26,7 +26,11 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 	}
 	
 	public EquipmentLoadout put(String... strings) {
-		for(String s : strings) this.put(ItemList.getNamedItem(s));
+		ItemList items = ItemList.getAllNamedItems();
+
+		for(String s : strings)
+			this.put(items.getNamedItem(s));
+
 		return this;
 	}
 	

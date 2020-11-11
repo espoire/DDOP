@@ -30,7 +30,7 @@ public class NearlyFinished {
      */
     private static final Map<String, Map<String, List<String>>> OPTIONS = readNearlyFinishedOptionsJson();
     private static Map<String, Map<String, List<String>>> readNearlyFinishedOptionsJson() {
-        String json = file.Reader.getEntireFile(Settings.NEARLY_FINISHED_DEFINITIONS_JSON);
+        String json = file.Reader.getEntireFile(Settings.NEARLY_FINISHED_RECIPE_DEFINITIONS_JSON);
         Type type = new TypeToken<Map<String, Map<String, List<String>>>>() {}.getType();
         return new Gson().fromJson(json, type);
     }
@@ -39,7 +39,7 @@ public class NearlyFinished {
         List<String> itemVersionJsons = generateItemVersionJsons();
         String       jsonFileContent  = generateJsonFileContent(itemVersionJsons);
 
-        file.Writer.overwrite(Settings.NEARLY_FINISHED_OPTIONS_JSON, jsonFileContent);
+        file.Writer.overwrite(Settings.NEARLY_FINISHED_COMPLETED_ITEMS_JSON, jsonFileContent);
     }
 
     private static String generateJsonFileContent(List<String> allJsons) {
@@ -72,8 +72,10 @@ public class NearlyFinished {
         return allJsons;
     }
 
+    private static ItemList NEARLY_FINISHED_BASE_ITEMS;
     private static PropertiesList getItemTemplate(String itemName) {
-        Item item = ItemList.getNamedItem(itemName);
+        if(NEARLY_FINISHED_BASE_ITEMS == null) NEARLY_FINISHED_BASE_ITEMS = ItemList.loadJsonFile(Settings.NEARLY_FINISHED_BASE_ITEMS_JSON);
+        Item item = NEARLY_FINISHED_BASE_ITEMS.getNamedItem(itemName);
 
         if(item == null) return null;
         return item.getPropsClone();
@@ -167,5 +169,9 @@ public class NearlyFinished {
 
     private static void insertVersionTag(PropertiesList version, String tag) {
         version.put("name", version.getFirst("name") + tag);
+    }
+
+    public static boolean appliesTo(Item item) {
+        return NearlyFinished.OPTIONS.containsKey(item.name);
     }
 }

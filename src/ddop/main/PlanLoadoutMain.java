@@ -196,10 +196,10 @@ public class PlanLoadoutMain {
 
 	public static ArrayList<Item> getFixedItems() {
 		ArrayList<Item> fixedItems = new ArrayList<>();
-		
-		for(String name : FIXED_ITEM_NAMES) {
-			fixedItems.add(ItemList.getNamedItem(name));
-		}
+
+		ItemList items = ItemList.getAllNamedItems();
+		for(String name : FIXED_ITEM_NAMES)
+			fixedItems.add(items.getNamedItem(name));
 		
 		return fixedItems;
 	}
