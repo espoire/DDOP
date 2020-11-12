@@ -498,10 +498,15 @@ public abstract class SpecScorer extends StatScorer {
 		return Integer.MAX_VALUE;
 	}
 	
-	private int getDR(StatTotals stats) {
-		return stats.getInt("dr");
+	private double getDR(StatTotals stats) {
+		return stats.getDouble("dr") +
+				stats.getDouble("self healing when hit") * (1 + this.getHealAmpPercent(stats)) * this.getReaperSelfHealingReduction();
 	}
-	
+
+	private double getReaperSelfHealingReduction() {
+		return 0.44 - 0.04 * this.skulls;
+	}
+
 	private int getFortification(StatTotals stats) {
 		int adjustedFortification = stats.getInt("fortification") - SIM_ENEMY_FORT_BYPASS;
 		if(adjustedFortification < 0)   return 0;

@@ -187,6 +187,7 @@ public class Stat {
 	private static final String UNINFORMATIVE_TOKEN_REGEX = "^[^A-Za-z0-9]*$";
 	private static final HashMap<String, String> BONUS_TYPE_TOKENS = new HashMap<>();
 	static {
+		BONUS_TYPE_TOKENS.put("insight",     "insight");
 		BONUS_TYPE_TOKENS.put("insightful",  "insight");
 		BONUS_TYPE_TOKENS.put("quality",     "quality");
 		BONUS_TYPE_TOKENS.put("competence",  "competence");
@@ -194,7 +195,9 @@ public class Stat {
 		BONUS_TYPE_TOKENS.put("exceptional", "exceptional");
 		BONUS_TYPE_TOKENS.put("profane",     "profane");
 		BONUS_TYPE_TOKENS.put("enhanced",    "enhancement");
+		BONUS_TYPE_TOKENS.put("enhancement", "enhancement");
 		BONUS_TYPE_TOKENS.put("equipped",    "equipment");
+		BONUS_TYPE_TOKENS.put("equipment",   "equipment");
 	}
 	
 	public static Stat parseStat(String enchantment) {

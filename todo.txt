@@ -1,8 +1,6 @@
 TODO
     Crafted item sources
         Slavers first (PoC)
-            Declare Stat usage
-                Metrics: add tool to list stats in wiki.json which are not read by a provided StatScorer set.
             Generate Slavers item list at runtime
                 Accept StatScorer declared stats set
                 Filter options which are not declared

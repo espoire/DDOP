@@ -3,9 +3,7 @@ package ddop.optimizer.valuation.damage.weapon;
 import ddop.optimizer.valuation.damage.DamageSource;
 import util.StatTotals;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public abstract class WeaponAttack extends DamageSource {
 	protected static final int		BASE_CRITICAL_THREAT_RANGE = 1; // TODO weapon stats
@@ -20,7 +18,7 @@ public abstract class WeaponAttack extends DamageSource {
 
 
 	protected Set<String> getBaseQueriedStatCategories() {
-		return new HashSet<>(Arrays.asList(
+		Set<String> ret = new HashSet<>(Arrays.asList(
 				"deadly",
 				"deception",
 				"sneak attack dice",
@@ -29,9 +27,6 @@ public abstract class WeaponAttack extends DamageSource {
 				"prr reduction",
 				"mrr reduction",
 				"vulnerability",
-				"eternal holy burst",
-				"soul of the elements",
-				"stormreaver's thunderclap",
 				"percent to-hit",
 				"critical threat range",
 				"critical multiplier",
@@ -53,6 +48,10 @@ public abstract class WeaponAttack extends DamageSource {
 				"bonus w",
 				"melee alacrity"
 		));
+
+		ret.addAll(WeaponAttack.damageMods.keySet());
+
+		return ret;
 	}
 
 	@Override
@@ -83,9 +82,7 @@ public abstract class WeaponAttack extends DamageSource {
 		double sneakAttackDamage = sneakDamage             * (1 + weaponPower /  66.67)	* physicalDamageMultiplier;
 		double redAugments = stats.getInt("empty red augment slot") + stats.getInt("empty orange augment slot") + stats.getInt("empty purple augment slot");
 		double nonScalingBonusDamage = this.getWeaponBonusDamage(stats)	// TODO weapon stats
-				+ (stats.getBoolean("eternal holy burst")   ? 4.16 : 0)
-				+ (stats.getBoolean("soul of the elements") ? 15   : 0)
-				+ (stats.getBoolean("stormreaver's thunderclap") ? 1000.0 / 20 : 0) // TODO update damage / hook in Balanced Attacks
+				+ WeaponAttack.getNonScalingBonusDice(stats)
 				+ redAugments * 8 * 3.5; // 8d6 ML28 augments
 		double scalingBonusDamage = this.getScalingBonusDamage(stats);
 		double bonusDamage = (nonScalingBonusDamage + scalingBonusDamage) * magicalDamageMultiplier;
@@ -147,7 +144,32 @@ public abstract class WeaponAttack extends DamageSource {
 		
 		return dpsCombined;
 	}
-	
+
+	private static final double d6 = 3.5;
+	private static final double onVorpal = 1.0 / 20.0;
+	private static final Map<String, Double> damageMods = WeaponAttack.generateDamageMods();
+	private static Map<String, Double> generateDamageMods() {
+		Map<String, Double> ret = new HashMap<>();
+
+		ret.put("eternal holy burst", 4.16);
+		ret.put("soul of the elements", 15.0);
+		ret.put("stormreaver's thunderclap", 1000.0 * onVorpal); // TODO update damage / hook in Balanced Attacks
+		ret.put("noxious venom spike", 1 * d6);
+		ret.put("epic noxious venom spike", 2 * d6);
+
+		return ret;
+	}
+
+	private static double getNonScalingBonusDice(StatTotals stats) {
+		double total = 0;
+
+		for(Map.Entry<String, Double> mod : damageMods.entrySet())
+			if(stats.containsKey(mod.getKey()))
+				total += mod.getValue();
+
+		return total;
+	}
+
 	/** Returns the odds that at least one hit will occur per swing in the range [0 .. 1]. */
 	public double getHitAnyRate(StatTotals stats) {
 		double attacksPerSwing			= this.getWeaponAttacksPerSwing(stats);
