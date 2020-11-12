@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "name": ["cc trinket ds resistance icon version"],
+    "minimum level": ["30"],
+    "slot": ["trinket"],
+    "enchantments": [
+      "doublestrike +17%",
+      "resistance +12",
+      "insightful constitution +7"
+    ]
+  }
+]

@@ -90,7 +90,7 @@ public class NearlyFinished {
 
         cleanup(itemTemplate, craftingTags);
 
-        return recursiveApplyEnchantmentOptions(itemTemplate, enchantmentOptions, null, 0);
+        return CraftedItemGenerator.generateJsons(itemTemplate, enchantmentOptions);
     }
 
     private static void cleanup(PropertiesList itemTemplate, Set<String> craftingTags) {
@@ -124,55 +124,7 @@ public class NearlyFinished {
         template.remove("upgradeable?");
     }
 
-    private static List<String> recursiveApplyEnchantmentOptions(PropertiesList itemTemplate, List<List<String>> enchantmentOptions, String versionTag, int listPosition) {
-        List<String> ret = new ArrayList<>();
-        List<String> enchantments = enchantmentOptions.get(listPosition++);
 
-        for(String enchantment : enchantments) {
-            PropertiesList version = (PropertiesList) itemTemplate.clone();
-
-            insertEnchantment(version, enchantment);
-            String tag = extendTag(versionTag, enchantment);
-
-            if(listPosition == enchantmentOptions.size()) {
-                tag = finishTag(tag);
-                insertVersionTag(version, tag);
-
-                ret.add(version.toJson());
-            } else {
-                List<String> jsons = recursiveApplyEnchantmentOptions(version, enchantmentOptions, tag, listPosition);
-                ret.addAll(jsons);
-            }
-        }
-
-        return ret;
-    }
-
-    private static void insertEnchantment(PropertiesList version, String enchantment) {
-        List<String> versionEnchantments = new ArrayList<>(version.get("enchantments"));
-        versionEnchantments.add(enchantment);
-        version.put("enchantments", versionEnchantments);
-    }
-
-    private static String extendTag(String versionTag, String enchantment) {
-        String tag = versionTag;
-        if(tag == null) {
-            tag = " ([";
-        } else {
-            tag += ", ";
-        }
-        tag += enchantment;
-        return tag;
-    }
-
-    private static String finishTag(String tag) {
-        tag += "] version)";
-        return tag;
-    }
-
-    private static void insertVersionTag(PropertiesList version, String tag) {
-        version.put("name", version.getFirst("name") + tag);
-    }
 
     public static boolean appliesTo(Item item) {
         return NearlyFinished.OPTIONS.containsKey(item.name);

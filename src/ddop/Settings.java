@@ -12,6 +12,7 @@ public class Settings {
 	public static final String NEARLY_FINISHED_BASE_ITEMS_JSON         = JSON_DIRECTORY + "\\nearlyFinishedBaseItems.json";
 	public static final String NEARLY_FINISHED_RECIPE_DEFINITIONS_JSON = JSON_DIRECTORY + "\\nearlyFinishedRecipeDefinitions.json";
 	public static final String NEARLY_FINISHED_COMPLETED_ITEMS_JSON    = JSON_DIRECTORY + "\\nearlyFinishedCompletedItems.json";
+	public static final String SLAVERS_RECIPE_DEFINITIONS_JSON         = JSON_DIRECTORY + "\\slaversRecipeDefinitions.json";
 
 	public static final String[] ITEM_SOURCES_JSON = new String[] {
 			WIKI_ITEMS_JSON,
@@ -24,7 +25,8 @@ public class Settings {
 	public static final boolean IGNORE_RUNEARM_SHOT = true;
 	public static final boolean IGNORE_CLICKIES = true;
 	
-	public static final boolean SHOW_FULL_STATLIST_DEBUG = false;
-	public static final boolean SHOW_ITEM_FILEPATH_DEBUG = false;
-    public static final boolean REAPER_BUILD_DEBUG = false;
+	public static final boolean DEBUG_SHOW_FULL_STATLIST = false;
+    public static final boolean DEBUG_REAPER_BUILD = false;
+
+    public static final int LEVEL_CAP = 30;
 }

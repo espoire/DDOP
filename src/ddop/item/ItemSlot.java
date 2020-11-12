@@ -3,7 +3,7 @@ package ddop.item;
 import java.util.HashMap;
 
 public class ItemSlot {
-	private static final HashMap<String, ItemSlot> byName = new HashMap<String, ItemSlot>();
+	private static final HashMap<String, ItemSlot> byName = new HashMap<>();
 	
 	public final String name;
 	public final int limit; // 1 for most item types, 2 for Finger.

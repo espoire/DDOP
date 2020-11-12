@@ -50,9 +50,9 @@ public class ReaperBuild extends EnhancementBuild implements StatSource {
             ret[i] = new int[FORMAT_LINE_LENGTHS[i]];
             for(int j = 0; j < FORMAT_LINE_LENGTHS[i]; j++) {
                 ret[i][j] = Character.getNumericValue(fileLines[i].charAt(j));
-                if(Settings.REAPER_BUILD_DEBUG) System.out.print(ret[i][j]);
+                if(Settings.DEBUG_REAPER_BUILD) System.out.print(ret[i][j]);
             }
-            if(Settings.REAPER_BUILD_DEBUG) System.out.println();
+            if(Settings.DEBUG_REAPER_BUILD) System.out.println();
         }
         
         return ret;

@@ -142,7 +142,7 @@ public class VerboseStatList extends AbstractStatList implements StatSource {
 			ret += "+- Using:\n";
 			ret += this.getBestList();
 			
-			if(Settings.SHOW_FULL_STATLIST_DEBUG) {
+			if(Settings.DEBUG_SHOW_FULL_STATLIST) {
 				ret += "|\n";
 				ret += "+- All:\n";
 				ret += this.all;

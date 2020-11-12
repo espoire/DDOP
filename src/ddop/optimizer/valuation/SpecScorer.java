@@ -13,11 +13,9 @@ import java.util.*;
 
 public abstract class SpecScorer extends StatScorer {
 	private static final int EPIC_HIT_DIE = 10;
-	private static final double EPIC_BAB = 0.5;
 	
-	int characterLevel = 30;
 	int hitDie         = 6;
-	double bab         = 0.75;
+	int characterLevel;
 
 	private final BaseAttackBonusProgression BABProgression;
 	private final StatSource build;
@@ -46,7 +44,6 @@ public abstract class SpecScorer extends StatScorer {
 
 		ret.addAll(Arrays.asList(
 				"minor artifact",
-				"strength",
 				"dexterity",
 				"constitution",
 				"intelligence",
@@ -212,8 +209,8 @@ public abstract class SpecScorer extends StatScorer {
 								SIM_MAGIC_DAMAGE_PORTION_LAW      = 0.005,
 								SIM_MAGIC_DAMAGE_PORTION_CHAOS    = 0.04,
 								SIM_MAGIC_DAMAGE_PORTION_EVIL     = 0.08,
-								SIM_MAGIC_DAMAGE_PORTION_GOOD     = 0.01,
-								SIM_MAGIC_DAMAGE_PORTION_BANE     = 0.04;
+								SIM_MAGIC_DAMAGE_PORTION_GOOD     = 0.01;
+//								SIM_MAGIC_DAMAGE_PORTION_BANE     = 0.04;
 	
 	protected static final double VALUATION_UNCONSCIOUSNESS = 0.2,
 								VALUATION_HP             = 1,
@@ -510,9 +507,7 @@ public abstract class SpecScorer extends StatScorer {
 
 	private int getFortification(StatTotals stats) {
 		int adjustedFortification = stats.getInt("fortification") - SIM_ENEMY_FORT_BYPASS;
-		if(adjustedFortification < 0)   return 0;
-		if(adjustedFortification > 100) return 100;
-		return adjustedFortification;
+		return (int) cap(0, adjustedFortification, 100);
 	}
 
 	private double getElementalMultiplier(String type, StatTotals stats) {
@@ -563,7 +558,7 @@ public abstract class SpecScorer extends StatScorer {
 		double physicalPortion = (1 - SIM_MAGIC_DAMAGE_PORTION);
 
 		double prrReduction       = 1 / (1 + this.getPRR(stats) / 100.0);												// Starts at 1, ~0.4   in Sharn gear
-		double drReduction        = (1 - (double) this.getDR(stats) / SIM_DAMAGE_SIZE * (1 - SIM_DR_BYPASSED_PORTION)); // Starts at 1, ~0.993 in Sharn gear
+		double drReduction        = (1 - this.getDR(stats) / SIM_DAMAGE_SIZE * (1 - SIM_DR_BYPASSED_PORTION)); // Starts at 1, ~0.993 in Sharn gear
 		double enemyCrit          = (SIM_ENEMY_CRIT_RATE * (SIM_ENEMY_CRIT_MULTIPLIER - 1) * VALUATION_FORTIFICATION);
 		double enemyCritAfterFort = enemyCrit * (1 - this.getFortification(stats) / 100.0);
 		double fortReduction      = (1 + enemyCritAfterFort) / (1 + enemyCrit);                                         // Starts at 1, ~0.73 at uncrittable

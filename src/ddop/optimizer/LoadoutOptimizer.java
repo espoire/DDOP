@@ -1,5 +1,6 @@
 package ddop.optimizer;
 
+import ddop.dto.LevelRange;
 import ddop.item.Item;
 import ddop.item.ItemList;
 import ddop.item.ItemSlot;
@@ -13,17 +14,16 @@ import util.Pair;
 import java.util.*;
 
 public class LoadoutOptimizer {
-    private StatScorer scorer;
-    private int minGearLevel = 24, maxGearLevel = -1;
+    private final StatScorer scorer;
+    private LevelRange levelRange;
     private ArmorType requiredArmorType;
     
     public LoadoutOptimizer(StatScorer scorer) {
         this.scorer = scorer;
     }
     
-    public LoadoutOptimizer setItemLevelRange(int min, int max) {
-        this.minGearLevel = min;
-        this.maxGearLevel = max;
+    public LoadoutOptimizer setItemLevelRange(LevelRange levelRange) {
+        this.levelRange = levelRange;
         return this;
     }
     
@@ -31,10 +31,7 @@ public class LoadoutOptimizer {
         this.requiredArmorType = at;
         return this;
     }
-    
-    
-    
-    
+
     public ScoredLoadout planOptimalLoadout() {
         EquipmentLoadout planSoFar = new EquipmentLoadout();
         
@@ -48,7 +45,7 @@ public class LoadoutOptimizer {
         
         Map<ItemSlot, RandomAccessScoredItemList> candidateItems =
                 ItemList.getAllNamedItems()
-                        .filterByLevel    (this.minGearLevel, this.maxGearLevel)
+                        .filterByLevel    (this.levelRange)
                         .filterBy         (this.requiredArmorType)
                         .toScoredMapBySlot(new ValuationContext(this.scorer, planSoFar));
         
@@ -68,10 +65,8 @@ public class LoadoutOptimizer {
                     EquipmentLoadout planWithAddition = new EquipmentLoadout(planSoFar).put(bestInSlot);
             
                     Map<ItemSlot, RandomAccessScoredItemList> itemMap = this.rescore(candidateItems, planWithAddition);
-                    Collection<ItemSlot> slotsToFill = new ArrayList<>(candidateSlotsToSelectNext);
-                    slotsToFill.remove(slot);
             
-                    ScoredLoadout best = simBestLoadout(planWithAddition, itemMap, slotsToFill, 20000);
+                    ScoredLoadout best = simBestLoadout(planWithAddition, itemMap, 20000);
             
                     System.out.print(slot.name + " ");
                     if(pair.getValue() == null || best.score > pair.getValue().score) {
@@ -96,10 +91,10 @@ public class LoadoutOptimizer {
         return ScoredLoadout.score(planSoFar, this.scorer);
     }
     
-    private ScoredLoadout simBestLoadout(EquipmentLoadout planWithAddition, Map<ItemSlot, RandomAccessScoredItemList> itemMap, Collection<ItemSlot> slotsToFill, int trials) {
+    private ScoredLoadout simBestLoadout(EquipmentLoadout planWithAddition, Map<ItemSlot, RandomAccessScoredItemList> itemMap, int trials) {
         ScoredLoadout best = null;
         for(int i = 0; i < trials; i++) {
-            ScoredLoadout trial = simLoadout(planWithAddition, slotsToFill, itemMap);
+            ScoredLoadout trial = simLoadout(planWithAddition, itemMap);
             if(best == null || trial.score > best.score) best = trial;
         }
         return best;
@@ -126,12 +121,12 @@ public class LoadoutOptimizer {
         map.remove(worstKey);
     }
     
-    private ScoredLoadout simLoadout(EquipmentLoadout planSoFar, Collection<ItemSlot> slotsToFill, Map<ItemSlot, RandomAccessScoredItemList> itemMap) {
-        EquipmentLoadout trialLoadout = fillTrialEquipmentLoadout(planSoFar, slotsToFill, itemMap);
+    private ScoredLoadout simLoadout(EquipmentLoadout planSoFar, Map<ItemSlot, RandomAccessScoredItemList> itemMap) {
+        EquipmentLoadout trialLoadout = fillTrialEquipmentLoadout(planSoFar, itemMap);
         return ScoredLoadout.score(trialLoadout, this.scorer);
     }
     
-    private static EquipmentLoadout fillTrialEquipmentLoadout(EquipmentLoadout planSoFar, Collection<ItemSlot> slotsToFill, Map<ItemSlot, RandomAccessScoredItemList> itemMap) {
+    private static EquipmentLoadout fillTrialEquipmentLoadout(EquipmentLoadout planSoFar, Map<ItemSlot, RandomAccessScoredItemList> itemMap) {
         EquipmentLoadout trialLoadout = new EquipmentLoadout(planSoFar);
         
         for(ItemSlot slot : itemMap.keySet()) {
@@ -143,8 +138,10 @@ public class LoadoutOptimizer {
     }
     
     private Map<ItemSlot, RandomAccessScoredItemList> rescore(Map<ItemSlot, RandomAccessScoredItemList> candidateItems, EquipmentLoadout planWithAddition) {
-        Map<ItemSlot, RandomAccessScoredItemList> ret = new HashMap<ItemSlot, RandomAccessScoredItemList>(candidateItems);
+        Map<ItemSlot, RandomAccessScoredItemList> ret = new HashMap<>(candidateItems);
+
         ret.replaceAll((k, v) -> v.rescore(new ValuationContext(this.scorer, planWithAddition)));
+
         return ret;
     }
     

@@ -1,12 +1,14 @@
 package ddop.main;
 
 import ddop.constants.Time;
+import ddop.dto.LevelRange;
 import ddop.dto.SimResultContext;
 import ddop.item.Item;
 import ddop.item.ItemList;
 import ddop.item.ItemSlot;
 import ddop.item.loadout.EquipmentLoadout;
 import ddop.item.loadout.StoredLoadouts;
+import ddop.item.sources.crafted.SlaversCraftedItemSource;
 import ddop.main.session.DurationSession;
 import ddop.main.session.ExecutionSession;
 import ddop.optimizer.RandomAccessScoredItemList;
@@ -25,11 +27,12 @@ import java.util.*;
 public class PlanLoadoutMain {
 	private static final int MILLION = 1000000;
 
+	// Recommended duration: 50ms per candidate item.
 	private static final ExecutionSession EXECUTION_LENGTH =
-			new DurationSession((long) (15 * Time.SECOND));
-//			new DurationSession((long) (15 * Time.MINUTE));
-//			new DurationSession((long) (1 * Time.HOUR));
-//			new DurationSession((long) (8 * Time.HOUR));
+			new DurationSession(15 * Time.SECOND);
+//			new DurationSession(30 * Time.MINUTE);
+//			new DurationSession(1 * Time.HOUR);
+//			new DurationSession(8 * Time.HOUR);
 
 	private static final boolean MULTI_THREAD = true;
 	private static final int THREADS =
@@ -40,6 +43,7 @@ public class PlanLoadoutMain {
 
 	private static final int TARGET_ITEMS_MIN_LEVEL = 26,
 							 TARGET_ITEMS_MAX_LEVEL = 30;
+	private static final LevelRange TARGET_ITEMS_LEVEL_RANGE = new LevelRange(TARGET_ITEMS_MIN_LEVEL, TARGET_ITEMS_MAX_LEVEL);
 
 	private static final ItemSlot[] IGNORED_SLOTS = new ItemSlot[] {
 			ItemSlot.MAIN_HAND, ItemSlot.OFF_HAND,
@@ -177,7 +181,8 @@ public class PlanLoadoutMain {
 	
 	private static Map<ItemSlot, RandomAccessScoredItemList> getItemSlotScoredItemListMap (ValuationContext vc, List<ItemSlot> skipSlots) {
 		ItemList candidates = ItemList.getAllNamedItems()
-				.filterByLevel(TARGET_ITEMS_MIN_LEVEL, TARGET_ITEMS_MAX_LEVEL)
+				.merge(SlaversCraftedItemSource.generateList(TARGET_ITEMS_LEVEL_RANGE, vc.getQueriedStatCategories()))
+				.filterByLevel(TARGET_ITEMS_LEVEL_RANGE)
 				.filterBy(vc.getAllowedArmorTypes());
 		Map<ItemSlot, ItemList> rawItemMap = candidates.mapBySlot();
 

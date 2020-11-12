@@ -1,6 +1,7 @@
 package ddop.item;
 
 import ddop.Settings;
+import ddop.dto.LevelRange;
 import ddop.optimizer.RandomAccessScoredItemList;
 import ddop.optimizer.ScoredItemList;
 import ddop.optimizer.valuation.ArmorType;
@@ -8,6 +9,7 @@ import ddop.optimizer.valuation.ValuationContext;
 import ddop.stat.Stat;
 import file.Directory;
 import file.ItemReader;
+import org.jetbrains.annotations.NotNull;
 import util.Random;
 
 import java.util.*;
@@ -19,6 +21,14 @@ public class ItemList implements Cloneable, Iterable<Item> {
 	private ItemList() {}
 	public ItemList(List<Item> items) {
 		for(Item i : items) this.addItem(i);
+	}
+
+	public ItemList merge(Iterable<Item> another) {
+		ItemList ret = this.clone();
+
+		ret.addAll(another);
+
+		return ret;
 	}
 
 	public static ItemList loadWikiitemsDirectory(String directoryPath) {
@@ -51,8 +61,11 @@ public class ItemList implements Cloneable, Iterable<Item> {
 		}
 	}
 
+	private void addAll(Iterable<Item> items) { for(Item i : items) this.addItem(i); }
 	private void addItem(Item i) {
-		if(i != null && i.name != null) this.items.add(i);
+		if(i == null) return;
+		if(i.name == null) return;
+		this.items.add(i);
 	}
 	
 	public ItemList filterBy(ItemSlot slot) {
@@ -90,15 +103,13 @@ public class ItemList implements Cloneable, Iterable<Item> {
 
 		return ret;
 	}
-	
-	public ItemList filterByLevel(int maximum) { return this.filterByLevel(0, maximum); }
-	public ItemList filterByLevel(int minimum, int maximum) {
-		if(maximum < 0) maximum = Integer.MAX_VALUE;
+
+	public ItemList filterByLevel(LevelRange levelRange) {
 		ItemList ret = new ItemList();
-		
-		for(Item i : this.items) {
-			if(minimum <= i.minLevel && i.minLevel <= maximum) ret.addItem(i);
-		}
+
+		for(Item i : this.items)
+			if(levelRange.includes(i.minLevel))
+				ret.addItem(i);
 		
 		return ret;
 	}
@@ -116,16 +127,18 @@ public class ItemList implements Cloneable, Iterable<Item> {
 	}
 	
 	public Map<ItemSlot, RandomAccessScoredItemList> toScoredMapBySlot(ValuationContext vc) {
-		Map<ItemSlot, ItemList>       rawItemMap = ItemList.getAllNamedItems().filterByLevel(24, -1).mapBySlot();
-		Map<ItemSlot, RandomAccessScoredItemList> itemMap    = new HashMap<>();
+		Map<ItemSlot, ItemList>            rawItemMap = this.mapBySlot();
+		Map<ItemSlot, RandomAccessScoredItemList> ret = new HashMap<>();
 		
 		for(ItemSlot slot : rawItemMap.keySet()) {
 			ItemList itemList = rawItemMap.get(slot);
+
 			ScoredItemList options = new ScoredItemList(itemList, vc);
-			itemMap.put(slot, new RandomAccessScoredItemList(options));
+
+			ret.put(slot, new RandomAccessScoredItemList(options));
 		}
 		
-		return itemMap;
+		return ret;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -218,7 +231,7 @@ public class ItemList implements Cloneable, Iterable<Item> {
 	}
 	
 	@Override
-	public Iterator<Item> iterator() {
+	public @NotNull Iterator<Item> iterator() {
 		return this.items.iterator();
 	}
 

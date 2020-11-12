@@ -1,9 +1,11 @@
 package ddop.main;
 
 import ddop.Settings;
+import ddop.dto.LevelRange;
 import ddop.item.Item;
 import ddop.item.ItemList;
 import ddop.item.loadout.EquipmentLoadout;
+import ddop.item.sources.crafted.SlaversCraftedItemSource;
 import ddop.optimizer.valuation.ShintaoScorer;
 import ddop.optimizer.valuation.StatScorer;
 import ddop.stat.conversions.NamedStat;
@@ -12,11 +14,16 @@ import file.CompileHTML;
 import file.WgetScripter;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Set;
 
+@SuppressWarnings("all")
 public class SandboxMain {
     public static void main(String... s) {
-        printAllUnvaluedStats(new ShintaoScorer(30));
+        Collection<Item> items = SlaversCraftedItemSource.generateList(new LevelRange(1, 30), new ShintaoScorer(30).getQueriedStatCategories());
+
+        if(items != null) for(Item i : items)
+            System.out.println(i);
     }
 
     private static void printAllUnvaluedStats(StatScorer scorer) {

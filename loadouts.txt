@@ -1,33 +1,22 @@
 EquipmentLoadout (13 items):
-| Back: silver dragonscale capelet idex version
-| Quiver: quiver of alacrity
-| Armor: legendary turncoat
-| Wrist: legendary ironclad armbands
-| Waist: the cornerstone champion qwis version
-| Head: legendary umber brim
+| Head: legendary alchemist's crown ([quality wisdom +5] version)
+| Finger: legendary omniscience, legendary tumbleweed
 | Trinket: echo of ravenkind
-| Neck: legendary family recruit sigil
-| Hand: legendary hammerfist
-| Eye: visions of precision
-| Finger: radiant ring of taer valaestas, legendary celestial ruby ring dex version
-| Feet: slavers boots hp resistance tendon slice qdex version
-
-DPS +5%, Defense +6%, Saves -1%, DCs -3% = +5.7%
-
-EquipmentLoadout (14 items):
-| Back: silver dragonscale capelet
+| Waist: legendary braided cutcord
+| Armor: patience through peril
+| Feet: piston boots
+| Back: the invisible cloak of strahd
 | Quiver: quiver of alacrity
-| Armor: legendary turncoat
-| Wrist: legendary ironclad armbands
-| Waist: the cornerstone champion qwis version
-| Head: legendary umber brim
-| Trinket: cc trinket ds truesee icon version
-| Neck: legendary family recruit sigil
-| Hand: legendary hammerfist
-| Eye: legendary collective sight con iwis version
-| Finger: radiant ring of taer valaestas, legendary celestial ruby ring dex version
-| Feet: slavers boots hp resistance tendon slice qcon version
-| Main Hand: duality, the moral compass
+| Wrist: legendary moonrise bracers
+| Hand: molten silver gauntlets
+| Eye: legendary collective sight ([wisdom +21, insightful constitution +10] version)
+| Neck: doctor leroux's curious implant
+| Main Hand: [EMPTY]
 | Off Hand: [EMPTY]
 
-Defense +16%, DPS +5%, DCs =, Saves -2% = +14.0%
+SpecScorer Overall Score Debug Log
+DPS Score: 10.7k
+DCs:       10.3k
+Defenses:  12.1k
+Saves:     90.9%
+Total:     2.8 M(108%)

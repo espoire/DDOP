@@ -1,15 +1,22 @@
 TODO
-    Crafted item sources
-        Slavers first (PoC)
-            Generate Slavers item list at runtime
-                Accept StatScorer declared stats set
-                Filter options which are not declared
-                Recursively build items
-                Return item list
-        Then Cannith
-    Feywild sets
-    Import Feywild items
+    Slavers
+        Implement multi-slot items
     Metrics: list the normalized score by slot for items in final set.
+    Optimize: Adjust item score cutoff.
+    Crafted item sources
+        Cannith
+    Feywild set definitions
+    Import Feywild items
+    Implement augments
+        EquipmentLoadout -> Set<Augment>
+        Per augment series:
+            Filter augments below the highest augment below the lowest level item
+            Filter augments above the highest level item
+            Filter augments with undeclared stats
+        Score all remaining augments
+        Fill most restricted slots first
+            Use highest score that still fits in that slot
+                Strike from list
     Implement weapon stats, particularly Duality vs Fetters
 
 Implement automatic minor artifact flagging
