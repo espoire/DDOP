@@ -84,7 +84,7 @@ public abstract class WeaponAttack extends DamageSource {
 		double nonScalingBonusDamage = this.getWeaponBonusDamage(stats)	// TODO weapon stats
 				+ (stats.getBoolean("eternal holy burst")   ? 4.16 : 0)
 				+ (stats.getBoolean("soul of the elements") ? 15   : 0)
-				+ (stats.getBoolean("stormreaver's thunderclap") ? 1000 / 20 : 0); // TODO update damage / hook in Balanced Attacks
+				+ (stats.getBoolean("stormreaver's thunderclap") ? 1000.0 / 20 : 0); // TODO update damage / hook in Balanced Attacks
 		double scalingBonusDamage = this.getScalingBonusDamage(stats);
 		double bonusDamage = (nonScalingBonusDamage + scalingBonusDamage) * magicalDamageMultiplier;
 		
@@ -113,25 +113,22 @@ public abstract class WeaponAttack extends DamageSource {
 		double critDamage			= critPhysical     + averageSneakDamage + bonusDamage;
 		double hitDamage			= physicalDamage   + averageSneakDamage + bonusDamage;
 		double grazingDamage		= grazingHitDamage + averageSneakDamage;
-		
-		double damagePerAttack = critDamage * critRate + hitDamage * hitRate + grazingDamage * grazingRate;
-		double attacksPerSwing = this.getWeaponAttacksPerSwing(stats);
 
 		double relentlessFuryMultiplier = 1 + (stats.getBoolean("relentless fury") ? 0.05 * SIM_RELENTLESS_FURY_UPTIME : 0);
-		
-		double regularDamage	= damagePerAttack * attacksPerSwing * relentlessFuryMultiplier;
-		double helplessDamage	= regularDamage * 1.5 * (1 + stats.get("damage vs helpless") / 100);
-		double combinedDamage = (regularDamage * (1 - SIM_HELPLESS_UPTIME) + helplessDamage * SIM_HELPLESS_UPTIME);
-		
-		double score = combinedDamage;
-		
+		double damagePerAttack = critDamage * critRate + hitDamage * hitRate + grazingDamage * grazingRate * relentlessFuryMultiplier;
+
+
+		double attacksPerSwing = this.getWeaponAttacksPerSwing(stats);
+		double damagePerSwing	        = damagePerAttack * attacksPerSwing;
+		double damagePerSwingHelpless	= damagePerSwing * (1.2 + stats.get("damage vs helpless") / 100);
+		double damagePerSwingCombined   = (damagePerSwing * (1 - SIM_HELPLESS_UPTIME) + damagePerSwingHelpless * SIM_HELPLESS_UPTIME);
+
+		double swingsPerSecond	= this.getActionsPerSecond(stats);
+		double dps              = swingsPerSecond * damagePerSwing;
+		double dpsVsHelpless	= swingsPerSecond * damagePerSwingHelpless;
+		double dpsCombined      = swingsPerSecond * damagePerSwingCombined;
+
 		if(verbose) {
-			double swingsPerSecond	= this.getActionsPerSecond(stats);
-			double attacksPerSecond	= swingsPerSecond * attacksPerSwing;
-			
-			double damagePerSecond	= swingsPerSecond * regularDamage;
-			double dpsVsHelpless	= swingsPerSecond * helplessDamage;
-			
 			System.out.println("WeaponAttack DPS Debug Log\n"
 					+ "+- Weapon:    " + shortFloatText(weaponBonusWs, 5) + "[" + shortFloatText(weaponW, 4) + "] + " + deadly + " = " + (weaponBonusWs * weaponW + deadly) + "\n"
 					+ "+- Critical:  " + getCritProfileText(threatRange, critMult, overwhelmingCrit) + "\n"
@@ -141,12 +138,12 @@ public abstract class WeaponAttack extends DamageSource {
 					+ "+- Bonus:     " + (int) bonusDamage	+ "\n"
 					+ "+- To-Hit:    " + (int) totalToHit + " (" + toPercentText(hitChance)	+ " hit, " + toPercentText(confirmChance) + " confirm)\n"
 				    + "+- Ave. Dmg:  " + (int) damagePerAttack + "\n"
-					+ "+- Hits/Sec:  " + shortFloatText(attacksPerSecond * hitChance, 4) + " (" + toPercentText(hitChance) + " hit * " + shortFloatText(swingsPerSecond, 4) + " SpS * " + shortFloatText(attacksPerSwing, 4) + " DS + OH)\n"
-				    + "+- DPS:       " + (int) damagePerSecond + " (" + (int) dpsVsHelpless + " helpless)\n"
-				    + "+- DpAtk:     " + (int) score);
+					+ "+- Hits/Sec:  " + shortFloatText(hitChance * swingsPerSecond * attacksPerSwing, 4) + " (" + toPercentText(hitChance) + " hit * " + shortFloatText(swingsPerSecond, 4) + " SpS * " + shortFloatText(attacksPerSwing, 4) + " DS + OH)\n"
+				    + "+- DPS:       " + (int) dps + " (" + (int) dpsVsHelpless + " helpless)\n"
+				    + "+- DpAtk:     " + (int) damagePerSwing);
 		}
 		
-		return combinedDamage;
+		return dpsCombined;
 	}
 	
 	/** Returns the odds that at least one hit will occur per swing in the range [0 .. 1]. */
