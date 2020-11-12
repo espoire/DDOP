@@ -97,7 +97,7 @@ public class PlanLoadoutMain {
 //				null;
 
 		scorer.showVerboseScoreFor(currentGear);
-		double previousGearSetScore = scorer.score(currentGear, null);
+		double previousGearSetScore = scorer.score(currentGear);
 
 		simLoadouts(scorer, previousGearSetScore);
 	}
@@ -179,7 +179,7 @@ public class PlanLoadoutMain {
 		ItemList candidates = ItemList.getAllNamedItems()
 				.filterByLevel(TARGET_ITEMS_MIN_LEVEL, TARGET_ITEMS_MAX_LEVEL)
 				.filterBy(vc.getAllowedArmorTypes());
-		Map<ItemSlot, ItemList>                rawItemMap = candidates.mapBySlot();
+		Map<ItemSlot, ItemList> rawItemMap = candidates.mapBySlot();
 
 		Map<ItemSlot, RandomAccessScoredItemList> ret = new HashMap<>();
 

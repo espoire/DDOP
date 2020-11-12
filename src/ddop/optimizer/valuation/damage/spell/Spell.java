@@ -5,6 +5,10 @@ import util.NumberFormat;
 import util.StatTotals;
 import util.StringFormat;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public class Spell extends DamageSource {
     public String name;
 
@@ -23,6 +27,18 @@ public class Spell extends DamageSource {
         this.baseDamage = baseDamage;
         this.cooldown = cooldown;
         this.executeTime = executeTime;
+    }
+
+    @Override
+    public Set<String> getQueriedStatCategories() {
+        Set<String> ret = new HashSet<>();
+
+        ret.addAll(Arrays.asList(
+                this.scalingStat,
+                this.critStat
+        ));
+
+        return ret;
     }
 
     public Spell setAcid() {
@@ -56,14 +72,18 @@ public class Spell extends DamageSource {
     }
 
     public Spell setCannotCrit() {
-        this.critStat = "null";
+        this.critStat = null;
         return this;
     }
 
     @Override
     protected double getDamage(StatTotals stats, boolean verbose) {
         int modifiedDamage = (int) (this.baseDamage * (1 + stats.getInt(this.scalingStat) * this.scalingWeight / 100.0));
-        double critAverage = modifiedDamage * (1 + stats.getInt(this.critStat) / 100.0);
+
+        int lore = 0;
+        if(this.critStat != null) lore = stats.getInt(this.critStat);
+
+        double critAverage = modifiedDamage * (1 + lore / 100.0);
 
         if(verbose) {
             System.out.println("+- " + StringFormat.padStringToLength(this.name, 9) + ": "

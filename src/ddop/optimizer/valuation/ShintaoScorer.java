@@ -3,22 +3,23 @@ package ddop.optimizer.valuation;
 import ddop.builds.CharBuild;
 import ddop.builds.ReaperBuild;
 import ddop.builds.adventurerClass.BaseAttackBonusProgression;
+import ddop.optimizer.valuation.damage.DamageSource;
 import ddop.optimizer.valuation.damage.weapon.CenteredUnarmedFalconer;
 import ddop.stat.AbilityScore;
+import ddop.stat.StatSource;
 import util.NumberFormat;
 import util.StatTotals;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class ShintaoScorer extends SpecScorer {
 	public ShintaoScorer(int simCharacterLevel) {
 		super(simCharacterLevel);
 		this.hitDie = 6;
-		this.addDamageSource(new CenteredUnarmedFalconer());
 	}
 
+	//region Constants
 	private static final boolean MASS_FROG = false; // TODO - -2 all DCs, plus MF valuation
 	private static final boolean GLOBE_OF_TRUE_IMPERIAL_BLOOD = true,
 								 DIAMOND_OF_FESTIVE_WISDOM    = true,
@@ -27,10 +28,39 @@ public class ShintaoScorer extends SpecScorer {
 								 YUGO_POT_WIS                 = true;
 
 	private static final boolean DUALITY_THE_MORAL_COMPASS = false;
+	//endregion
 
+	private Set<String> filter;
+	@Override
+	protected Set<String> getQueriedStatCategories() {
+		if(this.filter != null) return this.filter;
+		this.filter = super.getBaseQueriedStatCategories();
+
+		this.filter.addAll(Arrays.asList(
+				"qp dc",
+				"dazing",
+				"stunning",
+				"concentration",
+				"critical threat range",
+				"ki"
+		));
+
+		return this.filter;
+	}
+
+	private List<DamageSource> damageSources;
+	@Override
+	protected Collection<DamageSource> getDamageSources() {
+		if(this.damageSources != null) return this.damageSources;
+		this.damageSources = new ArrayList<>();
+
+		this.damageSources.add(new CenteredUnarmedFalconer());
+
+		return this.damageSources;
+	}
 
 	@Override
-	Set<ArmorType> getAllowedArmorTypes() {
+    protected Set<ArmorType> getAllowedArmorTypes() {
 		Set<ArmorType> ret = new HashSet<>();
 
 		ret.add(ArmorType.CLOTH);
@@ -42,10 +72,10 @@ public class ShintaoScorer extends SpecScorer {
 	BaseAttackBonusProgression getBABProgression() {
 		return BaseAttackBonusProgression.MEDIUM;
 	}
-	
+
 	@Override
-	CharBuild getBuild() {
-		CharBuild build = new CharBuild();
+	StatSource getBuild() {
+		CharBuild build = new CharBuild(this.getQueriedStatCategories());
 		
 		build.addStat("strength",     11 +8    +2  + (GLOBE_OF_TRUE_IMPERIAL_BLOOD ? 1 : 0));
 		build.addStat("dexterity",    13 +8    +2  + (GLOBE_OF_TRUE_IMPERIAL_BLOOD ? 1 : 0));
@@ -86,8 +116,8 @@ public class ShintaoScorer extends SpecScorer {
 		build.addStat("percent hp",             30);
 		build.addStat("unconsciousness range",   15, "guild");
 		build.addStat("dr",                     10, "default");
-		build.addStat("physical sheltering",    94);
-		build.addStat("magical sheltering",     39);
+		build.addStat("prr",    94);
+		build.addStat("mrr",     39);
 		build.addStat("mrr cap",                40, "nystul");
 		build.addStat("healing amplification", 120);
 		build.addStat("dodge",                  34);
@@ -111,21 +141,18 @@ public class ShintaoScorer extends SpecScorer {
 		build.addStat("qp dc",                  21);
 		build.addStat("combat mastery",         21);
 		build.addStat("stunning",                1, "build 2");
-//		build.addStat("offhand doublestrike",   16);
-//		build.addStat("offhand doublestrike",   16);
-//		build.addStat("offhand doublestrike",   16);
 		
 		if(DUALITY_THE_MORAL_COMPASS)
 			build.addStat("ki", 3, "enhancement");
-		
+
 		return build;
 	}
 	
 	@Override
-	ReaperBuild getReaperBuild() {
-		return new ReaperBuild(ReaperBuild.reaperBuildsDirectory + "noircere reaper build.txt", ReaperBuild.ReaperBuildOptions.getNoircereOptions());
+	StatSource getReaperBuild() {
+		return new ReaperBuild(ReaperBuild.reaperBuildsDirectory + "noircere reaper build.txt", ReaperBuild.ReaperBuildOptions.getNoircereOptions(), this.getQueriedStatCategories());
 	}
-								
+
 	private static final double BASE_FIRE_ABSORB_MULT = 0.85 * 0.97,
 								BASE_COLD_ABSORB_MULT = 0.85 * 0.97,
 								BASE_ACID_ABSORB_MULT = 0.85 * 0.97,
@@ -154,14 +181,14 @@ public class ShintaoScorer extends SpecScorer {
 								KI_SCATTERING_PETALS  = 30,
 								KI_DRIFTING_LOTUS     = 25;
 
-	private static final int    COOLDOWN_QUIVERING_PALM = 6,
+	private static final double COOLDOWN_QUIVERING_PALM = 6,
 								COOLDOWN_STUNNING_FIST  = 6,
 								COOLDOWN_DIRE_CHARGE    = 12,
 								COOLDOWN_SMITE_TAINT    = 15,
 								COOLDOWN_JADE_STRIKE    = 15,
 								COOLDOWN_JADE_TOMB      = 60,
 								COOLDOWN_KUKANDO        = 15,
-								COOLDOWN_FISTS_LIGHT = 3,
+								COOLDOWN_FISTS_LIGHT    = 3,
 								COOLDOWN_VOID_DRAGON    = 180,
 								COOLDOWN_KNOCK_ON_SKY   = 3,
 								COOLDOWN_EVERYTHING_NOTHING = 180,

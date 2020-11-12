@@ -3,6 +3,10 @@ package ddop.optimizer.valuation.damage.weapon;
 import ddop.optimizer.valuation.damage.DamageSource;
 import util.StatTotals;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 public abstract class WeaponAttack extends DamageSource {
 	protected static final int		BASE_CRITICAL_THREAT_RANGE = 1; // TODO weapon stats
 	
@@ -13,7 +17,44 @@ public abstract class WeaponAttack extends DamageSource {
 									SIM_CANNITH_COMBAT_INFUSION_UPTIME	= 0.7,
 									SIM_HELPLESS_UPTIME					= 0.15,
 									SIM_RELENTLESS_FURY_UPTIME			= 0.5;
-	
+
+
+	protected Set<String> getBaseQueriedStatCategories() {
+		return new HashSet<>(Arrays.asList(
+				"deadly",
+				"deception",
+				"sneak attack dice",
+				"sneak attack damage",
+				"critical damage",
+				"prr reduction",
+				"mrr reduction",
+				"vulnerability",
+				"eternal holy burst",
+				"soul of the elements",
+				"stormreaver's thunderclap",
+				"percent to-hit",
+				"critical threat range",
+				"critical multiplier",
+				"overwhelming critical",
+				"relentless fury",
+				"damage vs helpless",
+				"offhand doublestrike",
+				"offhand attack chance",
+				"critical confirmation",
+				"improved deception",
+				"armor-piercing",
+				"sneak attack accuracy",
+				"accuracy",
+				"cannith combat infusion",
+				this.getWeaponAttackAbility(),
+				this.getWeaponDamageAbility(),
+				"weapon enhancement bonus",
+				"[w]",
+				"bonus w",
+				"melee alacrity"
+		));
+	}
+
 	@Override
 	protected double getDamage(StatTotals stats, boolean verbose) {
 		double weaponW = this.getWeaponW(stats);
@@ -43,7 +84,7 @@ public abstract class WeaponAttack extends DamageSource {
 		double nonScalingBonusDamage = this.getWeaponBonusDamage(stats)	// TODO weapon stats
 				+ (stats.getBoolean("eternal holy burst")   ? 4.16 : 0)
 				+ (stats.getBoolean("soul of the elements") ? 15   : 0)
-				+ (stats.getBoolean("Stormreaver's Thunderclap:") ? 1000 / 20 : 0);
+				+ (stats.getBoolean("stormreaver's thunderclap") ? 1000 / 20 : 0); // TODO update damage / hook in Balanced Attacks
 		double scalingBonusDamage = this.getScalingBonusDamage(stats);
 		double bonusDamage = (nonScalingBonusDamage + scalingBonusDamage) * magicalDamageMultiplier;
 		
@@ -167,7 +208,7 @@ public abstract class WeaponAttack extends DamageSource {
 		return cap(0.05, stats.get("percent to-hit") / 100.0 + (totalToHit + 10.5) / (2 * enemyAC), 0.95);
 	}
 	
-	public int getEnemyAC(int skulls) { return SIM_ENEMY_AC + REAPER_SKULLS_ENEMY_AC * this.skulls; }
+	public int getEnemyAC(int skulls) { return SIM_ENEMY_AC + REAPER_SKULLS_ENEMY_AC * skulls; }
 	
 	protected abstract double getWeaponDoubles(StatTotals stats);
 	protected abstract double getWeaponBonusDamage(StatTotals stats);
@@ -254,9 +295,7 @@ public abstract class WeaponAttack extends DamageSource {
 	protected static int getMod(int score) { return (score - 10) / 2; }
 	
 	protected static double cap(double minimum, double value, double maximum) {
-		if(value < minimum) return minimum;
-		if(value > maximum) return maximum;
-		return value;
+		return Math.max(minimum, Math.min(value, maximum));
 	}
 	
 	/** Returns a string representation of the given <code>double</code> as a percentage. For example, 0.92 will return <code>"92%"</code>. */

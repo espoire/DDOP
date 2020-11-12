@@ -2,7 +2,22 @@ package ddop.optimizer.valuation.damage.weapon;
 
 import util.StatTotals;
 
+import java.util.Arrays;
+import java.util.Set;
+
 public class CenteredUnarmedFalconer extends MeleeWeaponAttack {
+	@Override
+	public Set<String> getQueriedStatCategories() {
+		Set<String> ret = super.getBaseQueriedStatCategories();
+
+		ret.addAll(Arrays.asList(
+				"reinforced fists",
+				"balanced ki strike"
+		));
+
+		return ret;
+	}
+
 	protected static final double	BONUS_W_PER_REINFORCED_FISTS   = 0.5,
 									SIM_BALANCED_KI_STRIKE_UPTIME  = 0.25;
 	protected static final int		BALANCED_KI_STRIKE_MELEE_POWER = 5;

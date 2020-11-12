@@ -26,15 +26,13 @@ public class VerboseStatList extends AbstractStatList implements StatSource {
 	}
 
 	@Override
-	public VerboseStatList add(Stat s) {
-		if(s == null) return this;
+	public void addImplementation(Stat s) {
+		if(s == null) return;
 
 		this.all.add(s);
 		this.best = null;
 		this.redundant = null;
 		this.totals = null;
-		
-		return this;
 	}
 
 	private List<Stat> getBestList() {
@@ -48,19 +46,32 @@ public class VerboseStatList extends AbstractStatList implements StatSource {
 	}
 
 	@Override
-	public StatTotals getStatTotals() {
+	public StatTotals getStatTotals(Set<String> filter) {
 		if(this.totals == null) {
 			this.applyStatConversions();
+			this.filterStats(filter);
 			this.enforceStackingRules();
 		}
 		return this.totals;
 	}
-	
+
 	private void applyStatConversions() {
 		this.all = SetBonus.convertAll(this.all);
 		this.all = NamedStat.convertAll(this.all);
 	}
-	
+
+	private void filterStats(Set<String> filter) {
+		this.all = this.filterStats(this.all, filter);
+	}
+
+	private List<Stat> filterStats(List<Stat> stats, Set<String> filter) {
+		if(filter == null) return stats;
+
+		stats.removeIf(stat -> !filter.contains(stat.category));
+
+		return stats;
+	}
+
 	private void enforceStackingRules() {
 		Map<Vector2<String, String>, Stat> best = new HashMap<>();
 		

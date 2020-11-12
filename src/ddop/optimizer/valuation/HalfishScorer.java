@@ -3,34 +3,25 @@ package ddop.optimizer.valuation;
 import ddop.builds.CharBuild;
 import ddop.builds.ReaperBuild;
 import ddop.builds.adventurerClass.BaseAttackBonusProgression;
+import ddop.optimizer.valuation.damage.DamageSource;
 import ddop.optimizer.valuation.damage.weapon.InquisitiveAirSalt;
 import ddop.optimizer.valuation.damage.weapon.InquisitiveAirSentNightshade;
 import ddop.optimizer.valuation.damage.weapon.WeaponAttack;
 import ddop.stat.AbilityScore;
+import ddop.stat.StatSource;
 import util.NumberFormat;
 import util.StatTotals;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class HalfishScorer extends SpecScorer {
-	private final WeaponAttack weaponAttack;
-	
+	private WeaponAttack weaponAttack;
 	public HalfishScorer(int simCharacterLevel) {
 		super(simCharacterLevel);
 		this.hitDie = 18;
-		
-		if(WEAPON_LGS_SALT) {
-			this.weaponAttack = new InquisitiveAirSalt();
-		} else {
-			this.weaponAttack = new InquisitiveAirSentNightshade();
-		}
-		
-		this.addDamageSource(this.weaponAttack);
 	}
-	
+
+	//region Constants
 	private static final boolean GLOBE_OF_TRUE_IMPERIAL_BLOOD	= false,
 								 DIAMOND_OF_FESTIVE_WISDOM		= false,
 								 TOPAZ_OF_GREATER_EVOCATION		= false,
@@ -61,9 +52,44 @@ public class HalfishScorer extends SpecScorer {
 	private static final double ASSUMED_UPTIME_DPS	= 0.5,
 								ASSUMED_UPTIME_HEAL	= 0.5,
 								ASSUMED_UPTIME_CC	= 0.0;
+	//endregion
+
+	private Set<String> filter;
+	@Override
+	protected Set<String> getQueriedStatCategories() {
+		if(this.filter != null) return this.filter;
+		this.filter = super.getBaseQueriedStatCategories();
+
+		this.filter.addAll(Arrays.asList(
+				"evocation focus",
+				"enchantment focus",
+				"devotion",
+				"heal",
+				"healing lore",
+				"magical efficiency"
+		));
+
+		return this.filter;
+	}
+
+	private List<DamageSource> damageSources;
+	@Override
+	protected Collection<DamageSource> getDamageSources() {
+		if(this.damageSources != null) return this.damageSources;
+		this.damageSources = new ArrayList<>();
+
+		if(WEAPON_LGS_SALT) {
+			this.weaponAttack = new InquisitiveAirSalt();
+		} else {
+			this.weaponAttack = new InquisitiveAirSentNightshade();
+		}
+		this.damageSources.add(this.weaponAttack);
+
+		return this.damageSources;
+	}
 
 	@Override
-	Set<ArmorType> getAllowedArmorTypes() {
+    protected Set<ArmorType> getAllowedArmorTypes() {
 		Set<ArmorType> ret = new HashSet<>();
 
 		ret.add(ArmorType.CLOTH);
@@ -77,10 +103,10 @@ public class HalfishScorer extends SpecScorer {
 	BaseAttackBonusProgression getBABProgression() {
 		return BaseAttackBonusProgression.MEDIUM;
 	}
-	
+
 	@Override
-	CharBuild getBuild() {
-		CharBuild build = new CharBuild();
+	StatSource getBuild() {
+		CharBuild build = new CharBuild(this.getQueriedStatCategories());
 
 		build.addStat("light armor proficiency");
 		build.addStat("medium armor proficiency");
@@ -121,9 +147,9 @@ public class HalfishScorer extends SpecScorer {
 		build.addStat("hp",                       20, "guild");
 		build.addStat("unconsciousness range",    15, "guild");
 		build.addStat("dr",                       10, "default");
-		build.addStat("physical sheltering",      11);
-		build.addStat("magical sheltering",        1);
-		build.addStat("magical sheltering",       20, "quality");
+		build.addStat("prr",      11);
+		build.addStat("mrr",        1);
+		build.addStat("mrr",       20, "quality");
 		build.addStat("healing amplification",    60);
 		build.addStat("dodge",                     4);
 		build.addStat("maximum dodge",             4);
@@ -190,7 +216,7 @@ public class HalfishScorer extends SpecScorer {
 			build.addStat("ranged alacrity",			40, "endless fusillade"); // simulated alacrity reduced to 27% uptime; real effect is fixed 213 attacks per minute while up
 			build.addStat("overwhelming critical",		 1, "legendary dreadnought devastating critical");
 			build.addStat("ranged power",		 		70, "legendary dreadnought master's blitz");
-			build.addStat("physical sheltering",		30, "legendary dreadnought master's blitz");
+			build.addStat("prr",		30, "legendary dreadnought master's blitz");
 			build.addStat("constitution",				 6, "legendary dreadnought");
 		}
 		
@@ -218,8 +244,8 @@ public class HalfishScorer extends SpecScorer {
 			build.addStat("deadly",					 7, "sentient filigree");
 			build.addStat("doubleshot",				 8, "sentient filigree");
 			build.addStat("armor-piercing",			 5, "sentient filigree");
-			build.addStat("physical sheltering",	15, "sentient filigree");
-			build.addStat("magical sheltering",		 7, "sentient filigree");
+			build.addStat("prr",	15, "sentient filigree");
+			build.addStat("mrr",		 7, "sentient filigree");
 			build.addStat("reflex saves",			 2, "sentient filigree");
 			build.addStat("fire absorption",		 5, "sentient filigree");
 			build.addStat("diplomacy",				15, "sentient filigree");
@@ -258,13 +284,13 @@ public class HalfishScorer extends SpecScorer {
 		 */
 		
 		// TODO spell DCs
-		
+
 		return build;
 	}
 	
 	@Override
 	ReaperBuild getReaperBuild() {
-		return new ReaperBuild("X:\\src\\DDOP\\saved builds\\halfish reaper build.txt", null);
+		return new ReaperBuild("X:\\src\\DDOP\\saved builds\\halfish reaper build.txt", null, this.getQueriedStatCategories());
 	}
 	
 	@Override

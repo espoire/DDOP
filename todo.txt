@@ -1,8 +1,8 @@
 TODO
     Crafted item sources
         Slavers first (PoC)
-            Update StatScorers to declare which stats they monitor
-                Optimize: at sim start, drop all stats from items, build, reaper build, etc. which are not declared.
+            Declare Stat usage
+                Optimize: at sim start, drop all stats from items, which are not declared.
                 Metrics: add tool to list stats in wiki.json which are not read by a provided StatScorer set.
             Generate Slavers item list at runtime
                 Accept StatScorer declared stats set

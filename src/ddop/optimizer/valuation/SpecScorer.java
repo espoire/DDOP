@@ -1,6 +1,5 @@
 package ddop.optimizer.valuation;
 
-import ddop.builds.ReaperBuild;
 import ddop.builds.adventurerClass.BaseAttackBonusProgression;
 import ddop.optimizer.valuation.damage.DamageSource;
 import ddop.stat.AbilityScore;
@@ -10,9 +9,7 @@ import util.NumberFormat;
 import util.Pair;
 import util.StatTotals;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class SpecScorer extends StatScorer {
 	private static final int EPIC_HIT_DIE = 10;
@@ -24,8 +21,7 @@ public abstract class SpecScorer extends StatScorer {
 
 	private final BaseAttackBonusProgression BABProgression;
 	private final StatSource build;
-	private final ReaperBuild reaperBuild;
-	private final ArrayList<DamageSource> damageSources = new ArrayList<>();
+	private final StatSource reaperBuild;
 	
 	SpecScorer(int level) {
 		this.characterLevel = level;
@@ -34,24 +30,118 @@ public abstract class SpecScorer extends StatScorer {
 		this.reaperBuild = this.getReaperBuild();
 	}
 
-	abstract Set<ArmorType> getAllowedArmorTypes();
+	protected Set<String> getBaseQueriedStatCategories() {
+		Set<String> ret = new HashSet<>();
+
+		if(this.valuesDPS()) {
+			for(Set<String> queried : this.getDamageSourcesQueriedStatCategories())
+				ret.addAll(queried);
+
+			ret.addAll(Arrays.asList(
+					"true seeing",
+					"ghost touch",
+					"tendon slice"
+			));
+		}
+
+		ret.addAll(Arrays.asList(
+				"minor artifact",
+				"strength",
+				"dexterity",
+				"constitution",
+				"intelligence",
+				"wisdom",
+				"charisma",
+				"cannith combat infusion",
+				"hp",
+				"percent hp",
+				"unconsciousness range",
+				"prr",
+				"docent",
+				"light armor",
+				"medium armor",
+				"heavy armor",
+				"light armor proficiency",
+				"medium armor proficiency",
+				"heavy armor proficiency",
+				"small shield",
+				"large shield",
+				"tower shield",
+				"mrr",
+				"mrr cap",
+				"dr",
+				"fortification",
+				"fire resistance",
+				"cold resistance",
+				"electric resistance",
+				"acid resistance",
+				"sonic resistance",
+				"negative resistance",
+				"force resistance",
+				"poison resistance",
+				"light resistance",
+				"law resistance",
+				"chaos resistance",
+				"evil resistance",
+				"good resistance",
+				"fire absorption",
+				"cold absorption",
+				"electric absorption",
+				"acid absorption",
+				"sonic absorption",
+				"negative absorption",
+				"force absorption",
+				"poison absorption",
+				"light absorption",
+				"law absorption",
+				"chaos absorption",
+				"evil absorption",
+				"good absorption",
+				"mp reduction",
+				"ac",
+				"percent ac",
+				"maximum dodge",
+				"dodge",
+				"concealment",
+				"incorporeal",
+				"healing amplification",
+				"feat: wind through the trees",
+				"improved quelling strikes",
+				"spell saves",
+				"fortitude saves",
+				"insightful reflexes",
+				"force of personality",
+				"reflex saves",
+				"will saves",
+				"epic fortitude",
+				"epic reflex",
+				"epic will",
+				"slippery mind",
+				"percent sp",
+				"sp",
+				"gear sp"
+		));
+
+		return ret;
+	}
+
+	protected abstract Set<ArmorType> getAllowedArmorTypes();
 	abstract BaseAttackBonusProgression getBABProgression();
 	abstract StatSource getBuild();
-	abstract ReaperBuild getReaperBuild();
+	abstract StatSource getReaperBuild();
 	
-	/** Adds a DamageSource to the list, for use with the default <code>scoreDPS(...)</code> method.
-	 * The first source added will be used at highest priority, with any remaining active time spilling over to subsequent sources.
-	 * Thus, high-priority high-cooldown actions should be added first, and anything spammable - such as weapon attacks - should be added last.
-	 * 
-	 * @param ds - The <code>DamageSource</code> to add. Ignored if <code>null</code>.
-	 */
-	void addDamageSource(DamageSource ds) {
-		this.damageSources.add(ds);
+	private Collection<Set<String>> getDamageSourcesQueriedStatCategories() {
+		Collection<Set<String>> ret = new ArrayList<>();
+
+		for(DamageSource ds : this.getDamageSources())
+			ret.add(ds.getQueriedStatCategories());
+
+		return ret;
 	}
-	
-	// 75 fort all save r1
-	// 62 will all save r1
-	
+
+	protected abstract Collection<DamageSource> getDamageSources();
+
+	//region Constants
 	protected static final int	SIM_ENEMY_HP			   = 9000,
 								SIM_ENEMY_SAVES_FORT_LOW	= 78,
 								SIM_ENEMY_SAVES_FORT_MED	= 98,	// Tested Sharn r1, rest guessed/assumed.
@@ -142,6 +232,7 @@ public abstract class SpecScorer extends StatScorer {
 								VALUATION_AVOIDANCE      = 0.9; // Multiplier for avoidance worth. Generally below 1, as avoidance cannot be trusted.
 
 	private static final int BASE_UNCONSCIOUSNESS = 10;
+	//endregion
 	
 	@Override
 	protected double score(AbstractStatList stats, Double scoreToNormalizeTo) {
@@ -171,8 +262,8 @@ public abstract class SpecScorer extends StatScorer {
 			offensiveScore = DPS * 0.1 + healingScore * 0.9;
 		}
 		
-		double offenseScoreTotal = (offensiveScore + 2*DCs/3) * (0.33 + 0.67 * saves);
-		double defenseScoreTotal = (defenses       +   DCs/3) * (0.67 + 0.33 * saves);
+		double offenseScoreTotal = (offensiveScore + DCs);
+		double defenseScoreTotal = (defenses       + DCs);
 
 		List<Pair<String, Double>> penalties = this.getPenalties(totals);
 
@@ -180,7 +271,7 @@ public abstract class SpecScorer extends StatScorer {
 		for(Pair<String, Double> penalty : penalties) penaltyMultiplier *= penalty.getValue();
 
 
-		double score = offenseScoreTotal * defenseScoreTotal * penaltyMultiplier;
+		double score = offenseScoreTotal * Math.sqrt(defenseScoreTotal) * saves * penaltyMultiplier;
 		if(scoreToNormalizeTo == null) scoreToNormalizeTo = score;
 		
 		if(this.verbose) {
@@ -288,11 +379,11 @@ public abstract class SpecScorer extends StatScorer {
 	}
 
 	private double getDPS(StatTotals stats) {
-		if(this.damageSources == null || this.damageSources.size() == 0) return 0;
+		if(this.getDamageSources().size() == 0) return 0;
 		
 		double totalDPS = 0;
 		double remainingActiveTime = 1;
-		for(DamageSource ds : this.damageSources) {
+		for(DamageSource ds : this.getDamageSources()) {
 			ds.skulls = this.skulls;
 			double DpET = ds.getDpET(stats, this.verbose);
 			double activeTime = ds.getActiveTime(stats);
@@ -366,15 +457,16 @@ public abstract class SpecScorer extends StatScorer {
 	private int getPRR(StatTotals stats) {
 		int armorPrr = this.getArmorPrr(stats);
 		int shieldPrr = this.getShieldPrrMrr(stats);
-		return stats.getInt("physical sheltering") + armorPrr + shieldPrr;
+		return stats.getInt("prr") + armorPrr + shieldPrr;
 	}
 
 	private int getArmorPrr(StatTotals stats) {
 		ArmorType worn = ArmorType.get(stats);
 		String requiredProficiency = worn.getRequiredProficiency();
 
-		if(stats.getBoolean(requiredProficiency))
-			return worn.getPRRAtBAB(this.getBAB());
+		if(requiredProficiency != null)
+			if(stats.getBoolean(requiredProficiency))
+				return worn.getPRRAtBAB(this.getBAB());
 		return 0;
 	}
 
@@ -396,7 +488,7 @@ public abstract class SpecScorer extends StatScorer {
 	
 	private int getRawMRR(StatTotals stats) {
 		int shieldMrr = this.getShieldPrrMrr(stats);
-		return stats.getInt("magical sheltering") + shieldMrr;
+		return stats.getInt("mrr") + shieldMrr;
 	}
 	
 	private int getMRRCap(StatTotals stats) {
@@ -463,8 +555,7 @@ public abstract class SpecScorer extends StatScorer {
 
 	protected double scoreDamageReducers(StatTotals stats) {
 		double physicalPortion = (1 - SIM_MAGIC_DAMAGE_PORTION);
-		double magicalPortion  = SIM_MAGIC_DAMAGE_PORTION;
-		
+
 		double prrReduction       = 1 / (1 + this.getPRR(stats) / 100.0);												// Starts at 1, ~0.4   in Sharn gear
 		double drReduction        = (1 - (double) this.getDR(stats) / SIM_DAMAGE_SIZE * (1 - SIM_DR_BYPASSED_PORTION)); // Starts at 1, ~0.993 in Sharn gear
 		double enemyCrit          = (SIM_ENEMY_CRIT_RATE * (SIM_ENEMY_CRIT_MULTIPLIER - 1) * VALUATION_FORTIFICATION);
@@ -485,7 +576,7 @@ public abstract class SpecScorer extends StatScorer {
 
 		double magicalReduction = mrrReduction * elementalMultiplier;
 
-		double resultingDamage = physicalPortion * physicalReduction + magicalPortion * magicalReduction;
+		double resultingDamage = physicalPortion * physicalReduction + SIM_MAGIC_DAMAGE_PORTION * magicalReduction;
 		
 		return 1 / resultingDamage;
 	}
@@ -494,7 +585,7 @@ public abstract class SpecScorer extends StatScorer {
 		int baseAc = this.getAbilityMod(AbilityScore.DEXTERITY, stats) +
 					   this.getAbilityMod(AbilityScore.WISDOM, stats) + // TODO move wisdom to monk
 					   stats.getInt("ac");
-		int percentAc = stats.getInt("%ac");
+		int percentAc = stats.getInt("percent ac");
 		double acMultiplier = 1 + (percentAc / 100.0);
 
 		return (int) (baseAc * acMultiplier);
@@ -549,8 +640,7 @@ public abstract class SpecScorer extends StatScorer {
 	
 	private double scoreAvoidance(StatTotals stats) {
 		double physicalPortion = (1 - SIM_MAGIC_DAMAGE_PORTION);
-		double magicalPortion  = SIM_MAGIC_DAMAGE_PORTION;
-		
+
 		double acAvoidance    = this.getACAvoidance(stats);
 		double dodgeAvoidance = this.getDodgeAvoidance(stats);
 		double concealmentAvoidance = this.getConcealmentAvoidance(stats);
@@ -566,7 +656,7 @@ public abstract class SpecScorer extends StatScorer {
 									(1 - (1 - SIM_DAMAGE_MAGICAL_BYPASSES_CONCEALMENT_PORTION)  * concealmentAvoidance) *
 									(1 - (1 - SIM_DAMAGE_MAGICAL_BYPASSES_INCORPOREAL_PORTION)  * incorporealAvoidance);
 		
-		double resultingDamage = physicalPortion * physicalReduction + magicalPortion * magicalReduction;
+		double resultingDamage = physicalPortion * physicalReduction + SIM_MAGIC_DAMAGE_PORTION * magicalReduction;
 		
 		return 1 / resultingDamage * VALUATION_AVOIDANCE;
 	}
@@ -602,6 +692,7 @@ public abstract class SpecScorer extends StatScorer {
 	private double scoreSaves(StatTotals stats) {
 		int dex = this.getDex(stats);
 		int con = this.getCon(stats);
+		int inte = this.getInt(stats);
 		int wis = this.getWis(stats);
 		int cha = this.getCha(stats);
 		int dexMod = this.getAbilityMod(AbilityScore.DEXTERITY,    stats);
@@ -620,7 +711,7 @@ public abstract class SpecScorer extends StatScorer {
 		int willSaves  = willMod + stats.getInt("will saves");
 
 		double fortRate = getSaveSpread(fortSaves, stats.getBoolean("epic fortitude"),	1);
-		double reflRate = getSaveSpread(reflSaves, stats.getBoolean("epic fortitude"),	1);
+		double reflRate = getSaveSpread(reflSaves, stats.getBoolean("epic reflex"),     1);
 		double willRate = getSaveSpread(willSaves, stats.getBoolean("epic will"),		1 + (stats.getBoolean("slippery mind") ? 1 : 0));
 		double fortSpellRate = getSaveSpread(fortSaves + spellSaves, stats.getBoolean("epic fortitude"),	1);
 		double reflSpellRate = getSaveSpread(reflSaves + spellSaves, stats.getBoolean("epic reflex"),		1);
@@ -634,7 +725,9 @@ public abstract class SpecScorer extends StatScorer {
 		
 		if(this.verbose) {
 			System.out.println("SpecScorer Saves Debug Log\n"
-					+ "+- DEX:       " + dex + " (+" + dexMod + ")\n"
+					+ (stats.getBoolean("insightful reflexes") && intMod > dexMod ?
+						"+- INT:       " + inte + " (+" + intMod + ")\n" :
+						"+- DEX:       " + dex  + " (+" + dexMod + ")\n")
 					+ "+- CON:       " + con + " (+" + conMod + ")\n"
 					+ (stats.getBoolean("force of personality") && chaMod > wisMod ?
 						"+- CHA:       " + cha + " (+" + chaMod + ")\n" :

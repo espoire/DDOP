@@ -2,6 +2,8 @@ package ddop.optimizer.valuation.damage;
 
 import util.StatTotals;
 
+import java.util.Set;
+
 public abstract class DamageSource {
 	public int skulls = 0;
 
@@ -29,4 +31,6 @@ public abstract class DamageSource {
 	protected abstract double getCooldown(StatTotals stats);
 	/** Must return the minimum time before starting a different ability, in seconds. */
 	protected abstract double getExecuteTime(StatTotals stats);
+	/** Must return a set of all the stat category names which this damage source will query during scoring. */
+    public abstract Set<String> getQueriedStatCategories();
 }

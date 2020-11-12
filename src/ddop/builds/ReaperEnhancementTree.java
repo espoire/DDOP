@@ -85,32 +85,32 @@ public class ReaperEnhancementTree extends EnhancementTree {
             new LinearEnhancement("Reaper's Arcanum VI", 1, "Wizardry", 200),
         },
         {
-            new LinearEnhancement("Reaper's Sheltering", 3, new Stat("Physical Sheltering", "Stacking", 2), new Stat("Magical Sheltering", "Stacking", 2)),
+            new LinearEnhancement("Reaper's Sheltering", 3, new Stat("PRR", "Stacking", 2), new Stat("MRR", "Stacking", 2)),
             new LinearEnhancement("Reaper's Saves", 3, new Stat("Resistance", "Stacking", 1)),
             new LinearEnhancement("Reaper's Charge", 1, "Reaper Charges", 1),
             new LinearEnhancement("Reaper's Constitution", 1, "Constitution", 1),
             new LinearEnhancement("Reaper's Heightened Evasion", 1, "Maximum Dodge", 1),
         },
         {
-            new LinearEnhancement("Reaper's Sheltering", 3, new Stat("Physical Sheltering", "Stacking", 2), new Stat("Magical Sheltering", "Stacking", 2)),
+            new LinearEnhancement("Reaper's Sheltering", 3, new Stat("PRR", "Stacking", 2), new Stat("MRR", "Stacking", 2)),
             new LinearEnhancement("Reaper's Resistance", 1),
             new LinearEnhancement("Reaper's Steadfastness", 1),
             new LinearEnhancement("Reaper's Heightened Evasion", 1, "Maximum Dodge", 1),
         },
         {
-            new LinearEnhancement("Reaper's Sheltering", 3, new Stat("Physical Sheltering", "Stacking", 1), new Stat("Magical Sheltering", "Stacking", 1)),
+            new LinearEnhancement("Reaper's Sheltering", 3, new Stat("PRR", "Stacking", 1), new Stat("MRR", "Stacking", 1)),
             new LinearEnhancement("Reaper's Saves", 3, new Stat("Resistance", "Stacking", 1)),
             new LinearEnhancement("Reaper's Constitution", 1, "Constitution", 1),
             new LinearEnhancement("Reaper's Evasion", 3, "Dodge", 1),
         },
         {
-            new LinearEnhancement("Reaper's Sheltering", 3, new Stat("Physical Sheltering", "Stacking", 1), new Stat("Magical Sheltering", "Stacking", 1)),
+            new LinearEnhancement("Reaper's Sheltering", 3, new Stat("PRR", "Stacking", 1), new Stat("MRR", "Stacking", 1)),
             new LinearEnhancement("Reaper's Saves", 3, new Stat("Resistance", "Stacking", 1)),
             new LinearEnhancement("Reaper's Constitution", 1, "Constitution", 1),
             new LinearEnhancement("Reaper's Evasion", 3, "Dodge", 1),
         },
         {
-            new LinearEnhancement("Reaper's Sheltering", 3, new Stat("Physical Sheltering", "Stacking", 1), new Stat("Magical Sheltering", "Stacking", 1)),
+            new LinearEnhancement("Reaper's Sheltering", 3, new Stat("PRR", "Stacking", 1), new Stat("MRR", "Stacking", 1)),
             new LinearEnhancement("Reaper's Saves", 3, new Stat("Resistance", "Stacking", 1)),
             new LinearEnhancement("Reaper's Luck", 1),
             new LinearEnhancement("Reaper's Constitution", 1, "Constitution", 1),
@@ -121,8 +121,8 @@ public class ReaperEnhancementTree extends EnhancementTree {
             new LinearEnhancement("Reaper's Defense II", 1, new Stat("Resistance", "Stacking", 1), new Stat("HP", "Stacking", 20)),
             new LinearEnhancement("Reaper's Defense III", 1, "Constitution", 1),
             new LinearEnhancement("Reaper's Defense IV", 1, new Stat("Resistance", "Stacking", 1), new Stat("HP", "Stacking", 100)),
-            new LinearEnhancement("Reaper's Defense V", 1, new Stat("Dodge", "Stacking", 1), new Stat("Physical Sheltering", "Stacking", 1), new Stat("Magical Sheltering", "Stacking", 1)),
-            new LinearEnhancement("Reaper's Defense VI", 1, new Stat("Maximum Dodge", "Stacking", 1),new Stat("Physical Sheltering", "Stacking", 2), new Stat("Magical Sheltering", "Stacking", 2)),
+            new LinearEnhancement("Reaper's Defense V", 1, new Stat("Dodge", "Stacking", 1), new Stat("PRR", "Stacking", 1), new Stat("MRR", "Stacking", 1)),
+            new LinearEnhancement("Reaper's Defense VI", 1, new Stat("Maximum Dodge", "Stacking", 1),new Stat("PRR", "Stacking", 2), new Stat("MRR", "Stacking", 2)),
         }
     };
     

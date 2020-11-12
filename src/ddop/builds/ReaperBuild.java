@@ -6,15 +6,18 @@ import ddop.stat.StatSource;
 import file.Reader;
 
 import java.util.Collection;
+import java.util.Set;
 
 public class ReaperBuild extends EnhancementBuild implements StatSource {
     public static final String reaperBuildsDirectory = "X:\\src\\DDOP\\saved builds\\";
 
     private int scalingHPBonus;
+    private final Set<String> filter;
     
-    public ReaperBuild(String filePath, ReaperBuildOptions options) {
+    public ReaperBuild(String filePath, ReaperBuildOptions options, Set<String> filter) {
         super(ReaperBuild.loadFileToRankMap(filePath));
         this.countScalingHP();
+        this.filter = filter;
     }
     
     private void countScalingHP() {
@@ -54,10 +57,13 @@ public class ReaperBuild extends EnhancementBuild implements StatSource {
         
         return ret;
     }
-    
+
     public Collection<Stat> getStats() {
         Collection<Stat> ret = new ReaperEnhancementTree().getStatsFromBuild(this);
         if(this.scalingHPBonus > 0) ret.add(new Stat("HP", "In Reaper", this.scalingHPBonus));
+
+        ret.removeIf(stat -> ! this.filter.contains(stat.category));
+
         return ret;
     }
     

@@ -2,7 +2,24 @@ package ddop.optimizer.valuation.damage.weapon;
 
 import util.StatTotals;
 
+import java.util.Arrays;
+import java.util.Set;
+
 public class InquisitiveAirSalt extends RangedWeaponAttack {
+	@Override
+	public Set<String> getQueriedStatCategories() {
+		Set<String> ret = super.getBaseQueriedStatCategories();
+
+		ret.addAll(Arrays.asList(
+				"spellcraft",
+				"intelligence",
+				"magnetism",
+				"universal spell power"
+		));
+
+		return ret;
+	}
+
 	@Override
 	protected double getWeaponBonusDamage(StatTotals stats) {
 		double frosty		= 12 * 3.5;			// 12d6   ice
@@ -30,20 +47,9 @@ public class InquisitiveAirSalt extends RangedWeaponAttack {
 
 	private int getElectricSpellPower(StatTotals stats) {
 		int spellcraft = stats.getInt("spellcraft")
-				+  0	// ranks
-				+ 10	// epic levels
-				+  5	// unknown - guild buffs?
-				+  2	// good hope
 				+ getMod(stats.getInt("intelligence"));
-		int magnetism = stats.getInt("magnetism")
-				+ 10;	// scion of air
-		int universal = stats.getInt("universal spell power")
-				+ 30	// scion of air
-				+ 60	// epic levels
-				+  1	// tome (remnants)
-				+  3	// reaper item bonuses
-				+  6	// filigree
-				+ 46;	// ?
+		int magnetism = stats.getInt("magnetism");
+		int universal = stats.getInt("universal spell power");
 		
 		return spellcraft + magnetism + universal;
 	}

@@ -12,11 +12,17 @@ public abstract class StatScorer {
 	protected int     skulls  = 0;
 	
 	public             double score(StatSource ss)                             { return this.score(ss, null); }
-	public             double score(StatSource ss,  Double scoreToNormalizeTo) { return this.score(new FastStatList(ss), scoreToNormalizeTo); }
+	private            double score(StatSource ss,  Double scoreToNormalizeTo) {
+		Set<String> filter = this.getQueriedStatCategories();
+		AbstractStatList stats = new FastStatList(filter, ss);
+		return this.score(stats, scoreToNormalizeTo);
+	}
 	protected abstract double score(AbstractStatList stats, Double scoreToNormalizeTo);
+	protected abstract Set<String> getQueriedStatCategories();
 	
 	public StatScorer setVerbose(boolean b) { this.verbose = b; return this; }
 	public StatScorer r(int skulls)         { this.skulls = skulls; return this; }
+	protected Set<ArmorType> getAllowedArmorTypes() { return new HashSet<>(); }
 	
 	public void showVerboseScoreFor(StatSource ss) { this.showVerboseScoreFor(ss, null); }
 	public void showVerboseScoreFor(StatSource ss, Double scoreToNormalizeTo) {
@@ -28,6 +34,4 @@ public abstract class StatScorer {
 	protected static double cap(double minimum, double value, double maximum) {
 		return Math.max(minimum, Math.min(value, maximum));
 	}
-
-	Set<ArmorType> getAllowedArmorTypes() { return new HashSet<>(); }
 }

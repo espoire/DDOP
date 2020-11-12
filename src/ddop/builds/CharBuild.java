@@ -1,6 +1,10 @@
 package ddop.builds;
 
+import java.util.Set;
+
 public class CharBuild extends StatCollection {
+	public CharBuild(Set<String> filter) { super(filter); }
+
 	public CharBuild addStat(String category) {
 		return (CharBuild) this.addStat(category, 1, "boolean");
 	}

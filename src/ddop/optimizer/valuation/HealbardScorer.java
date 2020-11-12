@@ -5,16 +5,14 @@ import ddop.builds.GuildBuffs;
 import ddop.builds.ReaperBuild;
 import ddop.builds.adventurerClass.BaseAttackBonusProgression;
 import ddop.constants.Tier;
+import ddop.optimizer.valuation.damage.DamageSource;
 import ddop.optimizer.valuation.damage.spell.Spell;
 import ddop.stat.AbilityScore;
 import ddop.stat.StatSource;
 import util.NumberFormat;
 import util.StatTotals;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class HealbardScorer extends SpecScorer {
 	public HealbardScorer(int simCharacterLevel) {
@@ -22,16 +20,9 @@ public class HealbardScorer extends SpecScorer {
 
 		this.characterLevel = 26;
 		this.hitDie = 6;
-
-		Spell reverb = new Spell("Reverberate", 11.5 * 3 * 8 * 0.5).setSonic(); // 1d10+6 base * 3 stacks * 8 ticks * 50% (assumed effectiveness since things die fast)
-		reverb.cooldown = 15;
-		this.addDamageSource(reverb);
-
-		Spell greaterShout = new Spell("Greater Shout", 90 * 6).setSonic(); // 20d3+60 base * 6 targets (AoE, estimate)
-		greaterShout.cooldown = 6 / 0.5; // 6 base / 50% (estimate, potion of the time that it's safe to get close)
-		this.addDamageSource(greaterShout);
 	}
-	
+
+	//region Constants
 	private static final boolean GLOBE_OF_TRUE_IMPERIAL_BLOOD	= false,
 								 YUGO_POT_CHA					= false,
 								 REM_POT_CHA                    = true,
@@ -44,9 +35,48 @@ public class HealbardScorer extends SpecScorer {
 	private static final double	TARGETS_MASS_HOLD	= 6,
 								TARGETS_CAPERING	= 1,
 								TARGETS_OTTOS_IRR	= 1;
+	//endregion
+
+	private Set<String> filter;
+	@Override
+	protected Set<String> getQueriedStatCategories() {
+		if(this.filter != null) return this.filter;
+		this.filter = super.getBaseQueriedStatCategories();
+
+		this.filter.addAll(Arrays.asList(
+				"arcane augmentation",
+				"spell penetration",
+				"enchantment focus",
+				"perform",
+				"devotion",
+				"heal",
+				"healing lore",
+				"healing critical multiplier",
+				"magical efficiency"
+		));
+
+		return this.filter;
+	}
+
+	private List<DamageSource> damageSources;
+	@Override
+	protected Collection<DamageSource> getDamageSources() {
+		if(this.damageSources != null) return this.damageSources;
+		this.damageSources = new ArrayList<>();
+
+		Spell reverb = new Spell("Reverberate", 11.5 * 3 * 8 * 0.5).setSonic(); // 1d10+6 base * 3 stacks * 8 ticks * 50% (assumed effectiveness since things die fast)
+		reverb.cooldown = 15;
+		this.damageSources.add(reverb);
+
+		Spell greaterShout = new Spell("Greater Shout", 90 * 6).setSonic(); // 20d3+60 base * 6 targets (AoE, estimate)
+		greaterShout.cooldown = 6 / 0.5; // 6 base / 50% (estimate, potion of the time that it's safe to get close)
+		this.damageSources.add(greaterShout);
+
+		return this.damageSources;
+	}
 
 	@Override
-	Set<ArmorType> getAllowedArmorTypes() {
+    protected Set<ArmorType> getAllowedArmorTypes() {
 		Set<ArmorType> ret = new HashSet<>();
 
 		ret.add(ArmorType.CLOTH);
@@ -60,10 +90,10 @@ public class HealbardScorer extends SpecScorer {
 	BaseAttackBonusProgression getBABProgression() {
 		return BaseAttackBonusProgression.MEDIUM;
 	}
-	
+
 	@Override
 	StatSource getBuild() {
-		CharBuild build = new CharBuild();
+		CharBuild build = new CharBuild(this.getQueriedStatCategories());
 
 		build.addStat("light armor proficiency");
 		build.addStat("medium armor proficiency");
@@ -256,7 +286,7 @@ public class HealbardScorer extends SpecScorer {
 	
 	@Override
 	ReaperBuild getReaperBuild() {
-		return new ReaperBuild("X:\\src\\DDOP\\saved builds\\conductrice reaper build.txt", null);
+		return new ReaperBuild("X:\\src\\DDOP\\saved builds\\conductrice reaper build.txt", null, this.getQueriedStatCategories());
 	}
 
 	@Override
@@ -324,7 +354,7 @@ public class HealbardScorer extends SpecScorer {
 			double crit = this.lore / 100.0;
 			this.critSustain = (1 + crit);
 			this.critBurst = (1 + crit * crit);  // Heal crit are much more valuable when they're reliable.
-			this.critMultiplier = (1 + stats.getInt("Healing Critical Multiplier") / 100.0);
+			this.critMultiplier = (1 + stats.getInt("healing critical multiplier") / 100.0);
 			this.SP = owner.getSP(stats);
 			this.discount = (stats.get("magical efficiency")) / 100.0;
 		}
