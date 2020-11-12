@@ -46,7 +46,10 @@ public abstract class WeaponAttack extends DamageSource {
 				"weapon enhancement bonus",
 				"[w]",
 				"bonus w",
-				"melee alacrity"
+				"melee alacrity",
+				"empty red augment slot",
+				"empty orange augment slot",
+				"empty purple augment slot"
 		));
 
 		ret.addAll(WeaponAttack.damageMods.keySet());
