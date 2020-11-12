@@ -9,22 +9,18 @@ import java.util.List;
 import java.util.Map;
 
 public class SetBonus {
-	private static final List<SetBonus> all = new ArrayList<>();
+	private static final Map<String, SetBonus> all = new HashMap<>();
 	
 	private final String name;
 	private final Map<Integer, List<Stat>> bonus = new HashMap<>();
 	
 	private SetBonus(String name) {
 		this.name = name;
-		SetBonus.all.add(this);
+		SetBonus.all.put(this.name, this);
 	}
 
-	public static String[] getAllSetNames() {
-		String[] ret = new String[all.size()];
-
-		for(int i = 0; i < all.size(); i++) ret[i] = all.get(i).name;
-
-		return ret;
+	public static boolean isSetBonus(Stat s) {
+		return SetBonus.all.containsKey(s.category);
 	}
 
     private SetBonus addBonus(int piecesRequirement, Stat s) {
@@ -205,7 +201,7 @@ public class SetBonus {
 	public static List<Stat> getBonuses(List<Stat> stats) {
 		List<Stat> ret = new ArrayList<>();
 		
-		for(SetBonus sb : SetBonus.all) {
+		for(SetBonus sb : SetBonus.all.values()) {
 			int counts = getCounts(sb.name, stats);
 			for(Integer countsRequired : sb.bonus.keySet())
 				if(counts >= countsRequired)
@@ -218,7 +214,7 @@ public class SetBonus {
 	public static List<Stat> getBonuses(StatMap stats) {
 		List<Stat> ret = new ArrayList<>();
 
-		for(SetBonus sb : SetBonus.all) {
+		for(SetBonus sb : SetBonus.all.values()) {
 			int counts = (int) stats.getCategoryTotal(sb.name);
 			for(Integer countsRequired : sb.bonus.keySet())
 				if(counts >= countsRequired)

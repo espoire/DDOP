@@ -31,5 +31,6 @@ public class ValuationContext {
         return scorer.score(sl) - this.baseScore;
     }
 
+    public Set<String> getQueriedStatCategories() { return this.scorer.getQueriedStatCategories(); }
     public Set<ArmorType> getAllowedArmorTypes() { return this.scorer.getAllowedArmorTypes(); }
 }

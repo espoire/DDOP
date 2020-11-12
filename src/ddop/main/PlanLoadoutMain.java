@@ -187,6 +187,7 @@ public class PlanLoadoutMain {
 			int limit = getNumberOfUnskippedSlots(skipSlots, slot);
 			if(limit > 0) {
 				ScoredItemList options = new ScoredItemList(rawItemMap.get(slot), vc).trim(ITEM_QUALITY_MINIMUM_RATIO);
+				options.stripUnusedStats(vc.getQueriedStatCategories());
 				ret.put(slot, new RandomAccessScoredItemList(options));
 			}
 		}

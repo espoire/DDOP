@@ -5,11 +5,14 @@ import ddop.optimizer.valuation.ArmorType;
 import ddop.optimizer.valuation.ShieldType;
 import ddop.stat.Stat;
 import ddop.stat.StatSource;
+import ddop.stat.conversions.NamedStat;
+import ddop.stat.conversions.SetBonus;
 import util.Array;
 import util.Json;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 
 public class Item implements StatSource {
 	public final String name;
@@ -66,4 +69,13 @@ public class Item implements StatSource {
 		
 		return ret.toString();
 	}
+
+    public void stripUnusedStats(Set<String> filter) {
+		this.stats.removeIf(s -> {
+			if(filter.contains(s.category)) return false;
+			if(NamedStat.isNamed(s)) return false;
+			if(SetBonus.isSetBonus(s)) return false;
+			return true;
+		});
+    }
 }

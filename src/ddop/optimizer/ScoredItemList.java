@@ -89,4 +89,10 @@ public class ScoredItemList {
 		for(ScoredItem si : this.scoredItems) ret.add(si.source);
 		return ret;
 	}
+
+    public void stripUnusedStats(Set<String> filter) {
+		for(ScoredItem si : this.scoredItems) {
+			si.getItem().stripUnusedStats(filter);
+		}
+    }
 }
