@@ -19,8 +19,9 @@ public class SetBonus {
 		SetBonus.all.put(this.name, this);
 	}
 
-	public static boolean isSetBonus(Stat s) {
-		return SetBonus.all.containsKey(s.category);
+	public static boolean isSetBonus(Stat s) { return SetBonus.isSetBonus(s.category); }
+	public static boolean isSetBonus(String s) {
+		return SetBonus.all.containsKey(s);
 	}
 
     private SetBonus addBonus(int piecesRequirement, Stat s) {

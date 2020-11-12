@@ -50,9 +50,9 @@ public class NamedStat {
         return ret;
     }
 
-    public static boolean isNamed(Stat s) {
-        NamedStat ns = NamedStat.all.get(s.category);
-        return ns != null;
+    public static boolean isNamed(Stat s) { return NamedStat.isNamed(s.category); }
+    public static boolean isNamed(String s) {
+        return NamedStat.all.containsKey(s);
     }
 
     /** Returns a Stat instance for the given source stat and conversion template.

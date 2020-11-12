@@ -5,6 +5,7 @@ import ddop.optimizer.RandomAccessScoredItemList;
 import ddop.optimizer.ScoredItemList;
 import ddop.optimizer.valuation.ArmorType;
 import ddop.optimizer.valuation.ValuationContext;
+import ddop.stat.Stat;
 import file.Directory;
 import file.ItemReader;
 import util.Random;
@@ -220,4 +221,16 @@ public class ItemList implements Cloneable, Iterable<Item> {
 	public Iterator<Item> iterator() {
 		return this.items.iterator();
 	}
+
+    public Set<String> getAllStatCategories() {
+		Set<String> ret = new HashSet<>();
+
+		for(Item i : this.items) {
+			for(Stat s : i.getStats()) {
+				ret.add(s.category);
+			}
+		}
+
+		return ret;
+    }
 }

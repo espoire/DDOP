@@ -18,7 +18,7 @@ public abstract class StatScorer {
 		return this.score(stats, scoreToNormalizeTo);
 	}
 	protected abstract double score(AbstractStatList stats, Double scoreToNormalizeTo);
-	protected abstract Set<String> getQueriedStatCategories();
+	public abstract Set<String> getQueriedStatCategories();
 	
 	public StatScorer setVerbose(boolean b) { this.verbose = b; return this; }
 	public StatScorer r(int skulls)         { this.skulls = skulls; return this; }

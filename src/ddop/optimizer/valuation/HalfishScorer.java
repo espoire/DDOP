@@ -56,7 +56,7 @@ public class HalfishScorer extends SpecScorer {
 
 	private Set<String> filter;
 	@Override
-	protected Set<String> getQueriedStatCategories() {
+	public Set<String> getQueriedStatCategories() {
 		if(this.filter != null) return this.filter;
 		this.filter = super.getBaseQueriedStatCategories();
 

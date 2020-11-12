@@ -81,10 +81,12 @@ public abstract class WeaponAttack extends DamageSource {
 		double physicalDamage    = (weaponDamage + deadly) * (1 + weaponPower / 100.0)	* physicalDamageMultiplier;
 		double bonusCritDamage   = damageOnCrit            * (1 + weaponPower / 100.0)	* physicalDamageMultiplier;
 		double sneakAttackDamage = sneakDamage             * (1 + weaponPower /  66.67)	* physicalDamageMultiplier;
+		double redAugments = stats.getInt("empty red augment slot") + stats.getInt("empty orange augment slot") + stats.getInt("empty purple augment slot");
 		double nonScalingBonusDamage = this.getWeaponBonusDamage(stats)	// TODO weapon stats
 				+ (stats.getBoolean("eternal holy burst")   ? 4.16 : 0)
 				+ (stats.getBoolean("soul of the elements") ? 15   : 0)
-				+ (stats.getBoolean("stormreaver's thunderclap") ? 1000.0 / 20 : 0); // TODO update damage / hook in Balanced Attacks
+				+ (stats.getBoolean("stormreaver's thunderclap") ? 1000.0 / 20 : 0) // TODO update damage / hook in Balanced Attacks
+				+ redAugments * 8 * 3.5; // 8d6 ML28 augments
 		double scalingBonusDamage = this.getScalingBonusDamage(stats);
 		double bonusDamage = (nonScalingBonusDamage + scalingBonusDamage) * magicalDamageMultiplier;
 		
