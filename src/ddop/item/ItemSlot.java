@@ -1,6 +1,6 @@
 package ddop.item;
 
-import java.util.HashMap;
+import java.util.*;
 
 public class ItemSlot {
 	private static final HashMap<String, ItemSlot> byName = new HashMap<>();
@@ -42,24 +42,38 @@ public class ItemSlot {
 	
 	public static ItemSlot[] getAll() { return new ItemSlot[] {HEAD, NECK, EYE, ARMOR, WRIST, TRINKET, BACK, WAIST, FINGER, FEET, HAND, MAIN_HAND, OFF_HAND, QUIVER}; }
 
-	public static ItemSlot getSlot(PropertiesList pl) {
-		if(pl.containsKey("weapon type")) return ItemSlot.MAIN_HAND;
-		if(pl.containsKey("armor type")) return ItemSlot.ARMOR;
-		if(pl.containsKey("shield type")) return ItemSlot.OFF_HAND;
-		if(pl.containsKey("required trait") && pl.getFirst("required trait") != null && pl.getFirst("required trait").equals("artificer rune arm use")) return ItemSlot.OFF_HAND;
+	public static Set<ItemSlot> getSlots(PropertiesList pl) {
+		if(pl.containsKey("weapon type")) return Collections.singleton(ItemSlot.MAIN_HAND);
+		if(pl.containsKey("armor type")) return Collections.singleton(ItemSlot.ARMOR);
+		if(pl.containsKey("shield type")) return Collections.singleton(ItemSlot.OFF_HAND);
+		if(pl.containsKey("item type"))
+			if(pl.getFirst("item type").matches("^quiver( / ([a-z]+ )?quiver)?$"))
+				return Collections.singleton(ItemSlot.QUIVER);
+		if(pl.containsKey("required trait"))
+			if(pl.getFirst("required trait") != null)
+				if(pl.getFirst("required trait").equals("artificer rune arm use"))
+					return Collections.singleton(ItemSlot.OFF_HAND);
 		
-		String slot = pl.getFirst("Slot");
+		List<String> slots = pl.get("Slot");
+		Set<ItemSlot> ret = new HashSet<>();
+		boolean isCosmetic = false;
+		if(slots != null) for(String s : slots) {
+			if(s.contains("cosmetic")) {
+				isCosmetic = true;
+				continue;
+			}
 
-		if(slot != null) {
-			if(slot.contains("cosmetic")) return null;
-
-			ItemSlot ret = ItemSlot.byName.get(slot);
-			if(ret != null) return ret;
-			System.err.println("Unrecognised item slot: " + slot);
+			ItemSlot slot = ItemSlot.byName.get(s);
+			if(slot != null) {
+				ret.add(slot);
+			} else {
+				System.err.println("Unrecognised item slot: " + slot);
+			}
 		}
-		
-		if(pl.containsKey("item type") && pl.getFirst("item type").matches("^quiver( / ([a-z]+ )?quiver)?$")) return ItemSlot.QUIVER;
-		
+
+		if(ret.size() > 0) return ret;
+		if(isCosmetic) return null;
+
 		System.err.println("Slot not found for " + pl.toString("Name"));
 		return null;
 	}

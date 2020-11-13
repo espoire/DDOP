@@ -27,7 +27,7 @@ public class UpdateItemFiles {
 			System.out.println("All raw item HTMLs up to date.");
 			System.out.println("Compiling HTMLs to JSON summary...");
 			List<Item> allItems = CompileHTML.loadAllItems(Settings.OUTPUT_DIRECTORY);
-			allItems.removeIf(item -> item.slot == null);
+			allItems.removeIf(item -> item.slots == null);
 
 			List<Item> noCraftable = new ArrayList<>(allItems);
 			noCraftable.removeIf(item -> NearlyFinished.appliesTo(item));

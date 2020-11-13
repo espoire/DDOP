@@ -1,6 +1,4 @@
 TODO
-    Slavers
-        Implement multi-slot items
     Metrics: list the normalized score by slot for items in final set.
     Optimize: Adjust item score cutoff.
     Crafted item sources

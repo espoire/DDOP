@@ -9,10 +9,7 @@ import ddop.stat.StatSource;
 import util.Array;
 import util.StatTotals;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class EquipmentLoadout implements Cloneable, StatSource {
 	private HashMap<ItemSlot, ArrayList<Item>> items = new HashMap<>();
@@ -33,6 +30,9 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 
 		return this;
 	}
+	public EquipmentLoadout put(String itemName, ItemSlot slot) {
+		return this.put(ItemList.getAllNamedItems().getNamedItem(itemName), slot);
+	}
 	
 	public EquipmentLoadout put(Item[] items) {
 		for(Item i : items) this.put(i);
@@ -44,9 +44,16 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 	}
 
 	public EquipmentLoadout put(Item i) {
+		if(i.slots.size() != 1)
+			throw new RuntimeException("Attempted to add a multi-slot item to an EquipmentLoadout without specifying a slot: " + i.name);
+
+		return this.put(i, i.slots.stream().findFirst().get());
+	}
+
+	public EquipmentLoadout put(Item i, ItemSlot slot) {
 		if(i == null) return this;
-		
-		ItemSlot slot = i.slot;
+		if(! i.slots.contains(slot))
+			throw new RuntimeException("Attempted to equip item '" + i.name + "' to slot '" + slot.name + "'. It cannot equip to this slot.");
 		
 		if(slot.limit == 1) {
 			ArrayList<Item> value = new ArrayList<>();
@@ -91,7 +98,10 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 	
 	private Collection<Item> getItems() {
 		Collection<Item> ret = new ArrayList<>();
-		for(ArrayList<Item> items : this.items.values()) ret.addAll(items);
+
+		for(List<Item> items : this.items.values())
+			ret.addAll(items);
+
 		return ret;
 	}
 	
@@ -126,27 +136,46 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 	public void printStatTotalsToConsole() {
 		System.out.println(this.toStat());
 	}
-	
+
+	public List<Item> toItemList() {
+		List<Item> ret = new ArrayList<>();
+
+		for(List<Item> items : this.items.values())
+			ret.addAll(items);
+
+		return ret;
+	}
+
+	public List<ItemSlot> toSlotList() {
+		List<ItemSlot> ret = new ArrayList<>();
+
+		for(ItemSlot is : this.items.keySet())
+			for(int i = 0; i < this.items.get(is).size(); i++)
+				ret.add(is);
+
+		return ret;
+	}
+
 	@Override
 	public String toString() {
-		String ret = this.getTagLine() + ":\n";
+		StringBuilder ret = new StringBuilder(this.getTagLine() + ":\n");
 		for(ItemSlot slot : this.items.keySet()) {
-			ret += "| " + slot.name + ": ";
+			ret.append("| ").append(slot.name).append(": ");
 			boolean firstOnLine = true;
 			for(Item i : this.items.get(slot)) {
 				if(firstOnLine) {
 					firstOnLine = false;
 				} else {
-					ret += ", ";
+					ret.append(", ");
 				}
-				ret += i.name;
+				ret.append(i.name);
 			}
-			ret += "\n";
+			ret.append("\n");
 		}
 		for(ItemSlot slot : this.getUnfilledSlots()) {
-			ret += "| " + slot.name + ": [EMPTY]\n";
+			ret.append("| ").append(slot.name).append(": [EMPTY]\n");
 		}
-		return ret;
+		return ret.toString();
 	}
 	
 	protected String getTagLine() {

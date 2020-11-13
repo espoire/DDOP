@@ -98,7 +98,7 @@ public class RunnableAnnealingSim extends RunnableSim {
 
         ItemSlot slot = (ItemSlot) Random.random(unskippedItemSlots);
         Item item = itemMap.get(slot).getRandom();
-        trialLoadout.put(item);
+        trialLoadout.put(item, slot);
 
         return trialLoadout;
     }

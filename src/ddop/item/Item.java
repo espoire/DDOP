@@ -16,7 +16,7 @@ import java.util.Set;
 
 public class Item implements StatSource {
 	public final String name;
-	public final ItemSlot slot;
+	public final Set<ItemSlot> slots;
 	public final int minLevel;
 	private final Collection<Stat> stats;
 	private final PropertiesList props;
@@ -36,7 +36,7 @@ public class Item implements StatSource {
 		this.props = pl;
 
 		this.name = pl.getString("Name");
-		this.slot = ItemSlot.getSlot(pl);
+		this.slots = ItemSlot.getSlots(pl);
 		this.minLevel = pl.getInt("Minimum Level");
 		this.stats = Stat.getStats(pl.get("Enchantments"), this.name);
 
@@ -63,12 +63,20 @@ public class Item implements StatSource {
 		StringBuilder ret = new StringBuilder();
 		
 		ret.append(this.name).append(" - ");
-		ret.append(this.slot.name).append(" - ");
+
+		boolean isFirst = true;
+		for(ItemSlot slot : this.slots) {
+			if(!isFirst) ret.append(", ");
+			isFirst = false;
+
+			ret.append(slot.name);
+		}
+
+		ret.append(" - ");
 		ret.append("ML: ").append(this.minLevel).append("\n");
 		
-		for(Stat s : this.stats) {
+		for(Stat s : this.stats)
 			ret.append(s.toString()).append("\n");
-		}
 		
 		return ret.toString();
 	}

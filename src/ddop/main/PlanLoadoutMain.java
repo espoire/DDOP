@@ -29,8 +29,8 @@ public class PlanLoadoutMain {
 
 	// Recommended duration: 50ms per candidate item.
 	private static final ExecutionSession EXECUTION_LENGTH =
-			new DurationSession(15 * Time.SECOND);
-//			new DurationSession(30 * Time.MINUTE);
+//			new DurationSession(15 * Time.SECOND);
+			new DurationSession(3 * Time.MINUTE);
 //			new DurationSession(1 * Time.HOUR);
 //			new DurationSession(8 * Time.HOUR);
 
@@ -50,48 +50,6 @@ public class PlanLoadoutMain {
 			ItemSlot.QUIVER
 	};
 	
-	private static final String[] FIXED_ITEM_NAMES = new String[] {
-//			"silverthread belt",
-//			"epic voice of the master",
-//
-////			"blessed vestments",
-////			"hallowed trail",
-////			"hallowed castigators",
-//
-//			"countenance",
-////			"bracers of the eagle",
-//
-//			"epic holistic stave",
-//			"epic sanctuary",
-//			"sunken slippers qcha version",
-////			"sightless",
-//			"circle of malevolence",
-////			"shroud of ardent",
-//			"cc goggles enchantment ienchantment ispellpen ml23 version",
-////			"cc ring soniclore resonance icha ml26 version",
-//			"cc gloves perform heal iperform ml25 version",
-//
-////			"drow outrunner armor",
-////			"epic marguerite's necklace",
-
-		"quiver of alacrity",
-//		"legendary turncoat",
-//		"legendary family recruit sigil",
-//		"legendary hammerfist",
-			"legendary omniscience",
-			"legendary tumbleweed",
-
-//		"radiant ring of taer valaestas",
-//
-//		"legendary celestial ruby ring dex version",
-//		"legendary collective sight con iwis version",
-//		"the cornerstone champion qwis version",
-//		"legendary umber brim",
-//		"silver dragonscale capelet",
-
-//		"legendary moonrise bracers",
-	};
-	
 	public static void main(String... s) {
 		StatScorer scorer = new ShintaoScorer(30).r(8);
 		EquipmentLoadout currentGear =
@@ -107,8 +65,8 @@ public class PlanLoadoutMain {
 	}
 	
 	private static void simLoadouts(StatScorer ss, double baselineScore) {
-		ArrayList<Item>            fixedItems = getFixedItems();
-		List<ItemSlot>       skippedItemSlots = getSkipItemSlotList();
+		List<Item>           fixedItems = getFixedItems().toItemList();
+		List<ItemSlot> skippedItemSlots = getSkipItemSlotList();
 		
 		ScoredLoadout best = simBestLoadout(ss, fixedItems, skippedItemSlots);
 		
@@ -172,21 +130,23 @@ public class PlanLoadoutMain {
 	}
 	
 	private static List<ItemSlot> getSkipItemSlotList() {
-		ArrayList<Item> fixedItems = getFixedItems();
-		List<ItemSlot> skipSlots = new ArrayList<>();
-		Collections.addAll(skipSlots, IGNORED_SLOTS);
-		for(Item i : fixedItems) skipSlots.add(i.slot);
-		return skipSlots;
+		List<ItemSlot> ret = new ArrayList<>();
+		Collection<ItemSlot> fixedItems = getFixedItems().toSlotList();
+
+		Collections.addAll(ret, IGNORED_SLOTS);
+		ret.addAll(fixedItems);
+
+		return ret;
 	}
 	
 	private static Map<ItemSlot, RandomAccessScoredItemList> getItemSlotScoredItemListMap (ValuationContext vc, List<ItemSlot> skipSlots) {
+		Map<ItemSlot, RandomAccessScoredItemList> ret = new HashMap<>();
+
 		ItemList candidates = ItemList.getAllNamedItems()
 				.merge(SlaversCraftedItemSource.generateList(TARGET_ITEMS_LEVEL_RANGE, vc.getQueriedStatCategories()))
 				.filterByLevel(TARGET_ITEMS_LEVEL_RANGE)
 				.filterBy(vc.getAllowedArmorTypes());
 		Map<ItemSlot, ItemList> rawItemMap = candidates.mapBySlot();
-
-		Map<ItemSlot, RandomAccessScoredItemList> ret = new HashMap<>();
 
 		for(ItemSlot slot : rawItemMap.keySet()) {
 			int limit = getNumberOfUnskippedSlots(skipSlots, slot);
@@ -200,14 +160,20 @@ public class PlanLoadoutMain {
 		return ret;
 	}
 
-	public static ArrayList<Item> getFixedItems() {
-		ArrayList<Item> fixedItems = new ArrayList<>();
-
+	public static EquipmentLoadout getFixedItems() {
+		EquipmentLoadout ret = new EquipmentLoadout();
 		ItemList items = ItemList.getAllNamedItems();
-		for(String name : FIXED_ITEM_NAMES)
-			fixedItems.add(items.getNamedItem(name));
+
+		ret.put("quiver of alacrity");
+
+//		ret.put("legendary turncoat");
+//		ret.put("legendary family recruit sigil");
+//		ret.put("legendary hammerfist");
+
+		ret.put("legendary omniscience");
+		ret.put("legendary tumbleweed");
 		
-		return fixedItems;
+		return ret;
 	}
 	
 	private static int getNumberOfUnskippedSlots(List<ItemSlot> skipSlots, ItemSlot slot) {
