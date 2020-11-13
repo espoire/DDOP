@@ -3,10 +3,12 @@ package ddop.item.loadout;
 import ddop.item.Item;
 import ddop.item.ItemList;
 import ddop.item.ItemSlot;
+import ddop.optimizer.RandomAccessScoredItemList;
 import ddop.stat.Stat;
 import ddop.stat.list.VerboseStatList;
 import ddop.stat.StatSource;
 import util.Array;
+import util.NumberFormat;
 import util.StatTotals;
 
 import java.util.*;
@@ -155,9 +157,9 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 
 		return ret;
 	}
-
 	@Override
-	public String toString() {
+	public String toString() { return this.toString(null); }
+	public String toString(Map<ItemSlot, RandomAccessScoredItemList> context) {
 		StringBuilder ret = new StringBuilder(this.getTagLine() + ":\n");
 		for(ItemSlot slot : this.items.keySet()) {
 			ret.append("| ").append(slot.name).append(": ");
@@ -169,6 +171,11 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 					ret.append(", ");
 				}
 				ret.append(i.name);
+				if(context != null) {
+					RandomAccessScoredItemList scores = context.get(slot);
+					if(scores != null)
+						ret.append(" - ").append(NumberFormat.percent(scores.getScore(i)));
+				}
 			}
 			ret.append("\n");
 		}

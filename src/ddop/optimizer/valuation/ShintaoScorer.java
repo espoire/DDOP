@@ -42,7 +42,10 @@ public class ShintaoScorer extends SpecScorer {
 				"stunning",
 				"concentration",
 				"critical threat range",
-				"ki"
+				"ki",
+				"light armor",
+				"medium armor",
+				"heavy armor"
 		));
 
 		return this.filter;
@@ -256,6 +259,7 @@ public class ShintaoScorer extends SpecScorer {
 		double kiDrain = (double) averageKiAmount / concentration;
 		double passiveKi = BASE_KI_GENERATION - kiDrain;
 		double kiIncome   = kiPerHit * 5.59 * 0.7 + passiveKi / 6.0;
+		if(uncentered(stats)) kiIncome = 0;
 
 		double quiveringPalmKiRate = KI_QUIVERING_PALM / COOLDOWN_QUIVERING_PALM;
 		double stunningFistKiRate  = KI_STUNNING_FIST  / COOLDOWN_STUNNING_FIST;
@@ -282,7 +286,7 @@ public class ShintaoScorer extends SpecScorer {
 		
 		if(this.verbose) {
 			System.out.println("ShintaoScorer DCs Debug Log\n"
-					+ "\n+- Ki Income: " + NumberFormat.readableLargeNumber(kiPerHit) + "/hit + " + NumberFormat.readableLargeNumber(passiveKi) + "/tick"
+					+ "\n+- Ki Income: " + (uncentered(stats) ? "UNCENTERED" : NumberFormat.readableLargeNumber(kiPerHit) + "/hit + " + NumberFormat.readableLargeNumber(passiveKi) + "/tick")
 					+ "\n+- Ki Satis.: " + NumberFormat.percent(kiScore) + " (" + NumberFormat.readableLargeNumber(kiIncome) + " in / " + NumberFormat.readableLargeNumber(kiSpend) + " out)"
 					+ "\n+- Wisdom:    " + wisdom          + " (+" + wisMod										+ ")"
 					+ "\n+- QP:        " + quiveringPalmDC + " ("  + NumberFormat.percent(quiveringPalmDCRate)	+ ")"
@@ -294,7 +298,11 @@ public class ShintaoScorer extends SpecScorer {
 		
 		return dcsScore;
 	}
-	
+
+	private boolean uncentered(StatTotals stats) {
+		return stats.getBoolean("light armor") || stats.getBoolean("medium armor") || stats.getBoolean("heavy armor");
+	}
+
 	private static final double[] QP_LOOKUP = new double[] {
 		0.06477284,
 		0.06498409,

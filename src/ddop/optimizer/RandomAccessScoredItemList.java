@@ -35,4 +35,16 @@ public class RandomAccessScoredItemList {
     RandomAccessScoredItemList rescore(ValuationContext vc) {
         return new RandomAccessScoredItemList(this.inner.rescore(vc));
     }
+
+    public ScoredItemList getInner() {
+        return inner;
+    }
+
+    public void normalize() {
+        inner.normalizeScoresTo(1);
+    }
+
+    public double getScore(Item i) {
+        return inner.getScore(i);
+    }
 }

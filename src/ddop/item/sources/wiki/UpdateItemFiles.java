@@ -27,10 +27,10 @@ public class UpdateItemFiles {
 			System.out.println("All raw item HTMLs up to date.");
 			System.out.println("Compiling HTMLs to JSON summary...");
 			List<Item> allItems = CompileHTML.loadAllItems(Settings.OUTPUT_DIRECTORY);
-			allItems.removeIf(item -> item.slots == null);
+			allItems.removeIf(item -> item.slots == null || item.slots.size() == 0);
 
 			List<Item> noCraftable = new ArrayList<>(allItems);
-			noCraftable.removeIf(item -> NearlyFinished.appliesTo(item));
+			noCraftable.removeIf(NearlyFinished::appliesTo);
 			String noCraftableJson = convertToJson(noCraftable);
 			file.Writer.overwrite(Settings.WIKI_ITEMS_JSON, noCraftableJson);
 			System.out.println("\nWrote non-crafting items to " + Settings.WIKI_ITEMS_JSON);

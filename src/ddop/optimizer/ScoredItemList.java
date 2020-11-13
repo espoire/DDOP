@@ -95,4 +95,12 @@ public class ScoredItemList {
 			si.getItem().stripUnusedStats(filter);
 		}
     }
+
+	public double getScore(Item i) {
+		for(ScoredItem si : this.scoredItems)
+			if(si.getItem() == i)
+				return si.score;
+
+		return Double.NaN;
+	}
 }

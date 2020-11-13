@@ -29,8 +29,8 @@ public class PlanLoadoutMain {
 
 	// Recommended duration: 50ms per candidate item.
 	private static final ExecutionSession EXECUTION_LENGTH =
-//			new DurationSession(15 * Time.SECOND);
-			new DurationSession(3 * Time.MINUTE);
+			new DurationSession(15 * Time.SECOND);
+//			new DurationSession(3 * Time.MINUTE);
 //			new DurationSession(1 * Time.HOUR);
 //			new DurationSession(8 * Time.HOUR);
 
@@ -39,7 +39,7 @@ public class PlanLoadoutMain {
 			Runtime.getRuntime().availableProcessors() -1;
 //			2;
 	
-	private static final double ITEM_QUALITY_MINIMUM_RATIO = 0.05;
+	private static final double ITEM_QUALITY_MINIMUM_RATIO = 0.40;
 
 	private static final int TARGET_ITEMS_MIN_LEVEL = 26,
 							 TARGET_ITEMS_MAX_LEVEL = 30;
@@ -70,7 +70,7 @@ public class PlanLoadoutMain {
 		
 		ScoredLoadout best = simBestLoadout(ss, fixedItems, skippedItemSlots);
 		
-		System.out.println(best.loadout);
+		System.out.println(best);
 		ss.showVerboseScoreFor(best.loadout, baselineScore);
 	}
 	
@@ -94,6 +94,7 @@ public class PlanLoadoutMain {
 		}
 
 		SimResultContext result = awaitResult(threads, sims);
+		result.best.annotate(itemMap);
 
 		result.printSimCompleteMessage();
 		return result.best;

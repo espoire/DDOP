@@ -1,8 +1,20 @@
 TODO
-    Metrics: list the normalized score by slot for items in final set.
-    Optimize: Adjust item score cutoff.
     Crafted item sources
         Cannith
+            Trinket
+                No Sockets
+            Gloves
+            Belt
+            Amulet
+            Helm
+            Goggles
+            Armors
+                5 variants: Robe, Light, Medium, Heavy, Docent
+            Bracers
+            Cape
+            Ring
+            Boots
+            Weapon
     Feywild set definitions
     Import Feywild items
     Implement augments

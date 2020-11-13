@@ -84,9 +84,9 @@ public class ItemList implements Cloneable, Iterable<Item> {
 		
 		ItemList ret = new ItemList();
 		
-		for(Item i : items) {
-			if(i.slots == ItemSlot.ARMOR && i.armorType == armorType) ret.addItem(i);
-		}
+		for(Item i : items)
+			if(i.slots.contains(ItemSlot.ARMOR) && i.armorType == armorType)
+				ret.addItem(i);
 		
 		return ret;
 	}
@@ -97,7 +97,7 @@ public class ItemList implements Cloneable, Iterable<Item> {
 		ItemList ret = new ItemList();
 
 		for(Item i : items)
-			if(i.slots != ItemSlot.ARMOR || allowedArmorTypes.contains(i.armorType))
+			if(! i.slots.contains(ItemSlot.ARMOR) || allowedArmorTypes.contains(i.armorType))
 				ret.addItem(i);
 
 		return ret;
