@@ -25,21 +25,21 @@ public class ItemSlot {
 	}
 	
 	public static final ItemSlot
-		HEAD = new ItemSlot("Head"),
-		NECK = new ItemSlot("Neck"),
-		EYE = new ItemSlot("Eye").alias("Eyes"),
-		ARMOR = new ItemSlot("Armor"),
-		WRIST = new ItemSlot("Wrist"),
-		TRINKET = new ItemSlot("Trinket"),
-		BACK = new ItemSlot("Back"),
-		WAIST = new ItemSlot("Waist"),
-		FINGER = new ItemSlot("Finger", 2),
-		FEET = new ItemSlot("Feet"),
-		HAND = new ItemSlot("Hand").alias("Hands"),
-		MAIN_HAND = new ItemSlot("Main Hand"),
-		OFF_HAND = new ItemSlot("Off Hand"),
-		QUIVER = new ItemSlot("Quiver");
-	
+			ARMOR = new ItemSlot("Armor"),
+			BACK = new ItemSlot("Back"),
+			EYE = new ItemSlot("Eye").alias("Eyes"),
+			FINGER = new ItemSlot("Finger", 2),
+			FEET = new ItemSlot("Feet"),
+			HAND = new ItemSlot("Hand").alias("Hands"),
+			HEAD = new ItemSlot("Head"),
+			MAIN_HAND = new ItemSlot("Main Hand"),
+			NECK = new ItemSlot("Neck"),
+			OFF_HAND = new ItemSlot("Off Hand"),
+			QUIVER = new ItemSlot("Quiver"),
+			TRINKET = new ItemSlot("Trinket"),
+			WAIST = new ItemSlot("Waist"),
+			WRIST = new ItemSlot("Wrist");
+
 	public static ItemSlot[] getAll() { return new ItemSlot[] {HEAD, NECK, EYE, ARMOR, WRIST, TRINKET, BACK, WAIST, FINGER, FEET, HAND, MAIN_HAND, OFF_HAND, QUIVER}; }
 
 	public static Set<ItemSlot> getSlots(PropertiesList pl) {
