@@ -1,6 +1,5 @@
 TODO
     Crafted item sources
-        Cleanup cannithScraper.js
         Cannith
             Trinket
             Gloves
@@ -16,9 +15,10 @@ TODO
             Boots
             Weapon
     Feywild set definitions
+        Move set bonuses over to JSONs
     Import Feywild items
     Implement augments
-        EquipmentLoadout -> Set<Augment>
+        (EquipmentLoadout, StatScorer) -> Set<Augment>
         Per augment series:
             Filter augments below the highest augment below the lowest level item
             Filter augments above the highest level item
