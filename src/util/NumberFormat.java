@@ -51,16 +51,22 @@ public class NumberFormat {
 
         return niceFloat(millis);
     }
-    
-    protected static String niceFloat(double value) {
+
+    protected static String niceFloat(double value) { return niceFloat(value, 2); }
+    private static String niceFloat(double value, int decimalPlaces) {
         String ret = ("" + value);
 
-        int decimalPlace = ret.indexOf(".");
+        int decimalPosition = ret.indexOf(".");
 
-        int cutoff = decimalPlace + 2;
+        int cutoff = decimalPosition + decimalPlaces;
         if(cutoff > ret.length()) cutoff = ret.length();
 
         return ret.substring(0, cutoff);
+    }
+
+    public static String maybeInteger(double value, int decimalPlaces) {
+        if(value == (int) value) return "" + (int) value;
+        return niceFloat(value, decimalPlaces);
     }
     
     public static String percent(double number) {

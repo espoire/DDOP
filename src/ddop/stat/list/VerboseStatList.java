@@ -4,6 +4,7 @@ import ddop.Settings;
 import ddop.item.Item;
 import ddop.item.ItemList;
 import ddop.stat.Stat;
+import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
 import ddop.stat.conversions.NamedStat;
 import ddop.stat.conversions.SetBonus;
@@ -46,7 +47,7 @@ public class VerboseStatList extends AbstractStatList implements StatSource {
 	}
 
 	@Override
-	public StatTotals getStatTotals(Set<String> filter) {
+	public StatTotals getStatTotals(StatFilter filter) {
 		if(this.totals == null) {
 			this.applyStatConversions();
 			this.filterStats(filter);

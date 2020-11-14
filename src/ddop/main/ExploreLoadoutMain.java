@@ -8,7 +8,7 @@ import ddop.optimizer.valuation.StatScorer;
 public class ExploreLoadoutMain {
     public static void main(String... s) {
         EquipmentLoadout loadout = StoredLoadouts.getHealbardNoSetGear();
-        StatScorer        scorer = new HealbardScorer(26).r(5);
+        StatScorer        scorer = HealbardScorer.create(26).r(5);
         
         displayGearPlan(loadout, scorer);
     }

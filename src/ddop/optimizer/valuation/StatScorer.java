@@ -1,8 +1,9 @@
 package ddop.optimizer.valuation;
 
+import ddop.stat.StatFilter;
+import ddop.stat.StatSource;
 import ddop.stat.list.AbstractStatList;
 import ddop.stat.list.FastStatList;
-import ddop.stat.StatSource;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,12 +14,12 @@ public abstract class StatScorer {
 	
 	public             double score(StatSource ss)                             { return this.score(ss, null); }
 	private            double score(StatSource ss,  Double scoreToNormalizeTo) {
-		Set<String> filter = this.getQueriedStatCategories();
+		StatFilter filter = this.getQueriedStatCategories();
 		AbstractStatList stats = new FastStatList(filter, ss);
 		return this.score(stats, scoreToNormalizeTo);
 	}
 	protected abstract double score(AbstractStatList stats, Double scoreToNormalizeTo);
-	public abstract Set<String> getQueriedStatCategories();
+	public abstract StatFilter getQueriedStatCategories();
 	
 	public StatScorer setVerbose(boolean b) { this.verbose = b; return this; }
 	public StatScorer r(int skulls)         { this.skulls = skulls; return this; }

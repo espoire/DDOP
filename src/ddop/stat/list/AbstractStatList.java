@@ -1,17 +1,17 @@
 package ddop.stat.list;
 
 import ddop.stat.Stat;
+import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
 import util.StatTotals;
 
 import java.util.Collection;
-import java.util.Set;
 
 public abstract class AbstractStatList {
-    protected final Set<String> filter;
+    protected final StatFilter filter;
 
     public AbstractStatList(StatSource... sources) { this(null, sources); }
-    public AbstractStatList(Set<String> filter, StatSource... sources) {
+    public AbstractStatList(StatFilter filter, StatSource... sources) {
         this.filter = filter;
         this.init();
         this.add(sources);
@@ -46,5 +46,5 @@ public abstract class AbstractStatList {
     }
     protected abstract void addImplementation(Stat s);
     public StatTotals getStatTotals() { return this.getStatTotals(this.filter); }
-    protected abstract StatTotals getStatTotals(Set<String> filter);
+    protected abstract StatTotals getStatTotals(StatFilter filter);
 }

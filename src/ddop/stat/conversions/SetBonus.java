@@ -199,16 +199,27 @@ public class SetBonus {
 		return ret;
 	}
 
+	/** Returns a list of all Stats which may descend from any members of a provided list of Stats. */
+	public static List<Stat> getDescendants(List<Stat> stats) {
+		return SetBonus.getBonusesImplementation(stats, true);
+	}
+
 	public static List<Stat> getBonuses(List<Stat> stats) {
+		return SetBonus.getBonusesImplementation(stats, false);
+	}
+
+	private static List<Stat> getBonusesImplementation(List<Stat> stats, boolean suppressCountsRequirement) {
 		List<Stat> ret = new ArrayList<>();
-		
+
 		for(SetBonus sb : SetBonus.all.values()) {
 			int counts = getCounts(sb.name, stats);
-			for(Integer countsRequired : sb.bonus.keySet())
+			for(Integer countsRequired : sb.bonus.keySet()) {
+				if(suppressCountsRequirement) countsRequired = 1;
 				if(counts >= countsRequired)
 					ret.addAll(sb.bonus.get(countsRequired));
+			}
 		}
-		
+
 		return ret;
 	}
 

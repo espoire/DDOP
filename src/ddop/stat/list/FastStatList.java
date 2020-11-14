@@ -1,6 +1,7 @@
 package ddop.stat.list;
 
 import ddop.stat.Stat;
+import ddop.stat.StatFilter;
 import ddop.stat.StatMap;
 import ddop.stat.StatSource;
 import ddop.stat.conversions.NamedStat;
@@ -8,12 +9,11 @@ import ddop.stat.conversions.SetBonus;
 import util.StatTotals;
 
 import java.util.List;
-import java.util.Set;
 
 public class FastStatList extends AbstractStatList {
     private StatMap stats;
 
-    public FastStatList(Set<String> filter, StatSource... sources) { super(filter, sources); }
+    public FastStatList(StatFilter filter, StatSource... sources) { super(filter, sources); }
 
     @Override
     protected void init() {
@@ -30,7 +30,7 @@ public class FastStatList extends AbstractStatList {
     }
 
     @Override
-    public StatTotals getStatTotals(Set<String> filter) {
+    public StatTotals getStatTotals(StatFilter filter) {
         this.applyStatConversions();
         return this.stats.getTotals(filter);
     }

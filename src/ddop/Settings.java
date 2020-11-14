@@ -13,6 +13,7 @@ public class Settings {
 	public static final String NEARLY_FINISHED_RECIPE_DEFINITIONS_JSON = JSON_DIRECTORY + "\\nearlyFinishedRecipeDefinitions.json";
 	public static final String NEARLY_FINISHED_COMPLETED_ITEMS_JSON    = JSON_DIRECTORY + "\\nearlyFinishedCompletedItems.json";
 	public static final String SLAVERS_RECIPE_DEFINITIONS_JSON         = JSON_DIRECTORY + "\\slaversRecipeDefinitions.json";
+	public static final String CANNITH_RECIPE_DEFINITIONS_JSON         = JSON_DIRECTORY + "\\cannithRecipeDefinitions.json";
 
 	public static final String[] ITEM_SOURCES_JSON = new String[] {
 			WIKI_ITEMS_JSON,

@@ -4,7 +4,6 @@ import util.StatTotals;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class StatMap extends HashMap<String, Map<String, Double>> {
     public StatMap put(Stat s) {
@@ -34,7 +33,7 @@ public class StatMap extends HashMap<String, Map<String, Double>> {
         return sub;
     }
 
-    public StatTotals getTotals(Set<String> filter) {
+    public StatTotals getTotals(StatFilter filter) {
         StatTotals ret = new StatTotals(filter);
 
         for(String category : this.keySet())

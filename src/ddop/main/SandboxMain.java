@@ -20,7 +20,7 @@ import java.util.Set;
 @SuppressWarnings("all")
 public class SandboxMain {
     public static void main(String... s) {
-        Collection<Item> items = SlaversCraftedItemSource.generateList(new LevelRange(1, 30), new ShintaoScorer(30).getQueriedStatCategories());
+        Collection<Item> items = SlaversCraftedItemSource.generateList(new LevelRange(1, 30), ShintaoScorer.create(30).getQueriedStatCategories());
 
         if(items != null) for(Item i : items)
             System.out.println(i);

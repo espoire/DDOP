@@ -8,6 +8,7 @@ import ddop.optimizer.valuation.damage.weapon.InquisitiveAirSalt;
 import ddop.optimizer.valuation.damage.weapon.InquisitiveAirSentNightshade;
 import ddop.optimizer.valuation.damage.weapon.WeaponAttack;
 import ddop.stat.AbilityScore;
+import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
 import util.NumberFormat;
 import util.StatTotals;
@@ -16,9 +17,15 @@ import java.util.*;
 
 public class HalfishScorer extends SpecScorer {
 	private WeaponAttack weaponAttack;
-	public HalfishScorer(int simCharacterLevel) {
+	protected HalfishScorer(int simCharacterLevel) {
 		super(simCharacterLevel);
 		this.hitDie = 18;
+	}
+
+	public static HalfishScorer create(int simCharacterLevel) {
+		HalfishScorer ret = new HalfishScorer(simCharacterLevel);
+		ret.initialize();
+		return ret;
 	}
 
 	//region Constants
@@ -54,9 +61,9 @@ public class HalfishScorer extends SpecScorer {
 								ASSUMED_UPTIME_CC	= 0.0;
 	//endregion
 
-	private Set<String> filter;
+	private StatFilter filter;
 	@Override
-	public Set<String> getQueriedStatCategories() {
+	public StatFilter getQueriedStatCategories() {
 		if(this.filter != null) return this.filter;
 		this.filter = super.getBaseQueriedStatCategories();
 
@@ -66,7 +73,10 @@ public class HalfishScorer extends SpecScorer {
 				"devotion",
 				"heal",
 				"healing lore",
-				"magical efficiency"
+				"magical efficiency",
+				"percent sp",
+				"sp",
+				"gear sp"
 		));
 
 		return this.filter;

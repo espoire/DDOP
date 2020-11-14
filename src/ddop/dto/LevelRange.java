@@ -1,9 +1,12 @@
 package ddop.dto;
 
+import ddop.Settings;
+
 public class LevelRange {
+    public static final LevelRange ANY = new LevelRange(0, Settings.LEVEL_CAP);
+
     public final int minimum, maximum;
 
-    public LevelRange(int maximum) { this(0, maximum); }
     public LevelRange(int minimum, int maximum) {
         if(maximum < minimum) throw new RuntimeException("Attempted to create an inverted LevelRange [" + minimum + " .. " + maximum + "]");
 

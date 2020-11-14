@@ -2,6 +2,8 @@ package ddop.optimizer.valuation;
 
 import util.StatTotals;
 
+import java.util.Set;
+
 public class ArmorType {
     public static final ArmorType NONE = new ArmorType("None",   null,                          0.0, 50),
                                  CLOTH = new ArmorType("Cloth",  null,                          0.0, 50),
@@ -24,6 +26,15 @@ public class ArmorType {
         this.MRRCap = MRRCap;
     }
 
+    public static ArmorType pickPreferredArmorType(Set<ArmorType> allowedArmorTypes) {
+        ArmorType ret = null;
+
+        for(ArmorType type : ArmorType.all)
+            if(allowedArmorTypes.contains(type))
+                ret = type;
+
+        return ret;
+    }
 
 
     public String getRequiredProficiency() { return this.proficiency; }

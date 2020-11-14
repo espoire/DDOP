@@ -3,6 +3,7 @@ package ddop.optimizer.valuation;
 import ddop.builds.adventurerClass.BaseAttackBonusProgression;
 import ddop.optimizer.valuation.damage.DamageSource;
 import ddop.stat.AbilityScore;
+import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
 import ddop.stat.list.AbstractStatList;
 import util.NumberFormat;
@@ -18,18 +19,21 @@ public abstract class SpecScorer extends StatScorer {
 	int characterLevel;
 
 	private final BaseAttackBonusProgression BABProgression;
-	private final StatSource build;
-	private final StatSource reaperBuild;
-	
-	SpecScorer(int level) {
+	private StatSource build;
+	private StatSource reaperBuild;
+
+	protected SpecScorer(int level) {
 		this.characterLevel = level;
 		this.BABProgression = this.getBABProgression();
-		this.build = this.getBuild();
+	}
+
+	protected void initialize() {
+		this.build       = this.getBuild();
 		this.reaperBuild = this.getReaperBuild();
 	}
 
-	protected Set<String> getBaseQueriedStatCategories() {
-		Set<String> ret = new HashSet<>();
+	protected StatFilter getBaseQueriedStatCategories() {
+		StatFilter ret = new StatFilter();
 
 		if(this.valuesDPS()) {
 			for(Set<String> queried : this.getDamageSourcesQueriedStatCategories())
@@ -46,9 +50,7 @@ public abstract class SpecScorer extends StatScorer {
 				"minor artifact",
 				"dexterity",
 				"constitution",
-				"intelligence",
 				"wisdom",
-				"charisma",
 				"cannith combat infusion",
 				"hp",
 				"percent hp",
@@ -105,6 +107,8 @@ public abstract class SpecScorer extends StatScorer {
 				"healing amplification",
 				"feat: wind through the trees",
 				"improved quelling strikes",
+				"deathblock",
+				"blindness immunity",
 				"spell saves",
 				"fortitude saves",
 				"insightful reflexes",
@@ -114,10 +118,7 @@ public abstract class SpecScorer extends StatScorer {
 				"epic fortitude",
 				"epic reflex",
 				"epic will",
-				"slippery mind",
-				"percent sp",
-				"sp",
-				"gear sp"
+				"slippery mind"
 		));
 
 		return ret;
@@ -225,7 +226,9 @@ public abstract class SpecScorer extends StatScorer {
 								VALUATION_DCS            = 3.0, // 1 for the DPS-equivalent, 1 for DPS benefit to party, 1 for defenses benefit.
 								VALUATION_WIND_THROUGH_THE_TREES    = 1.015,
 								VALUATION_IMPROVED_QUELLING_STRIKES = 1.02, // TODO modify for weapon attack rate
-								VALUATION_TENDON_SLICE = 0.05,
+								VALUATION_IMMUNITY_DEATH = 1.03,
+								VALUATION_IMMUNITY_BLIND = 1.005,
+								VALUATION_TENDON_SLICE   = 0.05,
 								VALUATION_SAVES_IMPORTANCE = 0.6,
 								VALUATION_AVOIDANCE      = 0.9; // Multiplier for avoidance worth. Generally below 1, as avoidance cannot be trusted.
 
@@ -675,40 +678,45 @@ public abstract class SpecScorer extends StatScorer {
 	}
 	
 	private double scoreWindThroughTheTrees(StatTotals stats) {
-		if(stats.get("feat: wind through the trees") > 0) return VALUATION_WIND_THROUGH_THE_TREES;
+		if(stats.getBoolean("feat: wind through the trees")) return VALUATION_WIND_THROUGH_THE_TREES;
 		return 1;
 	}
 	
 	private double scoreImprovedQuellingStrikes(StatTotals stats) {
-		if(stats.get("improved quelling strikes") > 0) return VALUATION_IMPROVED_QUELLING_STRIKES;
+		if(stats.getBoolean("improved quelling strikes")) return VALUATION_IMPROVED_QUELLING_STRIKES;
 		return 1;
+	}
+
+	private double scoreImmunities(StatTotals stats) {
+		double ret = 1.0;
+
+		if(stats.getBoolean("deathblock"))         ret *= VALUATION_IMMUNITY_DEATH;
+		if(stats.getBoolean("blindness immunity")) ret *= VALUATION_IMMUNITY_BLIND;
+
+		return ret;
 	}
 	
 	private double scoreMiscEffects(StatTotals stats) {
-		double windThroughTheTreesScore     = this.scoreWindThroughTheTrees(stats);
-		double improvedQuellingStrikesScore = this.scoreImprovedQuellingStrikes(stats);
-		return windThroughTheTreesScore * improvedQuellingStrikesScore;
+		return this.scoreWindThroughTheTrees(stats) *
+				this.scoreImprovedQuellingStrikes(stats) *
+				this.scoreImmunities(stats);
 	}
-	
+
 	private double scoreSaves(StatTotals stats) {
 		int dex = this.getDex(stats);
 		int con = this.getCon(stats);
-		int inte = this.getInt(stats);
 		int wis = this.getWis(stats);
-		int cha = this.getCha(stats);
 		int dexMod = this.getAbilityMod(AbilityScore.DEXTERITY,    stats);
-		int intMod = this.getAbilityMod(AbilityScore.INTELLIGENCE, stats);
 		int conMod = this.getAbilityMod(AbilityScore.CONSTITUTION, stats);
 		int wisMod = this.getAbilityMod(AbilityScore.WISDOM,       stats);
-		int chaMod = this.getAbilityMod(AbilityScore.CHARISMA,     stats);
 		
 		int spellSaves = stats.getInt("spell saves");
 		int fortSaves  = conMod + stats.getInt("fortitude saves");
 
-		int reflMod = (stats.getBoolean("insightful reflexes") ? Math.max(dexMod, intMod) : dexMod);
+		int reflMod = this.getReflexMod(stats);
 		int reflSaves  = reflMod + stats.getInt("reflex saves");
 
-		int willMod = (stats.getBoolean("force of personality") ? Math.max(wisMod, chaMod) : wisMod);
+		int willMod = this.getWillMod(stats);
 		int willSaves  = willMod + stats.getInt("will saves");
 
 		double fortRate = getSaveSpread(fortSaves, stats.getBoolean("epic fortitude"),	1);
@@ -726,20 +734,24 @@ public abstract class SpecScorer extends StatScorer {
 		
 		if(this.verbose) {
 			System.out.println("SpecScorer Saves Debug Log\n"
-					+ (stats.getBoolean("insightful reflexes") && intMod > dexMod ?
-						"+- INT:       " + inte + " (+" + intMod + ")\n" :
-						"+- DEX:       " + dex  + " (+" + dexMod + ")\n")
+					+ "+- DEX:       " + dex + " (+" + dexMod + ")\n"
 					+ "+- CON:       " + con + " (+" + conMod + ")\n"
-					+ (stats.getBoolean("force of personality") && chaMod > wisMod ?
-						"+- CHA:       " + cha + " (+" + chaMod + ")\n" :
-						"+- WIS:       " + wis + " (+" + wisMod + ")\n")
+					+ "+- WIS:       " + wis + " (+" + wisMod + ")\n"
 					+ "+- Saves:     " + fortSaves + "/" + reflSaves + "/" + willSaves + " (" + NumberFormat.percent(allSavesRate) + ")\n"
 				    + "+- Score:     " + NumberFormat.percent(score) + "\n");
 		}
 		
 		return score;
 	}
-	
+
+	protected int getReflexMod(StatTotals stats) {
+		return this.getAbilityMod(AbilityScore.DEXTERITY, stats);
+	}
+
+	protected int getWillMod(StatTotals stats) {
+		return this.getAbilityMod(AbilityScore.WISDOM, stats);
+	}
+
 	// Static helper methods below
 	
 	private static int abilityMod(int abilityScore) {

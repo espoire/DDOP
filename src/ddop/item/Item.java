@@ -26,9 +26,6 @@ public class Item implements StatSource {
 
 	public PropertiesList getPropsClone() { return (PropertiesList) this.props.clone(); }
 	public String toJson() {
-		System.out.println(this.props);
-//		return new Gson().toJson((Map<String, List<String>>) this.props);
-
 		return Json.formatMapRemoveEmptyLists(this.props);
 	}
 	

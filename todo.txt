@@ -1,19 +1,9 @@
 TODO
     Crafted item sources
         Cannith
-            Trinket
-            Gloves
-            Belt
-            Amulet
-            Helm
-            Goggles
-            Armors
-                5 variants: Robe, Light, Medium, Heavy, Docent
-            Bracers
-            Cape
-            Ring
-            Boots
-            Weapon
+            Hook in to optimizer
+            Clean up
+        Clean up
     Feywild set definitions
         Move set bonuses over to JSONs
     Import Feywild items

@@ -79,11 +79,11 @@ public class SlaversCraftedItemSource {
 
     @NotNull
     private static PropertiesList generateItemTemplate(SlaversTier selected) {
-        PropertiesList itemTemplate = new PropertiesList();
+        PropertiesList ret = new PropertiesList();
 
-        itemTemplate.put("name", "slavers crafted");
-        itemTemplate.put("minimum level", String.valueOf(selected.level));
-        itemTemplate.put("slot", Arrays.asList(
+        ret.put("name", "slavers crafted");
+        ret.put("minimum level", String.valueOf(selected.level));
+        ret.put("slot", Arrays.asList(
                 "waist",
                 "neck",
                 "trinket",
@@ -92,7 +92,7 @@ public class SlaversCraftedItemSource {
                 "feet"
         ));
 
-        return itemTemplate;
+        return ret;
     }
 
     private static Map<String, SlaversTier> loadRecipeMap() {

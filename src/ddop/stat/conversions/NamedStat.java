@@ -111,6 +111,7 @@ public class NamedStat {
         new NamedStat("template:protection").addBonus("ac", "deflection",    0);
         new NamedStat("hardened exterior")  .addBonus("ac", "profane",       0);
         new NamedStat("heightened awareness (10)").addBonus("ac", "insight", 10);
+        new NamedStat("dodge bonus").addBonus("dodge", null, 0);
         new NamedStat("greater reinforced fists") .addBonus("reinforced fists", "default", 2);
         new NamedStat("superior reinforced fists").addBonus("reinforced fists", "default", 3);
         new NamedStat("well rounded").addBonus("strength",     null, 0)
@@ -133,6 +134,7 @@ public class NamedStat {
                                                   .addBonus("hide",          "enhancement", 5)
                                                   .addBonus("move silently", "enhancement", 5);
         new NamedStat("ethereal").addBonus("ghost touch");
+        new NamedStat("true sight").addBonus("true seeing");
         new NamedStat("resistance").addBonus("fortitude saves", null,      0)
                                    .addBonus("reflex saves",    null,      0)
                                    .addBonus("will saves",      null,      0);
@@ -155,8 +157,11 @@ public class NamedStat {
                                         .addBonus("all skills",	"morale", 4);
         new NamedStat("good luck").addBonus("resistance", "luck", 0)
                                   .addBonus("all skills", "luck", 0);
+        new NamedStat("fortitude")     .addBonus("fortitude saves", null, 0);
         new NamedStat("fortitude save").addBonus("fortitude saves", null, 0);
+        new NamedStat("reflex")        .addBonus("reflex saves",    null, 0);
         new NamedStat("reflex save")   .addBonus("reflex saves",    null, 0);
+        new NamedStat("will")          .addBonus("will saves",      null, 0);
         new NamedStat("will save")     .addBonus("will saves",      null, 0);
         new NamedStat("spell save")    .addBonus("spell saves",     null, 0);
         new NamedStat("seeker").addBonus("critical confirmation",	null, 0)

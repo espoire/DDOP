@@ -51,7 +51,7 @@ public class PlanLoadoutMain {
 	};
 	
 	public static void main(String... s) {
-		StatScorer scorer = new ShintaoScorer(30).r(8);
+		StatScorer scorer = ShintaoScorer.create(30).r(8);
 		EquipmentLoadout currentGear =
 				StoredLoadouts.getShintaoSoulSplitterGear();
 //				StoredLoadouts.getHealbardNoSetGear();
@@ -142,6 +142,7 @@ public class PlanLoadoutMain {
 	
 	private static Map<ItemSlot, RandomAccessScoredItemList> getItemSlotScoredItemListMap (ValuationContext vc, List<ItemSlot> skipSlots) {
 		Map<ItemSlot, RandomAccessScoredItemList> ret = new HashMap<>();
+		Set<ItemSlot> includedItemSlots = ItemSlot.getUnskippedSlots(skipSlots);
 
 		ItemList candidates = ItemList.getAllNamedItems()
 				.merge(SlaversCraftedItemSource.generateList(TARGET_ITEMS_LEVEL_RANGE, vc.getQueriedStatCategories()))

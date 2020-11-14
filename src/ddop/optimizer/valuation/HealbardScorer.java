@@ -8,6 +8,7 @@ import ddop.constants.Tier;
 import ddop.optimizer.valuation.damage.DamageSource;
 import ddop.optimizer.valuation.damage.spell.Spell;
 import ddop.stat.AbilityScore;
+import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
 import util.NumberFormat;
 import util.StatTotals;
@@ -15,11 +16,17 @@ import util.StatTotals;
 import java.util.*;
 
 public class HealbardScorer extends SpecScorer {
-	public HealbardScorer(int simCharacterLevel) {
+	protected HealbardScorer(int simCharacterLevel) {
 		super(simCharacterLevel);
 
 		this.characterLevel = 26;
 		this.hitDie = 6;
+	}
+
+	public static HealbardScorer create(int simCharacterLevel) {
+		HealbardScorer ret = new HealbardScorer(simCharacterLevel);
+		ret.initialize();
+		return ret;
 	}
 
 	//region Constants
@@ -37,9 +44,9 @@ public class HealbardScorer extends SpecScorer {
 								TARGETS_OTTOS_IRR	= 1;
 	//endregion
 
-	private Set<String> filter;
+	private StatFilter filter;
 	@Override
-	public Set<String> getQueriedStatCategories() {
+	public StatFilter getQueriedStatCategories() {
 		if(this.filter != null) return this.filter;
 		this.filter = super.getBaseQueriedStatCategories();
 
@@ -52,7 +59,10 @@ public class HealbardScorer extends SpecScorer {
 				"heal",
 				"healing lore",
 				"healing critical multiplier",
-				"magical efficiency"
+				"magical efficiency",
+				"percent sp",
+				"sp",
+				"gear sp"
 		));
 
 		return this.filter;

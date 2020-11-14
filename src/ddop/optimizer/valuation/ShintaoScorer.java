@@ -6,6 +6,7 @@ import ddop.builds.adventurerClass.BaseAttackBonusProgression;
 import ddop.optimizer.valuation.damage.DamageSource;
 import ddop.optimizer.valuation.damage.weapon.CenteredUnarmedFalconer;
 import ddop.stat.AbilityScore;
+import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
 import util.NumberFormat;
 import util.StatTotals;
@@ -14,9 +15,15 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 public class ShintaoScorer extends SpecScorer {
-	public ShintaoScorer(int simCharacterLevel) {
+	protected ShintaoScorer(int simCharacterLevel) {
 		super(simCharacterLevel);
 		this.hitDie = 6;
+	}
+
+	public static ShintaoScorer create(int simCharacterLevel) {
+		ShintaoScorer ret = new ShintaoScorer(simCharacterLevel);
+		ret.initialize();
+		return ret;
 	}
 
 	//region Constants
@@ -30,9 +37,9 @@ public class ShintaoScorer extends SpecScorer {
 	private static final boolean DUALITY_THE_MORAL_COMPASS = false;
 	//endregion
 
-	private Set<String> filter;
+	private StatFilter filter;
 	@Override
-	public Set<String> getQueriedStatCategories() {
+	public StatFilter getQueriedStatCategories() {
 		if(this.filter != null) return this.filter;
 		this.filter = super.getBaseQueriedStatCategories();
 

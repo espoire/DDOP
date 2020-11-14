@@ -1,6 +1,6 @@
 // Exports the Cannith Crafting configuration data.
 //
-// Paste the following into the broser console while at
+// Paste the following into the browser console while at
 // http://ccplanner.byethost14.com/main.html
 //
 // If successful, the system clipboard will contain a new JSON file.
@@ -93,7 +93,7 @@ window.CannithCraftingScraper = (function() {
         return power_info[scale_info[i][6]][powerLevel -1];
     }
     
-    // Searches for an ench_id in the byethost array, scale_info.
+    // Searches for an ench_id in the Byethost array, scale_info.
     function getScaleInfoIndex(ench_id) {
         for (var i = 0; i < scale_info.length; i++)
             if (scale_info[i][0] == ench_id)

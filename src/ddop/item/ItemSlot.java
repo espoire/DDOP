@@ -19,7 +19,17 @@ public class ItemSlot {
 		ItemSlot.byName.put(name.toLowerCase(), this);
 	}
 
-	private ItemSlot alias(String string) {
+    public static Set<ItemSlot> getUnskippedSlots(List<ItemSlot> skipSlots) {
+		List<ItemSlot> working = Arrays.asList(ItemSlot.getAll());
+		working.add(ItemSlot.FINGER); // Needs to be "skipped" twice.
+
+		for(ItemSlot toRemove : skipSlots)
+			working.remove(toRemove);
+
+		return new HashSet<>(working);
+    }
+
+    private ItemSlot alias(String string) {
 		ItemSlot.byName.put(string.toLowerCase(), this);
 		return this;
 	}
@@ -63,7 +73,7 @@ public class ItemSlot {
 				continue;
 			}
 
-			ItemSlot slot = ItemSlot.byName.get(s);
+			ItemSlot slot = ItemSlot.getSlot(s);
 			if(slot != null) {
 				ret.add(slot);
 			} else {
@@ -76,5 +86,9 @@ public class ItemSlot {
 
 		System.err.println("Slot not found for " + pl.toString("Name"));
 		return null;
+	}
+
+	public static ItemSlot getSlot(String s) {
+		return ItemSlot.byName.get(s);
 	}
 }
