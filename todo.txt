@@ -1,8 +1,4 @@
 TODO
-    Crafted item sources
-        Cannith
-            Clean up
-        Clean up
     Profile code
     Feywild set definitions
         Move set bonuses over to JSONs
