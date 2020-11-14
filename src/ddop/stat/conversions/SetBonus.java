@@ -214,8 +214,7 @@ public class SetBonus {
 		for(SetBonus sb : SetBonus.all.values()) {
 			int counts = getCounts(sb.name, stats);
 			for(Integer countsRequired : sb.bonus.keySet()) {
-				if(suppressCountsRequirement) countsRequired = 1;
-				if(counts >= countsRequired)
+				if(counts >= countsRequired || (suppressCountsRequirement && counts >= 1))
 					ret.addAll(sb.bonus.get(countsRequired));
 			}
 		}

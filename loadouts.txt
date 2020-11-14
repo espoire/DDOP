@@ -1,22 +1,22 @@
 EquipmentLoadout (13 items):
-| Head: legendary alchemist's crown ([quality wisdom +5] version)
-| Finger: legendary omniscience, legendary tumbleweed
-| Trinket: echo of ravenkind
-| Waist: legendary braided cutcord
-| Armor: patience through peril
-| Feet: piston boots
-| Back: the invisible cloak of strahd
+| Feet: slavers crafted ([constitution +17, armor-piercing +28%, tendon slice 14%, quality wisdom +4] version) - 41%
 | Quiver: quiver of alacrity
-| Wrist: legendary moonrise bracers
-| Hand: molten silver gauntlets
+| Finger: legendary omniscience, legendary tumbleweed
 | Eye: legendary collective sight ([wisdom +21, insightful constitution +10] version)
+| Head: legendary executioner's helm - 22%
+| Armor: patience through peril
 | Neck: doctor leroux's curious implant
+| Waist: legendary braided cutcord
+| Wrist: legendary moonrise bracers
+| Back: the invisible cloak of strahd
+| Trinket: legendary corroded iron figurine - 80%
+| Hand: staggershockers
 | Main Hand: [EMPTY]
 | Off Hand: [EMPTY]
 
 SpecScorer Overall Score Debug Log
-DPS Score: 10.7k
-DCs:       10.3k
-Defenses:  12.1k
-Saves:     90.9%
-Total:     2.8 M(108%)
+DPS Score: 13.6k
+DCs:       10.9k
+Defenses:  12.4k
+Saves:     90.5%
+Total:     3.4 M (114.4%)

@@ -5,7 +5,7 @@ import ddop.optimizer.valuation.ValuationContext;
 
 public class ScoredItem extends ScoredStatSource<Item> implements Cloneable {
     public ScoredItem(Item source, ValuationContext context) {
-        super(source, context);
+        super(source, context, true);
     }
     private ScoredItem(double score, Item source) {
         super(score, source);

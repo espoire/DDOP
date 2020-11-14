@@ -78,6 +78,18 @@ public class ItemList implements Cloneable, Iterable<Item> {
 		
 		return ret;
 	}
+
+	public ItemList filterByIncludedItemSlots(Set<ItemSlot> includedItemSlots) {
+		ItemList ret = new ItemList();
+		if(includedItemSlots == null || includedItemSlots.size() == 0) return ret;
+
+outer:	for(Item i : items) for(ItemSlot slot : includedItemSlots) if(i.slots.contains(slot)) {
+			ret.addItem(i);
+			continue outer;
+		}
+
+		return ret;
+	}
 	
 	public ItemList filterBy(ArmorType armorType) {
 		if(armorType == null) return this;
@@ -91,7 +103,7 @@ public class ItemList implements Cloneable, Iterable<Item> {
 		return ret;
 	}
 
-	public ItemList filterBy(Set<ArmorType> allowedArmorTypes) {
+	public ItemList filterByAllowedArmorTypes(Set<ArmorType> allowedArmorTypes) {
 		if(allowedArmorTypes == null || allowedArmorTypes.size() == 0) return this;
 
 		ItemList ret = new ItemList();
@@ -118,6 +130,16 @@ public class ItemList implements Cloneable, Iterable<Item> {
 
 		for(ItemSlot slot : ItemSlot.getAll())
 			ret.put(slot, this.filterBy(slot));
+
+		return ret;
+	}
+
+	public Map<ItemSlot, ItemList> mapBySlot(Set<ItemSlot> includedItemSlots) {
+		Map<ItemSlot, ItemList> ret = new LinkedHashMap<>();
+
+		for(ItemSlot slot : ItemSlot.getAll())
+			if(includedItemSlots.contains(slot))
+				ret.put(slot, this.filterBy(slot));
 
 		return ret;
 	}

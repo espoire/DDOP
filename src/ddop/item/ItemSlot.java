@@ -20,7 +20,7 @@ public class ItemSlot {
 	}
 
     public static Set<ItemSlot> getUnskippedSlots(List<ItemSlot> skipSlots) {
-		List<ItemSlot> working = Arrays.asList(ItemSlot.getAll());
+		List<ItemSlot> working = new ArrayList<>(Arrays.asList(ItemSlot.getAll()));
 		working.add(ItemSlot.FINGER); // Needs to be "skipped" twice.
 
 		for(ItemSlot toRemove : skipSlots)

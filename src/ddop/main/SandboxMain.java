@@ -1,11 +1,9 @@
 package ddop.main;
 
 import ddop.Settings;
-import ddop.dto.LevelRange;
 import ddop.item.Item;
 import ddop.item.ItemList;
 import ddop.item.loadout.EquipmentLoadout;
-import ddop.item.sources.crafted.SlaversCraftedItemSource;
 import ddop.optimizer.valuation.ShintaoScorer;
 import ddop.optimizer.valuation.StatScorer;
 import ddop.stat.conversions.NamedStat;
@@ -14,16 +12,12 @@ import file.CompileHTML;
 import file.WgetScripter;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Set;
 
 @SuppressWarnings("all")
 public class SandboxMain {
     public static void main(String... s) {
-        Collection<Item> items = SlaversCraftedItemSource.generateList(new LevelRange(1, 30), ShintaoScorer.create(30).getQueriedStatCategories());
-
-        if(items != null) for(Item i : items)
-            System.out.println(i);
+        printItemSetStats();
     }
 
     private static void printAllUnvaluedStats(StatScorer scorer) {
@@ -52,22 +46,18 @@ public class SandboxMain {
         EquipmentLoadout el = new EquipmentLoadout();
 
         el.put(
-                "mantle of escher",
-                "van richten's spectacles",
-                "legendary corroded iron figurine",
-                "legendary drow sage's cowl",
-                "legendary omniscience, legendary tumbleweed",
-                "legendary cloak of the city's champion",
-                "legendary levik's bracers",
-                "doctor leroux's curious implant",
-                "epic purging the pantheon",
-                "azure guard",
-                "molten silver gauntlets",
+                "staggershockers",
                 "quiver of alacrity"
         );
 
         el.printItemNamesToConsole();
         el.printStatTotalsToConsole();
+
+        StatScorer ss = ShintaoScorer.create(30).r(8);
+
+        System.out.println("\n");
+
+        ss.showVerboseScoreFor(el);
     }
 
     private static void customWgetScript() {

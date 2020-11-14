@@ -6,6 +6,7 @@ import ddop.stat.AbilityScore;
 import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
 import ddop.stat.list.AbstractStatList;
+import ddop.stat.list.FastStatList;
 import util.NumberFormat;
 import util.Pair;
 import util.StatTotals;
@@ -47,30 +48,50 @@ public abstract class SpecScorer extends StatScorer {
 		}
 
 		ret.addAll(Arrays.asList(
-				"minor artifact",
-				"dexterity",
-				"constitution",
-				"wisdom",
-				"cannith combat infusion",
-				"hp",
-				"percent hp",
-				"unconsciousness range",
-				"prr",
+				// Equipped Item Types
 				"docent",
 				"light armor",
 				"medium armor",
 				"heavy armor",
+				"minor artifact",
+
+				// Proficiencies
 				"light armor proficiency",
 				"medium armor proficiency",
 				"heavy armor proficiency",
 				"small shield",
 				"large shield",
 				"tower shield",
+
+				// Ability Scores
+				"dexterity",
+				"constitution",
+				"wisdom",
+				"cannith combat infusion",
+
+				// Core Defenses
+				"hp",
+				"percent hp",
+				"unconsciousness range",
+				"prr",
 				"mrr",
 				"mrr cap",
+				"fortification",
+				"healing amplification",
+
 				"dr",
 				"self healing when hit",
-				"fortification",
+				"mp reduction",
+
+				// Probabilistic Defenses
+				"ac",
+				"percent ac",
+				"maximum dodge",
+				"dodge",
+				"concealment",
+				"incorporeal",
+
+				// Elemental Defenses
 				"fire resistance",
 				"cold resistance",
 				"electric resistance",
@@ -97,18 +118,21 @@ public abstract class SpecScorer extends StatScorer {
 				"chaos absorption",
 				"evil absorption",
 				"good absorption",
-				"mp reduction",
-				"ac",
-				"percent ac",
-				"maximum dodge",
-				"dodge",
-				"concealment",
-				"incorporeal",
-				"healing amplification",
+
+				// Misc Defensive
 				"feat: wind through the trees",
 				"improved quelling strikes",
-				"deathblock",
+
+				// Condition Immunities
+				"poison immunity",
+				"charm immunity",
+				"fear immunity",
 				"blindness immunity",
+				"petrification immunity",
+				"curse immunity",
+				"deathblock",
+
+				// Saves
 				"spell saves",
 				"fortitude saves",
 				"insightful reflexes",
@@ -226,8 +250,13 @@ public abstract class SpecScorer extends StatScorer {
 								VALUATION_DCS            = 3.0, // 1 for the DPS-equivalent, 1 for DPS benefit to party, 1 for defenses benefit.
 								VALUATION_WIND_THROUGH_THE_TREES    = 1.015,
 								VALUATION_IMPROVED_QUELLING_STRIKES = 1.02, // TODO modify for weapon attack rate
-								VALUATION_IMMUNITY_DEATH = 1.03,
-								VALUATION_IMMUNITY_BLIND = 1.005,
+								VALUATION_IMMUNITY_POISON  = 1.002,
+								VALUATION_IMMUNITY_CHARM   = 1.002,
+								VALUATION_IMMUNITY_FEAR    = 1.005,
+								VALUATION_IMMUNITY_BLIND   = 1.005,
+								VALUATION_IMMUNITY_PETRIFY = 1.005,
+								VALUATION_IMMUNITY_CURSE   = 1.03,
+								VALUATION_IMMUNITY_DEATH   = 1.03,
 								VALUATION_TENDON_SLICE   = 0.05,
 								VALUATION_SAVES_IMPORTANCE = 0.6,
 								VALUATION_AVOIDANCE      = 0.9; // Multiplier for avoidance worth. Generally below 1, as avoidance cannot be trusted.
@@ -236,7 +265,8 @@ public abstract class SpecScorer extends StatScorer {
 	//endregion
 	
 	@Override
-	protected double score(AbstractStatList stats, Double scoreToNormalizeTo) {
+	protected double score(AbstractStatList stats, Double scoreToNormalizeTo, boolean relaxArtifactConstraint) {
+		if(stats == null) stats = new FastStatList(this.getQueriedStatCategories(), null);
 		StatTotals totals = stats.add(this.build).add(this.reaperBuild).getStatTotals();
 		
 		double DPS = 1;
@@ -266,7 +296,7 @@ public abstract class SpecScorer extends StatScorer {
 		double offenseScoreTotal = (offensiveScore + DCs);
 		double defenseScoreTotal = (defenses       + DCs);
 
-		List<Pair<String, Double>> penalties = this.getPenalties(totals);
+		List<Pair<String, Double>> penalties = this.getPenalties(totals, relaxArtifactConstraint);
 
 		double penaltyMultiplier = 1.0;
 		for(Pair<String, Double> penalty : penalties) penaltyMultiplier *= penalty.getValue();
@@ -281,7 +311,7 @@ public abstract class SpecScorer extends StatScorer {
 			if(this.valuesHealing()) debugLog += "Healing:   " + NumberFormat.readableLargeNumber(healingScore) + "\n";
 			if(this.hasDCs()) debugLog += "DCs:       " + NumberFormat.readableLargeNumber(DCs) + "\n";
 			debugLog += "Defenses:  " + NumberFormat.readableLargeNumber(defenses) + "\n";
-			debugLog += "Saves:     " + NumberFormat.percent(saves)                + "\n";
+			debugLog += "Saves:     " + NumberFormat.percent(saves, 1) + "\n";
 
 			if(penalties.size() > 0) {
 				debugLog += "Penalties:     " + NumberFormat.percent(penaltyMultiplier - 1) + "\n";
@@ -289,7 +319,7 @@ public abstract class SpecScorer extends StatScorer {
 					debugLog += "               " + penalty.getKey() + " (" + NumberFormat.percent(penalty.getValue() - 1) + ")\n";
 			}
 
-			debugLog += "Total:     " + NumberFormat.readableLargeNumber(score)    + "(" + NumberFormat.percent(score / scoreToNormalizeTo) + ")\n";
+			debugLog += "Total:     " + NumberFormat.readableLargeNumber(score)    + " (" + NumberFormat.percent(score / scoreToNormalizeTo, 1) + ")\n";
 			
 			System.out.println(debugLog);
 		}
@@ -297,11 +327,11 @@ public abstract class SpecScorer extends StatScorer {
 		return score;
 	}
 
-	protected List<Pair<String, Double>> getPenalties(StatTotals stats) {
+	protected List<Pair<String, Double>> getPenalties(StatTotals stats, boolean relaxArtifactConstraint) {
 		List<Pair<String, Double>> ret = new ArrayList<>();
 
 		int minorArtifactCount = stats.getInt("minor artifact");
-		if(minorArtifactCount < 1) ret.add(new Pair<>("Not wearing a minor artifact.", 0.8));
+		if(minorArtifactCount < 1 && !relaxArtifactConstraint) ret.add(new Pair<>("Not wearing a minor artifact.", 0.8));
 		if(minorArtifactCount > 1) ret.add(new Pair<>("Wearing" + minorArtifactCount + " minor artifacts.", 1 - (0.2 * minorArtifactCount)));
 
 		return ret;
@@ -690,8 +720,13 @@ public abstract class SpecScorer extends StatScorer {
 	private double scoreImmunities(StatTotals stats) {
 		double ret = 1.0;
 
-		if(stats.getBoolean("deathblock"))         ret *= VALUATION_IMMUNITY_DEATH;
-		if(stats.getBoolean("blindness immunity")) ret *= VALUATION_IMMUNITY_BLIND;
+		if(stats.getBoolean("poison immunity"))        ret *= VALUATION_IMMUNITY_POISON;
+		if(stats.getBoolean("charm immunity"))         ret *= VALUATION_IMMUNITY_CHARM;
+		if(stats.getBoolean("fear immunity"))          ret *= VALUATION_IMMUNITY_FEAR;
+		if(stats.getBoolean("blindness immunity"))     ret *= VALUATION_IMMUNITY_BLIND;
+		if(stats.getBoolean("petrification immunity")) ret *= VALUATION_IMMUNITY_PETRIFY;
+		if(stats.getBoolean("curse immunity"))         ret *= VALUATION_IMMUNITY_CURSE;
+		if(stats.getBoolean("deathblock"))             ret *= VALUATION_IMMUNITY_DEATH;
 
 		return ret;
 	}

@@ -23,7 +23,7 @@ public class NumberFormat {
             long unitValue = SI_PREFIXES.get(prefix);
             double ratio = number / unitValue;
 
-            if(ratio >= 1) return niceFloat(ratio) + prefix;
+            if(ratio >= 1) return niceFloat(ratio, 1) + prefix;
         }
 
         return niceFloat(number);
@@ -58,7 +58,8 @@ public class NumberFormat {
 
         int decimalPosition = ret.indexOf(".");
 
-        int cutoff = decimalPosition + decimalPlaces;
+        int cutoff = decimalPosition + decimalPlaces +
+                (decimalPlaces == 0 ? 0 : 1); // If set to zero, drop the decimal too.
         if(cutoff > ret.length()) cutoff = ret.length();
 
         return ret.substring(0, cutoff);
@@ -68,8 +69,9 @@ public class NumberFormat {
         if(value == (int) value) return "" + (int) value;
         return niceFloat(value, decimalPlaces);
     }
-    
-    public static String percent(double number) {
-        return niceFloat(number * 100) + "%";
+
+    public static String percent(double number) { return percent(number, 0); }
+    public static String percent(double number, int decimalPlaces) {
+        return niceFloat(number * 100, decimalPlaces) + "%";
     }
 }

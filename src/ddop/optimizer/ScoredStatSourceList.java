@@ -8,12 +8,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class ScoredStatSourceList {
-    List<ScoredStatSource> scoredSources = new ArrayList<>();
+    List<ScoredStatSource<StatSource>> scoredSources = new ArrayList<>();
     
     private ScoredStatSourceList() {}
     public ScoredStatSourceList(Iterable<StatSource> list, ValuationContext vc) {
         for(StatSource ss : list) {
-            ScoredStatSource sss = new ScoredStatSource(ss, vc);
+            ScoredStatSource<StatSource> sss = new ScoredStatSource<>(ss, vc, false);
             if(sss.score > 0) {
                 this.scoredSources.add(sss);
             }
@@ -34,7 +34,7 @@ public class ScoredStatSourceList {
         ScoredStatSourceList ret = new ScoredStatSourceList();
         
         for(int i = 0; i < this.scoredSources.size(); i++) {
-            ScoredStatSource sss = this.scoredSources.get(i);
+            ScoredStatSource<StatSource> sss = this.scoredSources.get(i);
             if(sss.score >= minimumScore) ret.scoredSources.add(sss);
         }
         
@@ -45,22 +45,22 @@ public class ScoredStatSourceList {
         if(this.size() == 0) return this;
         double best = this.findBestScore();
         
-        for(ScoredStatSource sss : this.scoredSources) sss.normalizeScoreTo(normalizationFactor, best);
+        for(ScoredStatSource<StatSource> sss : this.scoredSources) sss.normalizeScoreTo(normalizationFactor, best);
 
-        List<ScoredStatSource> temp = new ArrayList<ScoredStatSource>();
-        for(ScoredStatSource sss : this.scoredSources) temp.add(sss.normalizeScoreTo(normalizationFactor, best));
+        List<ScoredStatSource<StatSource>> temp = new ArrayList<>();
+        for(ScoredStatSource<StatSource> sss : this.scoredSources) temp.add(sss.normalizeScoreTo(normalizationFactor, best));
         this.scoredSources = temp;
 
         return this;
     }
     
     private double findBestScore() {
-        ScoredStatSource best = this.getBest();
+        ScoredStatSource<StatSource> best = this.getBest();
         if(best == null) return Double.NaN;
         return best.score;
     }
     
-    public ScoredStatSource getBest() {
+    public ScoredStatSource<StatSource> getBest() {
         if(this.size() == 0) return null;
         return this.scoredSources.get(0);
     }
@@ -76,7 +76,7 @@ public class ScoredStatSourceList {
     
     private Collection<StatSource> getSources() {
         Collection<StatSource> ret = new ArrayList<>();
-        for(ScoredStatSource sss : this.scoredSources) ret.add(sss.source);
+        for(ScoredStatSource<StatSource> sss : this.scoredSources) ret.add(sss.source);
         return ret;
     }
 }

@@ -29,17 +29,17 @@ public class PlanLoadoutMain {
 
 	// Recommended duration: 50ms per candidate item.
 	private static final ExecutionSession EXECUTION_LENGTH =
-			new DurationSession(15 * Time.SECOND);
-//			new DurationSession(3 * Time.MINUTE);
+//			new DurationSession(15 * Time.SECOND);
+			new DurationSession(10 * Time.MINUTE);
 //			new DurationSession(1 * Time.HOUR);
-//			new DurationSession(8 * Time.HOUR);
+//			new DurationSession(6 * Time.HOUR);
 
 	private static final boolean MULTI_THREAD = true;
 	private static final int THREADS =
-			Runtime.getRuntime().availableProcessors() -1;
-//			2;
+//			Runtime.getRuntime().availableProcessors() -1;
+			2;
 	
-	private static final double ITEM_QUALITY_MINIMUM_RATIO = 0.40;
+	private static final double ITEM_QUALITY_MINIMUM_RATIO = 0.15;
 
 	private static final int TARGET_ITEMS_MIN_LEVEL = 26,
 							 TARGET_ITEMS_MAX_LEVEL = 30;
@@ -146,9 +146,10 @@ public class PlanLoadoutMain {
 
 		ItemList candidates = ItemList.getAllNamedItems()
 				.merge(SlaversCraftedItemSource.generateList(TARGET_ITEMS_LEVEL_RANGE, vc.getQueriedStatCategories()))
+//				.merge(CannithCraftedItemSource.generateList(TARGET_ITEMS_LEVEL_RANGE, ItemSlot.getUnskippedSlots(skipSlots), vc.getAllowedArmorTypes(), vc.getQueriedStatCategories()))
 				.filterByLevel(TARGET_ITEMS_LEVEL_RANGE)
-				.filterBy(vc.getAllowedArmorTypes());
-		Map<ItemSlot, ItemList> rawItemMap = candidates.mapBySlot();
+				.filterByAllowedArmorTypes(vc.getAllowedArmorTypes());
+		Map<ItemSlot, ItemList> rawItemMap = candidates.mapBySlot(includedItemSlots);
 
 		for(ItemSlot slot : rawItemMap.keySet()) {
 			int limit = getNumberOfUnskippedSlots(skipSlots, slot);
@@ -168,12 +169,27 @@ public class PlanLoadoutMain {
 
 		ret.put("quiver of alacrity");
 
-//		ret.put("legendary turncoat");
-//		ret.put("legendary family recruit sigil");
-//		ret.put("legendary hammerfist");
+		ret.put("legendary turncoat");
+		ret.put("legendary family recruit sigil");
+		ret.put("legendary hammerfist");
 
-		ret.put("legendary omniscience");
-		ret.put("legendary tumbleweed");
+		ret.put("the cornerstone champion ([quality wisdom +5] version)");
+
+
+//		ret.put("legendary moonrise bracers");
+//		ret.put("legendary collective sight ([wisdom +21, insightful constitution +10] version)");
+//		ret.put("doctor leroux's curious implant");
+
+//		ret.put("visions of precision");
+
+//		ret.put("patience through peril");
+//		ret.put("the invisible cloak of strahd");
+//		ret.put("legendary braided cutcord");
+
+//		ret.put("staggershockers");
+
+//		ret.put("legendary omniscience");
+//		ret.put("legendary tumbleweed");
 		
 		return ret;
 	}

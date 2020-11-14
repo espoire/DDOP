@@ -1,9 +1,9 @@
 TODO
     Crafted item sources
         Cannith
-            Hook in to optimizer
             Clean up
         Clean up
+    Profile code
     Feywild set definitions
         Move set bonuses over to JSONs
     Import Feywild items

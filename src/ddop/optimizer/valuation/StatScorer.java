@@ -12,13 +12,15 @@ public abstract class StatScorer {
 	protected boolean verbose = false;
 	protected int     skulls  = 0;
 	
-	public             double score(StatSource ss)                             { return this.score(ss, null); }
-	private            double score(StatSource ss,  Double scoreToNormalizeTo) {
+	public             double score(StatSource ss)                                  { return this.score(ss, null, false); }
+	public             double score(StatSource ss, boolean relaxArtifactConstraint) { return this.score(ss, null, relaxArtifactConstraint); }
+	public             double score(AbstractStatList asl, boolean relaxArtifactConstraint) { return this.score(asl, null, relaxArtifactConstraint); }
+	public             double score(StatSource ss, Double scoreToNormalizeTo, boolean relaxArtifactConstraint) {
 		StatFilter filter = this.getQueriedStatCategories();
 		AbstractStatList stats = new FastStatList(filter, ss);
-		return this.score(stats, scoreToNormalizeTo);
+		return this.score(stats, scoreToNormalizeTo, relaxArtifactConstraint);
 	}
-	protected abstract double score(AbstractStatList stats, Double scoreToNormalizeTo);
+	protected abstract double score(AbstractStatList stats, Double scoreToNormalizeTo, boolean relaxArtifactConstraint);
 	public abstract StatFilter getQueriedStatCategories();
 	
 	public StatScorer setVerbose(boolean b) { this.verbose = b; return this; }
@@ -28,7 +30,7 @@ public abstract class StatScorer {
 	public void showVerboseScoreFor(StatSource ss) { this.showVerboseScoreFor(ss, null); }
 	public void showVerboseScoreFor(StatSource ss, Double scoreToNormalizeTo) {
 		this.setVerbose(true);
-		this.score(ss, scoreToNormalizeTo);
+		this.score(ss, scoreToNormalizeTo, false);
 		this.setVerbose(false);
 	}
 

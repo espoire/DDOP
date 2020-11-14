@@ -5,6 +5,7 @@ import ddop.builds.ReaperBuild;
 import ddop.builds.adventurerClass.BaseAttackBonusProgression;
 import ddop.optimizer.valuation.damage.DamageSource;
 import ddop.optimizer.valuation.damage.weapon.CenteredUnarmedFalconer;
+import ddop.optimizer.valuation.damage.weapon.WeaponAttack;
 import ddop.stat.AbilityScore;
 import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
@@ -15,6 +16,8 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 public class ShintaoScorer extends SpecScorer {
+	private WeaponAttack weaponAttack;
+
 	protected ShintaoScorer(int simCharacterLevel) {
 		super(simCharacterLevel);
 		this.hitDie = 6;
@@ -30,8 +33,12 @@ public class ShintaoScorer extends SpecScorer {
 	private static final boolean MASS_FROG = false; // TODO - -2 all DCs, plus MF valuation
 	private static final boolean GLOBE_OF_TRUE_IMPERIAL_BLOOD = true,
 								 DIAMOND_OF_FESTIVE_WISDOM    = true,
-								 ELDRITCH_RESISTANCE_RITUAL   = true,
+								 ESSENCE_OF_CRACKED_CORE      = true,
+								 ESSENCE_OF_LITANY_DEAD       = true,
+								 TOPAZ_OF_SPEED               = true,
 								 SAPPHIRE_OF_GOOD_LUCK_2      = true,
+								 SAPPHIRE_OF_GREATER_HEROISM  = true,
+								 ELDRITCH_RESISTANCE_RITUAL   = true,
 								 YUGO_POT_WIS                 = true;
 
 	private static final boolean DUALITY_THE_MORAL_COMPASS = false;
@@ -64,7 +71,8 @@ public class ShintaoScorer extends SpecScorer {
 		if(this.damageSources != null) return this.damageSources;
 		this.damageSources = new ArrayList<>();
 
-		this.damageSources.add(new CenteredUnarmedFalconer());
+		this.weaponAttack = new CenteredUnarmedFalconer();
+		this.damageSources.add(this.weaponAttack);
 
 		return this.damageSources;
 	}
@@ -101,7 +109,7 @@ public class ShintaoScorer extends SpecScorer {
 		build.addStat("percent to-hit",          5, "precision");
 		build.addStat("accuracy",               48);
 		build.addStat("deadly",                 16);
-		build.addStat("deadly",                 23, "insight"); // Falconer deadly instinct
+		build.addStat("deadly",                 22, "insight"); // Falconer deadly instinct
 		build.addStat("sneak attack damage",     3);
 		build.addStat("melee power",           126);
 		build.addStat("melee alacrity",         15, "default");
@@ -137,6 +145,7 @@ public class ShintaoScorer extends SpecScorer {
 		build.addStat("fortification",          15);
 		if(ELDRITCH_RESISTANCE_RITUAL) build.addStat("resistance", 1, "competence");
 		if(SAPPHIRE_OF_GOOD_LUCK_2)    build.addStat("resistance", 2, "luck");
+		if(SAPPHIRE_OF_GREATER_HEROISM)build.addStat("greater heroism");
 		build.addStat("epic fortitude",			 1);
 		build.addStat("slippery mind",			 1);
 		build.addStat("fortitude saves",        44);
@@ -150,10 +159,20 @@ public class ShintaoScorer extends SpecScorer {
 		build.addStat("spell resistance",       42);
 		build.addStat("qp dc",                  21);
 		build.addStat("combat mastery",         21);
+		build.addStat("combat mastery",         22, "insight"); // Falconer deadly instinct
 		build.addStat("stunning",                1, "build 2");
 		
 		if(DUALITY_THE_MORAL_COMPASS)
 			build.addStat("ki", 3, "enhancement");
+
+		if(ESSENCE_OF_CRACKED_CORE)
+			build.addStat("ki", 1, "enhancement");
+
+		if(ESSENCE_OF_LITANY_DEAD)
+			build.addStat("well rounded", 2, "profane");
+
+		if(TOPAZ_OF_SPEED)
+			build.addStat("melee alacrity", 15, "enhancement");
 
 		return build;
 	}
@@ -219,7 +238,7 @@ public class ShintaoScorer extends SpecScorer {
 		int wisMod			= this.getAbilityMod(AbilityScore.WISDOM, stats);
 		int deadlyInstinct	= wisMod / 2;
 		
-		int tacticsDC	= stats.getInt("qp dc")														+ wisMod + deadlyInstinct;
+		int tacticsDC	= stats.getInt("qp dc")														    + wisMod + deadlyInstinct;
 		int stunDC		= Math.max((int) (stats.getInt("dazing") * 1.5), stats.getInt("stunning"))	+ wisMod + deadlyInstinct;
 		
 		int quiveringPalmDC = 10 + this.getClassLevel() / 2 + tacticsDC;
@@ -229,29 +248,33 @@ public class ShintaoScorer extends SpecScorer {
 		int jadeStrikeDC    = 10 + this.getClassLevel()     + stunDC;
 		int jadeTombDC      = 10 + this.getClassLevel()     + stunDC;
 		int kukandoDC       = 10 + this.getClassLevel()     + stunDC;
-		
-		double quiveringPalmDCRate	= SIM_ENEMY_SAVES_LOW_PORTION  * QPlookup  (quiveringPalmDC	- SIM_ENEMY_SAVES_FORT_LOW)
-									+ SIM_ENEMY_SAVES_MED_PORTION  * QPlookup  (quiveringPalmDC	- SIM_ENEMY_SAVES_FORT_MED)
-									+ SIM_ENEMY_SAVES_HIGH_PORTION * QPlookup  (quiveringPalmDC	- SIM_ENEMY_SAVES_FORT_HIGH);
-		double stunningFistDCRate	= SIM_ENEMY_SAVES_LOW_PORTION  * cap(0.05, (stunningFistDC	- SIM_ENEMY_SAVES_FORT_LOW)  * 0.05, 1)
-									+ SIM_ENEMY_SAVES_MED_PORTION  * cap(0.05, (stunningFistDC	- SIM_ENEMY_SAVES_FORT_MED)  * 0.05, 1)
-									+ SIM_ENEMY_SAVES_HIGH_PORTION * cap(0.05, (stunningFistDC	- SIM_ENEMY_SAVES_FORT_HIGH) * 0.05, 1);
-		double direChargeDCRate		= SIM_ENEMY_SAVES_LOW_PORTION  * cap(0.05, (direChargeDC	- SIM_ENEMY_SAVES_FORT_LOW)  * 0.05, 1)
-									+ SIM_ENEMY_SAVES_MED_PORTION  * cap(0.05, (direChargeDC	- SIM_ENEMY_SAVES_FORT_MED)  * 0.05, 1)
-									+ SIM_ENEMY_SAVES_HIGH_PORTION * cap(0.05, (direChargeDC	- SIM_ENEMY_SAVES_FORT_HIGH) * 0.05, 1);
-		double smiteTaintDCRate		= SIM_ENEMY_SAVES_LOW_PORTION  * cap(0.05, (smiteTaintDC	- SIM_ENEMY_SAVES_WILL_LOW)  * 0.05, 1)
-									+ SIM_ENEMY_SAVES_MED_PORTION  * cap(0.05, (smiteTaintDC	- SIM_ENEMY_SAVES_WILL_MED)  * 0.05, 1)
-									+ SIM_ENEMY_SAVES_HIGH_PORTION * cap(0.05, (smiteTaintDC	- SIM_ENEMY_SAVES_WILL_HIGH) * 0.05, 1);
-		double jadeStrikeDCRate		= SIM_ENEMY_SAVES_LOW_PORTION  * cap(0.05, (jadeStrikeDC	- SIM_ENEMY_SAVES_WILL_LOW)  * 0.05, 1)
-									+ SIM_ENEMY_SAVES_MED_PORTION  * cap(0.05, (jadeStrikeDC	- SIM_ENEMY_SAVES_WILL_MED)  * 0.05, 1)
-									+ SIM_ENEMY_SAVES_HIGH_PORTION * cap(0.05, (jadeStrikeDC	- SIM_ENEMY_SAVES_WILL_HIGH) * 0.05, 1);
-		double jadeTombDCRate		= SIM_ENEMY_SAVES_LOW_PORTION  * cap(0.05, (jadeTombDC	- SIM_ENEMY_SAVES_WILL_LOW)  * 0.05, 1)
-									+ SIM_ENEMY_SAVES_MED_PORTION  * cap(0.05, (jadeTombDC	- SIM_ENEMY_SAVES_WILL_MED)  * 0.05, 1)
-									+ SIM_ENEMY_SAVES_HIGH_PORTION * cap(0.05, (jadeTombDC	- SIM_ENEMY_SAVES_WILL_HIGH) * 0.05, 1);
-		double kukandoDCRate		= SIM_ENEMY_SAVES_LOW_PORTION  * cap(0.05, (kukandoDC	- SIM_ENEMY_SAVES_WILL_LOW)  * 0.05, 0.95)
-									+ SIM_ENEMY_SAVES_MED_PORTION  * cap(0.05, (kukandoDC	- SIM_ENEMY_SAVES_WILL_MED)  * 0.05, 0.95)
-									+ SIM_ENEMY_SAVES_HIGH_PORTION * cap(0.05, (kukandoDC	- SIM_ENEMY_SAVES_WILL_HIGH) * 0.05, 0.95);
-		
+
+		double hitChance = this.weaponAttack.getHitAnyRate(stats);
+		double hitsPerSwing = this.weaponAttack.getHitChance(stats) * this.weaponAttack.getWeaponAttacksPerSwing(stats);
+
+		double quiveringPalmDCRate	= (SIM_ENEMY_SAVES_LOW_PORTION  * QPlookup  (quiveringPalmDC	- SIM_ENEMY_SAVES_FORT_LOW)
+									 + SIM_ENEMY_SAVES_MED_PORTION  * QPlookup  (quiveringPalmDC	- SIM_ENEMY_SAVES_FORT_MED)
+									 + SIM_ENEMY_SAVES_HIGH_PORTION * QPlookup  (quiveringPalmDC	- SIM_ENEMY_SAVES_FORT_HIGH)) * hitChance;
+		double stunningFistDCRate	= SIM_ENEMY_SAVES_LOW_PORTION  * multihitDC(cap(0.05, (stunningFistDC - SIM_ENEMY_SAVES_FORT_LOW)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_MED_PORTION  * multihitDC(cap(0.05, (stunningFistDC - SIM_ENEMY_SAVES_FORT_MED)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_HIGH_PORTION * multihitDC(cap(0.05, (stunningFistDC - SIM_ENEMY_SAVES_FORT_HIGH) * 0.05, 0.95), hitsPerSwing);
+		double direChargeDCRate		= SIM_ENEMY_SAVES_LOW_PORTION  * multihitDC(cap(0.05, (direChargeDC   - SIM_ENEMY_SAVES_FORT_LOW)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_MED_PORTION  * multihitDC(cap(0.05, (direChargeDC   - SIM_ENEMY_SAVES_FORT_MED)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_HIGH_PORTION * multihitDC(cap(0.05, (direChargeDC   - SIM_ENEMY_SAVES_FORT_HIGH) * 0.05, 0.95), hitsPerSwing);
+		double smiteTaintDCRate		= SIM_ENEMY_SAVES_LOW_PORTION  * multihitDC(cap(0.05, (smiteTaintDC   - SIM_ENEMY_SAVES_WILL_LOW)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_MED_PORTION  * multihitDC(cap(0.05, (smiteTaintDC   - SIM_ENEMY_SAVES_WILL_MED)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_HIGH_PORTION * multihitDC(cap(0.05, (smiteTaintDC   - SIM_ENEMY_SAVES_WILL_HIGH) * 0.05, 0.95), hitsPerSwing);
+		double jadeStrikeDCRate		= SIM_ENEMY_SAVES_LOW_PORTION  * multihitDC(cap(0.05, (jadeStrikeDC   - SIM_ENEMY_SAVES_WILL_LOW)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_MED_PORTION  * multihitDC(cap(0.05, (jadeStrikeDC   - SIM_ENEMY_SAVES_WILL_MED)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_HIGH_PORTION * multihitDC(cap(0.05, (jadeStrikeDC   - SIM_ENEMY_SAVES_WILL_HIGH) * 0.05, 0.95), hitsPerSwing);
+		double jadeTombDCRate		= SIM_ENEMY_SAVES_LOW_PORTION  * multihitDC(cap(0.05, (jadeTombDC     - SIM_ENEMY_SAVES_WILL_LOW)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_MED_PORTION  * multihitDC(cap(0.05, (jadeTombDC     - SIM_ENEMY_SAVES_WILL_MED)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_HIGH_PORTION * multihitDC(cap(0.05, (jadeTombDC     - SIM_ENEMY_SAVES_WILL_HIGH) * 0.05, 0.95), hitsPerSwing);
+		double kukandoDCRate		= SIM_ENEMY_SAVES_LOW_PORTION  * multihitDC(cap(0.05, (kukandoDC      - SIM_ENEMY_SAVES_WILL_LOW)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_MED_PORTION  * multihitDC(cap(0.05, (kukandoDC      - SIM_ENEMY_SAVES_WILL_MED)  * 0.05, 0.95), hitsPerSwing)
+									+ SIM_ENEMY_SAVES_HIGH_PORTION * multihitDC(cap(0.05, (kukandoDC      - SIM_ENEMY_SAVES_WILL_HIGH) * 0.05, 0.95), hitsPerSwing);
+
+
 		double quiveringPalmScore = VALUATION_DEATH * SIM_DEATHABLE_PORTION   * quiveringPalmDCRate * TARGETS_QUIVERING_PALM / COOLDOWN_QUIVERING_PALM;
 		double stunningFistScore  = VALUATION_STUN  * SIM_STUNNABLE_PORTION   * stunningFistDCRate  * TARGETS_STUNNING_FIST  / COOLDOWN_STUNNING_FIST;
 		double direChargeScore    = VALUATION_STUN  * SIM_STUNNABLE_PORTION   * direChargeDCRate    * TARGETS_DIRE_CHARGE    / COOLDOWN_DIRE_CHARGE;
@@ -265,7 +288,7 @@ public class ShintaoScorer extends SpecScorer {
 		int averageKiAmount = 150;
 		double kiDrain = (double) averageKiAmount / concentration;
 		double passiveKi = BASE_KI_GENERATION - kiDrain;
-		double kiIncome   = kiPerHit * 5.59 * 0.7 + passiveKi / 6.0;
+		double kiIncome   = kiPerHit * this.weaponAttack.getHitsPerSecond(stats) + passiveKi / 6.0;
 		if(uncentered(stats)) kiIncome = 0;
 
 		double quiveringPalmKiRate = KI_QUIVERING_PALM / COOLDOWN_QUIVERING_PALM;
@@ -304,6 +327,10 @@ public class ShintaoScorer extends SpecScorer {
 		}
 		
 		return dcsScore;
+	}
+
+	private double multihitDC(double chance, double attempts) {
+		return 1 - Math.pow(1 - chance, attempts);
 	}
 
 	private boolean uncentered(StatTotals stats) {

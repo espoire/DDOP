@@ -27,6 +27,14 @@ public class StatTotals extends HashMap<String, Double> implements Cloneable {
 
 		return super.getOrDefault(key, this.defaultValue);
 	}
+
+	@Override
+	public boolean containsKey(Object key) {
+		if(filter != null && ! filter.contains(key))
+			throw new RuntimeException("Filtered StatTotals attempted to access an undeclared stat: " + key);
+
+		return super.containsKey(key);
+	}
 	
 	public double getDouble(String key) {
 		return this.get(key);
@@ -37,7 +45,7 @@ public class StatTotals extends HashMap<String, Double> implements Cloneable {
 	}
 
 	public boolean getBoolean(String key) {
-		return this.get(key) != 0;
+		return this.containsKey(key);
 	}
 	
 	public StatTotals subtract(StatTotals another) {

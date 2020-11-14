@@ -23,6 +23,10 @@ public class RandomAccessScoredItemList {
         }
         return null;
     }
+
+    public Item getRandomUnweighted() {
+        return ((ScoredItem) Random.random(this.inner.scoredItems)).getItem();
+    }
     
     public int size() {
         return this.inner.size();

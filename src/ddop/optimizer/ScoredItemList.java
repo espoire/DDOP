@@ -84,8 +84,8 @@ public class ScoredItemList {
 		return new ScoredItemList(items, vc);
 	}
 	
-	private Collection<Item> getItems() {
-		Collection<Item> ret = new ArrayList<>();
+	private List<Item> getItems() {
+		List<Item> ret = new ArrayList<>();
 		for(ScoredItem si : this.scoredItems) ret.add(si.source);
 		return ret;
 	}

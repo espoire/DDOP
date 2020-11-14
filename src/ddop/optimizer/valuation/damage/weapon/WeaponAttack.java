@@ -49,10 +49,19 @@ public abstract class WeaponAttack extends DamageSource {
 				"melee alacrity",
 				"empty red augment slot",
 				"empty orange augment slot",
-				"empty purple augment slot"
+				"empty purple augment slot",
+
+				// On Hit
+				"eternal holy burst",
+				"soul of the elements",
+				"noxious venom spike",
+				"epic noxious venom spike",
+
+				// On Vorpal
+				"stormreaver's thunderclap"
 		));
 
-		ret.addAll(WeaponAttack.damageMods.keySet());
+		ret.addAll(WeaponAttack.DAMAGE_MODS.keySet());
 
 		return ret;
 	}
@@ -84,11 +93,14 @@ public abstract class WeaponAttack extends DamageSource {
 		double bonusCritDamage   = damageOnCrit            * (1 + weaponPower / 100.0)	* physicalDamageMultiplier;
 		double sneakAttackDamage = sneakDamage             * (1 + weaponPower /  66.67)	* physicalDamageMultiplier;
 		double redAugments = stats.getInt("empty red augment slot") + stats.getInt("empty orange augment slot") + stats.getInt("empty purple augment slot");
+
 		double nonScalingBonusDamage = this.getWeaponBonusDamage(stats)	// TODO weapon stats
 				+ WeaponAttack.getNonScalingBonusDice(stats)
 				+ redAugments * 8 * 3.5; // 8d6 ML28 augments
 		double scalingBonusDamage = this.getScalingBonusDamage(stats);
-		double bonusDamage = (nonScalingBonusDamage + scalingBonusDamage) * magicalDamageMultiplier;
+		double onHitBonusDamage = (nonScalingBonusDamage + scalingBonusDamage) * magicalDamageMultiplier;
+
+		double onVorpalBonusDamage = this.getVorpalBonusDamage(stats) * magicalDamageMultiplier;
 		
 		double fortification	= this.getModifiedEnemyFortification(stats);
 		double sneakRate		= this.getSneakAttackOcurrenceRate(stats);
@@ -103,6 +115,8 @@ public abstract class WeaponAttack extends DamageSource {
 		
 		int		threatRange		= BASE_CRITICAL_THREAT_RANGE + stats.getInt("critical threat range");
 		double	threatChance	= 0.05 * threatRange;
+
+		double  vorpalRate      =         0.05 * confirmChance * (1 - fortification);
 		double	critRate		= threatChance * confirmChance * (1 - fortification);
 		double	hitRate			= hitChance - critRate;
 		double	grazingRate		= 0.95 - hitChance;
@@ -112,15 +126,17 @@ public abstract class WeaponAttack extends DamageSource {
 		int overwhelmingCrit		= stats.getInt("overwhelming critical");
 		double averageCritMult		= critMult + overwhelmingCrit * (0.1 / threatChance);
 		double critPhysical			= (physicalDamage + bonusCritDamage) * averageCritMult;
-		double critDamage			= critPhysical     + averageSneakDamage + bonusDamage;
-		double hitDamage			= physicalDamage   + averageSneakDamage + bonusDamage;
+		double critDamage			= critPhysical     + averageSneakDamage + onHitBonusDamage;
+		double hitDamage			= physicalDamage   + averageSneakDamage + onHitBonusDamage;
 		double grazingDamage		= grazingHitDamage + averageSneakDamage;
 
 		double relentlessFuryMultiplier = 1 + (stats.getBoolean("relentless fury") ? 0.05 * SIM_RELENTLESS_FURY_UPTIME : 0);
-		double damagePerAttack = critDamage * critRate + hitDamage * hitRate + grazingDamage * grazingRate * relentlessFuryMultiplier;
+		double damagePerAttack = (onVorpalBonusDamage * vorpalRate +
+								           critDamage * critRate +
+										    hitDamage * hitRate +
+				                        grazingDamage * grazingRate) * relentlessFuryMultiplier;
 
-
-		double attacksPerSwing = this.getWeaponAttacksPerSwing(stats);
+		double attacksPerSwing          = this.getWeaponAttacksPerSwing(stats);
 		double damagePerSwing	        = damagePerAttack * attacksPerSwing;
 		double damagePerSwingHelpless	= damagePerSwing * (1.2 + stats.get("damage vs helpless") / 100);
 		double damagePerSwingCombined   = (damagePerSwing * (1 - SIM_HELPLESS_UPTIME) + damagePerSwingHelpless * SIM_HELPLESS_UPTIME);
@@ -135,10 +151,10 @@ public abstract class WeaponAttack extends DamageSource {
 					+ "+- Weapon:    " + shortFloatText(weaponBonusWs, 5) + "[" + shortFloatText(weaponW, 4) + "] + " + deadly + " = " + (weaponBonusWs * weaponW + deadly) + "\n"
 					+ "+- Critical:  " + getCritProfileText(threatRange, critMult, overwhelmingCrit) + "\n"
 					+ "+- WeaponPwr: " + weaponPower + " (" + toPercentText(1 + weaponPower / 100.0) + ")\n"
-					+ "+- Physical:  " + (int) physicalDamage		+ " (" + (int) critPhysical + " crit)\n"
-					+ "+- Sneak:     " + (int) sneakAttackDamage		+ "\n"
-					+ "+- Bonus:     " + (int) bonusDamage	+ "\n"
-					+ "+- To-Hit:    " + (int) totalToHit + " (" + toPercentText(hitChance)	+ " hit, " + toPercentText(confirmChance) + " confirm)\n"
+					+ "+- Physical:  " + (int) physicalDamage + " (" + (int) critPhysical + " crit)\n"
+					+ "+- Sneak:     " + (int) sneakAttackDamage + "\n"
+					+ "+- Bonus:     " + (int) onHitBonusDamage	+ (onVorpalBonusDamage != 0 ? " (+" + (int) onVorpalBonusDamage + " on vorpal)" : "") + "\n"
+					+ "+- To-Hit:    " + (int) totalToHit + " (" + toPercentText(0.05)	+ " miss, " + toPercentText(grazingRate) + " grazing, " + toPercentText(hitRate) + " hit, " + toPercentText(critRate) + " crit (includes " + toPercentText(vorpalRate) + " vorpal))\n"
 				    + "+- Ave. Dmg:  " + (int) damagePerAttack + "\n"
 					+ "+- Hits/Sec:  " + shortFloatText(hitChance * swingsPerSecond * attacksPerSwing, 4) + " (" + toPercentText(hitChance) + " hit * " + shortFloatText(swingsPerSecond, 4) + " SpS * " + shortFloatText(attacksPerSwing, 4) + " DS + OH)\n"
 				    + "+- DPS:       " + (int) dps + " (" + (int) dpsVsHelpless + " helpless)\n"
@@ -148,15 +164,19 @@ public abstract class WeaponAttack extends DamageSource {
 		return dpsCombined;
 	}
 
+	public double getHitsPerSecond(StatTotals stats) {
+		return this.getHitChance(stats) * this.getActionsPerSecond(stats) * this.getWeaponAttacksPerSwing(stats);
+	}
+
 	private static final double d6 = 3.5;
 	private static final double onVorpal = 1.0 / 20.0;
-	private static final Map<String, Double> damageMods = WeaponAttack.generateDamageMods();
+
+	private static final Map<String, Double> DAMAGE_MODS = WeaponAttack.generateDamageMods();
 	private static Map<String, Double> generateDamageMods() {
 		Map<String, Double> ret = new HashMap<>();
 
 		ret.put("eternal holy burst", 4.16);
 		ret.put("soul of the elements", 15.0);
-		ret.put("stormreaver's thunderclap", 1000.0 * onVorpal); // TODO update damage / hook in Balanced Attacks
 		ret.put("noxious venom spike", 1 * d6);
 		ret.put("epic noxious venom spike", 2 * d6);
 
@@ -166,8 +186,27 @@ public abstract class WeaponAttack extends DamageSource {
 	private static double getNonScalingBonusDice(StatTotals stats) {
 		double total = 0;
 
-		for(Map.Entry<String, Double> mod : damageMods.entrySet())
-			if(stats.containsKey(mod.getKey()))
+		for(Map.Entry<String, Double> mod : DAMAGE_MODS.entrySet())
+			if(stats.getBoolean(mod.getKey()))
+				total += mod.getValue();
+
+		return total;
+	}
+
+	private static final Map<String, Double> VORPAL_DAMAGE_MODS = WeaponAttack.generateVorpalDamageMods();
+	private static Map<String, Double> generateVorpalDamageMods() {
+		Map<String, Double> ret = new HashMap<>();
+
+		ret.put("stormreaver's thunderclap", 2657.75 * 3/4); // 1325 lightning + 1325 sonic (DC 100 reflex save halves sonic -- assuming all mobs save and none have evasion)
+
+		return ret;
+	}
+
+	private static double getVorpalBonusDamage(StatTotals stats) {
+		double total = 0;
+
+		for(Map.Entry<String, Double> mod : VORPAL_DAMAGE_MODS.entrySet())
+			if(stats.getBoolean(mod.getKey()))
 				total += mod.getValue();
 
 		return total;
@@ -184,7 +223,7 @@ public abstract class WeaponAttack extends DamageSource {
 		return hitAnyChance;
 	}
 	
-	private double getWeaponAttacksPerSwing(StatTotals stats) {
+	public double getWeaponAttacksPerSwing(StatTotals stats) {
 		double doubles				= this.getWeaponDoubles(stats);
 		double offhandChance		= this.getWeaponOffhandChance(stats);
 		double offhandDoublestrike	= this.getWeaponOffhandDoublestrikeChance(stats);

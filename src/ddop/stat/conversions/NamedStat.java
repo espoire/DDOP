@@ -108,6 +108,7 @@ public class NamedStat {
         new NamedStat("natural armor")      .addBonus("ac", "natural armor", 0);
         new NamedStat("natural armor bonus").addBonus("ac", "natural armor", 0);
         new NamedStat("protection")         .addBonus("ac", "deflection",    0);
+        new NamedStat("shield bonus")       .addBonus("ac", "shield",        0);
         new NamedStat("template:protection").addBonus("ac", "deflection",    0);
         new NamedStat("hardened exterior")  .addBonus("ac", "profane",       0);
         new NamedStat("heightened awareness (10)").addBonus("ac", "insight", 10);
@@ -135,6 +136,8 @@ public class NamedStat {
                                                   .addBonus("move silently", "enhancement", 5);
         new NamedStat("ethereal").addBonus("ghost touch");
         new NamedStat("true sight").addBonus("true seeing");
+        new NamedStat("eversight").addBonus("true seeing")
+                                    .addBonus("blindness immunity");
         new NamedStat("resistance").addBonus("fortitude saves", null,      0)
                                    .addBonus("reflex saves",    null,      0)
                                    .addBonus("will saves",      null,      0);
