@@ -23,7 +23,7 @@ public abstract class StatScorer {
 	protected abstract double score(AbstractStatList stats, Double scoreToNormalizeTo, boolean relaxArtifactConstraint);
 	public abstract StatFilter getQueriedStatCategories();
 	
-	public StatScorer setVerbose(boolean b) { this.verbose = b; return this; }
+	public StatScorer setVerbose(boolean b) { this.verbose = b;     return this; }
 	public StatScorer r(int skulls)         { this.skulls = skulls; return this; }
 	protected Set<ArmorType> getAllowedArmorTypes() { return new HashSet<>(); }
 	

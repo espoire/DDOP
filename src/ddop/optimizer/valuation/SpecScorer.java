@@ -3,6 +3,7 @@ package ddop.optimizer.valuation;
 import ddop.builds.adventurerClass.BaseAttackBonusProgression;
 import ddop.optimizer.valuation.damage.DamageSource;
 import ddop.stat.AbilityScore;
+import ddop.stat.Stat;
 import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
 import ddop.stat.list.AbstractStatList;
@@ -31,6 +32,8 @@ public abstract class SpecScorer extends StatScorer {
 	protected void initialize() {
 		this.build       = this.getBuild();
 		this.reaperBuild = this.getReaperBuild();
+
+		this.reaperBuild.getStats();
 	}
 
 	protected StatFilter getBaseQueriedStatCategories() {
@@ -741,9 +744,9 @@ public abstract class SpecScorer extends StatScorer {
 		int dex = this.getDex(stats);
 		int con = this.getCon(stats);
 		int wis = this.getWis(stats);
-		int dexMod = this.getAbilityMod(AbilityScore.DEXTERITY,    stats);
-		int conMod = this.getAbilityMod(AbilityScore.CONSTITUTION, stats);
-		int wisMod = this.getAbilityMod(AbilityScore.WISDOM,       stats);
+		int dexMod = abilityMod(dex);
+		int conMod = abilityMod(con);
+		int wisMod = abilityMod(wis);
 		
 		int spellSaves = stats.getInt("spell saves");
 		int fortSaves  = conMod + stats.getInt("fortitude saves");
@@ -860,4 +863,17 @@ public abstract class SpecScorer extends StatScorer {
 	protected double scoreHealing(StatTotals stats) { return 0; }
 	/** Must return <code>true</code> if scoreHealing is implemented. */
 	protected abstract boolean valuesHealing();
+
+
+	public void printReaperBuildDebug() {
+		Collection<Stat> build = this.reaperBuild.getStats();
+
+		System.out.println("============= Begin Reaper Build Debug =============\n");
+
+		for(Stat s : build) {
+			System.out.println(s);
+		}
+
+		System.out.println("\n============== End Reaper Build Debug ==============");
+	}
 }

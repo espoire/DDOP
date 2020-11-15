@@ -11,12 +11,12 @@ public class ScoredLoadout {
     public EquipmentLoadout loadout;
     public Map<ItemSlot, RandomAccessScoredItemList> context;
     
-    public static ScoredLoadout score(EquipmentLoadout el, StatScorer ss) {
+    public static ScoredLoadout score(EquipmentLoadout loadout, StatScorer scorer) {
         ScoredLoadout ret = new ScoredLoadout();
-        
-        ret.score = ss.score(el);
-        ret.loadout = el;
-        
+
+        ret.loadout = loadout;
+        ret.score = scorer.score(ret.loadout);
+
         return ret;
     }
 
@@ -29,5 +29,9 @@ public class ScoredLoadout {
 
     public String toString() {
         return this.loadout.toString(this.context);
+    }
+
+    public int size() {
+        return this.loadout.size();
     }
 }

@@ -10,7 +10,8 @@ import java.util.List;
 
 /** Implements a Stat whitelist. */
 public class StatFilter extends HashSet<String> {
-    public boolean contains(String enchantment) {
+    /** Appropriate for raw enchantment strings, such as matching "Enhanced Speed XIV" to "melee alacrity". */
+    public boolean containsEnchantment(String enchantment) {
         Stat stat = Stat.parseStat(enchantment);
         List<Stat> descendants = new ArrayList<>(Collections.singletonList(stat));
 
@@ -23,4 +24,9 @@ public class StatFilter extends HashSet<String> {
 
         return false;
     }
+
+//    Inherited from superclass. Appropriate for already-processed Stat categories.
+//    public boolean contains(String category) {
+//        return super.contains(category);
+//    }
 }

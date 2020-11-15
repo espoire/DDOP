@@ -29,15 +29,15 @@ public class PlanLoadoutMain {
 
 	// Recommended duration: 50ms per candidate item.
 	private static final ExecutionSession EXECUTION_LENGTH =
-//			new DurationSession(15 * Time.SECOND);
-			new DurationSession(10 * Time.MINUTE);
+			new DurationSession(15 * Time.SECOND);
+//			new DurationSession(10 * Time.MINUTE);
 //			new DurationSession(1 * Time.HOUR);
 //			new DurationSession(6 * Time.HOUR);
 
-	private static final boolean MULTI_THREAD = true;
+	private static final boolean MULTI_THREAD = false;
 	private static final int THREADS =
-//			Runtime.getRuntime().availableProcessors() -1;
-			2;
+			Runtime.getRuntime().availableProcessors() -1;
+//			2;
 	
 	private static final double ITEM_QUALITY_MINIMUM_RATIO = 0.15;
 
@@ -52,6 +52,9 @@ public class PlanLoadoutMain {
 	
 	public static void main(String... s) {
 		StatScorer scorer = ShintaoScorer.create(30).r(8);
+
+//		((SpecScorer) scorer).printReaperBuildDebug();
+
 		EquipmentLoadout currentGear =
 				StoredLoadouts.getShintaoSoulSplitterGear();
 //				StoredLoadouts.getHealbardNoSetGear();
@@ -62,6 +65,8 @@ public class PlanLoadoutMain {
 		double previousGearSetScore = scorer.score(currentGear);
 
 		simLoadouts(scorer, previousGearSetScore);
+
+//		((SpecScorer) scorer).printReaperBuildDebug();
 	}
 	
 	private static void simLoadouts(StatScorer ss, double baselineScore) {
@@ -116,16 +121,21 @@ public class PlanLoadoutMain {
 	}
 
 	private static void printSimStartMessage(Map<ItemSlot, RandomAccessScoredItemList> itemMap) {
+		System.out.println("\nItem option list:");
+
 		int totalItemsConsidered = 0;
 		double totalCombinations = 1;
-		for(RandomAccessScoredItemList slotOptions : itemMap.values()) {
-			int options = slotOptions.size();
+		for(Map.Entry<ItemSlot, RandomAccessScoredItemList> slotEntry : itemMap.entrySet()) {
+			int options = slotEntry.getValue().size();
 			totalItemsConsidered += options;
 			if(options > 0) totalCombinations *= options;
+
+			System.out.println("| " + slotEntry.getKey().name + ": " + options + " options.");
 		}
+		System.out.println();
 
 		System.out.println("Beginning loadout sim.");
-		EXECUTION_LENGTH.printSimStartMessage(totalItemsConsidered, totalCombinations);
+		EXECUTION_LENGTH.printSimStartMessage(totalItemsConsidered, itemMap.size(), totalCombinations);
 
 		System.out.println();
 	}
@@ -165,9 +175,16 @@ public class PlanLoadoutMain {
 
 	public static EquipmentLoadout getFixedItems() {
 		EquipmentLoadout ret = new EquipmentLoadout();
-		ItemList items = ItemList.getAllNamedItems();
 
 		ret.put("quiver of alacrity");
+
+//		ret.put("legendary omniscience");
+//		ret.put("legendary tumbleweed");
+
+//		ret.put("patience through peril");
+//		ret.put("the invisible cloak of strahd");
+//		ret.put("legendary braided cutcord");
+//		ret.put("staggershockers");
 
 		ret.put("legendary turncoat");
 		ret.put("legendary family recruit sigil");
@@ -176,20 +193,11 @@ public class PlanLoadoutMain {
 		ret.put("the cornerstone champion ([quality wisdom +5] version)");
 
 
-//		ret.put("legendary moonrise bracers");
+		ret.put("legendary moonrise bracers");
 //		ret.put("legendary collective sight ([wisdom +21, insightful constitution +10] version)");
 //		ret.put("doctor leroux's curious implant");
 
 //		ret.put("visions of precision");
-
-//		ret.put("patience through peril");
-//		ret.put("the invisible cloak of strahd");
-//		ret.put("legendary braided cutcord");
-
-//		ret.put("staggershockers");
-
-//		ret.put("legendary omniscience");
-//		ret.put("legendary tumbleweed");
 		
 		return ret;
 	}

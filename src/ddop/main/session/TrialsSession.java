@@ -18,8 +18,8 @@ public class TrialsSession extends ExecutionSession {
     }
 
     @Override
-    public void printSimStartMessage(int totalItemsConsidered, double totalCombinations) {
-        System.out.println("Testing " + NumberFormat.readableLargeNumber(this.trials) + " trials of " + totalItemsConsidered + " items in a");
-        System.out.println("maximum of " + NumberFormat.readableLargeNumber(totalCombinations) + " possible combinations.");
+    public void printSimStartMessage(int totalItemsConsidered, int totalSlots, double totalCombinations) {
+        System.out.println("Testing " + NumberFormat.readableLargeNumber(this.trials) + " trials of " + totalItemsConsidered + " items over " + totalSlots + " item slots");
+        System.out.println("in a maximum of " + NumberFormat.readableLargeNumber(totalCombinations) + " possible combinations.");
     }
 }

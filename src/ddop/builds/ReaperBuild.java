@@ -11,30 +11,47 @@ import java.util.Set;
 public class ReaperBuild extends EnhancementBuild implements StatSource {
     public static final String reaperBuildsDirectory = "X:\\src\\DDOP\\saved builds\\";
 
-    private int scalingHPBonus;
     private final Set<String> filter;
-    
+    private final int scalingHPBonus;
+    private final Collection<Stat> stats;
+
+    public Collection<Stat> getStats() { return this.stats; }
+
     public ReaperBuild(String filePath, ReaperBuildOptions options, Set<String> filter) {
         super(ReaperBuild.loadFileToRankMap(filePath));
-        this.countScalingHP();
         this.filter = filter;
+        this.scalingHPBonus = this.countScalingHP();
+        this.stats = this.computeStats();
     }
-    
-    private void countScalingHP() {
-        this.scalingHPBonus = 0;
+
+    private int countScalingHP() {
+        int ret = 0;
+
         for(int i = 0; i < FORMAT_LINE_COUNT; i++) {
             int HPPerPoint = (i < 2 * FORMAT_LINE_COUNT / 3 ? 4 : 8);
+
             for(int j = 0; j < FORMAT_LINE_LENGTHS[i]; j++) {
                 int points = this.getRanks(i, j);
-                this.scalingHPBonus += points * HPPerPoint;
+                ret += points * HPPerPoint;
             }
         }
+
+        return ret;
     }
-    
+
+    private Collection<Stat> computeStats() {
+        Collection<Stat> ret = new ReaperEnhancementTree().getStatsFromBuild(this);
+
+        if (this.scalingHPBonus > 0) ret.add(new Stat("HP", "In Reaper", this.scalingHPBonus));
+        ret.removeIf(stat -> !this.filter.contains(stat.category));
+
+        return ret;
+    }
+
     private static int[][] loadFileToRankMap(String filePath) {
         String fileContent = Reader.getEntireFile(filePath);
         String[] fileLines = fileContent.replace(" ", "").split("\n");
-    
+
         if(ReaperBuild.isValidFormat(fileLines)) {
             return ReaperBuild.toRankMap(fileLines);
         } else {
@@ -42,10 +59,10 @@ public class ReaperBuild extends EnhancementBuild implements StatSource {
             return null;
         }
     }
-    
+
     private static int[][] toRankMap(String[] fileLines) {
         int[][] ret = new int[fileLines.length][];
-        
+
         for(int i = 0; i < FORMAT_LINE_COUNT; i++) {
             ret[i] = new int[FORMAT_LINE_LENGTHS[i]];
             for(int j = 0; j < FORMAT_LINE_LENGTHS[i]; j++) {
@@ -54,22 +71,13 @@ public class ReaperBuild extends EnhancementBuild implements StatSource {
             }
             if(Settings.DEBUG_REAPER_BUILD) System.out.println();
         }
-        
-        return ret;
-    }
-
-    public Collection<Stat> getStats() {
-        Collection<Stat> ret = new ReaperEnhancementTree().getStatsFromBuild(this);
-        if(this.scalingHPBonus > 0) ret.add(new Stat("HP", "In Reaper", this.scalingHPBonus));
-
-        ret.removeIf(stat -> ! this.filter.contains(stat.category));
 
         return ret;
     }
-    
+
     private static final int[] FORMAT_LINE_LENGTHS = new int[] {5, 4, 4, 4, 5, 6, 5, 4, 4, 4, 5, 6, 5, 4, 4, 4, 5, 6};
     private static final int   FORMAT_LINE_COUNT   = FORMAT_LINE_LENGTHS.length;
-    
+
     /**Example format:
      *
      * Dread     Dire        Grim
@@ -92,55 +100,55 @@ public class ReaperBuild extends EnhancementBuild implements StatSource {
         }
         return true;
     }
-    
+
     public static class ReaperBuildOptions {
         public enum PhysicalAbility {
             STRENGTH,
             DEXTERITY
         }
-        
+
         public enum MentalAbility {
             INTELLIGENCE,
             WISDOM,
             CHARISMA
         }
-    
+
         public enum ResistanceRating {
             PRR,
             MRR
         }
-    
+
         public enum SavingThrow {
             FORTITUDE,
             REFLEX,
             WILL
         }
-        
+
         public PhysicalAbility DAabilityCore, DAabilityLow, DAabilityHigh;
         public MentalAbility DTabilityCore, DTabilityLow, DTabilityHigh;
         public ResistanceRating GBresistanceRating;
         public SavingThrow GBsaveLow, GBsaveHigh;
-        
+
         public ReaperBuildOptions setAllPhysicalAbilities(PhysicalAbility pa) {
             this.DAabilityCore = this.DAabilityLow = this.DAabilityHigh = pa;
             return this;
         }
-        
+
         public ReaperBuildOptions setAllMentalAbilities(MentalAbility ma) {
             this.DTabilityCore = this.DTabilityLow = this.DTabilityHigh = ma;
             return this;
         }
-        
+
         public ReaperBuildOptions setResistanceRating(ResistanceRating rr) {
             this.GBresistanceRating = rr;
             return this;
         }
-        
+
         public ReaperBuildOptions setAllSavingThrows(SavingThrow st) {
             this.GBsaveLow = this.GBsaveHigh = st;
             return this;
         }
-        
+
         public static ReaperBuildOptions getNoircereOptions() {
             return new ReaperBuildOptions()
                     .setAllPhysicalAbilities(PhysicalAbility.DEXTERITY)

@@ -5,8 +5,8 @@ import ddop.item.ItemList;
 import ddop.item.ItemSlot;
 import ddop.optimizer.RandomAccessScoredItemList;
 import ddop.stat.Stat;
-import ddop.stat.list.VerboseStatList;
 import ddop.stat.StatSource;
+import ddop.stat.list.VerboseStatList;
 import util.Array;
 import util.NumberFormat;
 import util.StatTotals;
@@ -58,23 +58,30 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 			throw new RuntimeException("Attempted to equip item '" + i.name + "' to slot '" + slot.name + "'. It cannot equip to this slot.");
 		
 		if(slot.limit == 1) {
-			ArrayList<Item> value = new ArrayList<>();
-			value.add(i);
-			
-			this.items.put(slot, value);
+			ArrayList<Item> equippedInSlot = this.items.get(slot);
+
+			if(equippedInSlot == null) {
+				equippedInSlot = new ArrayList<>();
+				equippedInSlot.add(i);
+
+				this.items.put(slot, equippedInSlot);
+			} else {
+				equippedInSlot.clear();
+				equippedInSlot.add(i);
+			}
 		} else {
-			ArrayList<Item> value = this.items.get(slot);
-			if(value == null) {
-				value = new ArrayList<>();
-				value.add(i);
+			ArrayList<Item> equippedInSlot = this.items.get(slot);
+			if(equippedInSlot == null) {
+				equippedInSlot = new ArrayList<>();
+				equippedInSlot.add(i);
 				
-				this.items.put(slot, value);
-			} else if(!Array.contains(value, i)) {
-				if(value.size() < slot.limit) {
-					value.add(i);
+				this.items.put(slot, equippedInSlot);
+			} else if(!Array.contains(equippedInSlot, i)) {
+				if(equippedInSlot.size() < slot.limit) {
+					equippedInSlot.add(i);
 				} else {
-					value.add(0, i);
-					value.remove(slot.limit);
+					equippedInSlot.add(0, i);
+					equippedInSlot.remove(slot.limit);
 				}
 			}
 		}
@@ -161,10 +168,15 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 	public String toString() { return this.toString(null); }
 	public String toString(Map<ItemSlot, RandomAccessScoredItemList> context) {
 		StringBuilder ret = new StringBuilder(this.getTagLine() + ":\n");
+
 		for(ItemSlot slot : this.items.keySet()) {
+			List<Item> equippedInSlot = this.items.get(slot);
+			if(equippedInSlot.size() == 0) continue;
+
 			ret.append("| ").append(slot.name).append(": ");
+
 			boolean firstOnLine = true;
-			for(Item i : this.items.get(slot)) {
+			for(Item i : equippedInSlot) {
 				if(firstOnLine) {
 					firstOnLine = false;
 				} else {
@@ -177,11 +189,14 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 						ret.append(" - ").append(NumberFormat.percent(scores.getScore(i)));
 				}
 			}
+
 			ret.append("\n");
 		}
+
 		for(ItemSlot slot : this.getUnfilledSlots()) {
 			ret.append("| ").append(slot.name).append(": [EMPTY]\n");
 		}
+
 		return ret.toString();
 	}
 	
@@ -189,7 +204,7 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 		return "EquipmentLoadout (" + this.size() + " items)";
 	}
 	
-	protected int size() {
+	public int size() {
 		int count = 0;
 
 		for(ArrayList<Item> equipped : this.items.values()) {
@@ -212,5 +227,27 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 			}
 		} catch (CloneNotSupportedException ignored) {}
 		return ret;
+	}
+
+	/** Quickly replaces the items in this EquipmentLoadout with the items
+	 *  in another. No error checking; it is assumed safe to copy the state
+	 *  of an already-valid state. */
+	public void loadItems(EquipmentLoadout another) {
+		if(this == another) return;
+
+		for(ArrayList<Item> equippedInSlot : this.items.values())
+			equippedInSlot.clear();
+
+		for(Map.Entry<ItemSlot, ArrayList<Item>> entry : another.items.entrySet()) {
+			if(entry.getValue().size() == 0) continue;
+
+			ArrayList<Item> equippedInSlot = this.items.get(entry.getKey());
+
+			if(equippedInSlot == null) {
+				this.items.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+			} else {
+				equippedInSlot.addAll(entry.getValue());
+			}
+		}
 	}
 }

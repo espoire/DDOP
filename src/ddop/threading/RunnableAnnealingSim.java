@@ -41,6 +41,7 @@ public class RunnableAnnealingSim extends RunnableSim {
     private static final double STARTING_TEMPERATURE = 1.0;
     private double temperature;
     private ScoredLoadout current, best;
+    private EquipmentLoadout working;
 
     public RunnableAnnealingSim(StatScorer ss, List<Item> fixedItems, List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap, ExecutionSession session) {
         super(session);
@@ -56,13 +57,14 @@ public class RunnableAnnealingSim extends RunnableSim {
         this.temperature = STARTING_TEMPERATURE;
         this.best = new ScoredLoadout();
         this.current = ScoredLoadout.score(new EquipmentLoadout(this.fixedItems), this.ss);
+        this.working = new EquipmentLoadout(this.fixedItems);
 
         super.initialize();
     }
 
     @Override
     protected void iterate() {
-        this.simAndUpdateState(this.ss, this.unskippedItemSlots, this.itemMap);
+        this.simAndUpdateState();
     }
 
     @Override
@@ -77,30 +79,42 @@ public class RunnableAnnealingSim extends RunnableSim {
         this.temperature = STARTING_TEMPERATURE * portion * portion;
     }
 
-    private void simAndUpdateState(StatScorer ss, List<ItemSlot> unskippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap) {
-        ScoredLoadout trial = simLoadout(ss, unskippedItemSlots, itemMap, current);
+    private void simAndUpdateState() {
+        ScoredLoadout trial = this.simLoadout();
 
         double ratio = trial.score / this.current.score;
-        double probability = Math.exp(- (1 - ratio) / this.temperature);
-        if(ratio >= 1) probability = 1;
+        if(ratio >= 1) {
+            this.current = trial;
+            this.working = new EquipmentLoadout(trial.loadout);
 
-        if(Random.roll(probability)) this.current = trial;
-        if(trial.score > this.best.score) this.best = trial;
+            if(trial.score > this.best.score) this.best = trial;
+        } else {
+            double probability = Math.exp(- (1 - ratio) / this.temperature);
+            if(Random.roll(probability)) this.current = trial;
+        }
     }
 
-    private static ScoredLoadout simLoadout(StatScorer ss, List<ItemSlot> unskippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap, ScoredLoadout current) {
-        EquipmentLoadout trialLoadout = permuteTrialEquipmentLoadout(unskippedItemSlots, itemMap, current);
-        return ScoredLoadout.score(trialLoadout, ss);
+    private ScoredLoadout simLoadout() {
+        EquipmentLoadout trialLoadout = mutateCurrentEquipmentLoadout();
+
+        int size = trialLoadout.size();
+
+        ScoredLoadout ret = ScoredLoadout.score(trialLoadout, this.ss);
+
+        if(trialLoadout.size() != size)
+            throw new Error();
+
+        return ret;
     }
 
-    private static EquipmentLoadout permuteTrialEquipmentLoadout(List<ItemSlot> unskippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap, ScoredLoadout current) {
-        EquipmentLoadout trialLoadout = new EquipmentLoadout(current.loadout);
+    private EquipmentLoadout mutateCurrentEquipmentLoadout() {
+        this.working.loadItems(current.loadout);
 
         ItemSlot slot = (ItemSlot) Random.random(unskippedItemSlots);
         Item item = itemMap.get(slot).getRandomUnweighted();
-        trialLoadout.put(item, slot);
+        this.working.put(item, slot);
 
-        return trialLoadout;
+        return this.working;
     }
 
     private static List<ItemSlot> generateUnskippedSlots(List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap) {

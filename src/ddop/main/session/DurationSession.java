@@ -16,9 +16,10 @@ public class DurationSession extends ExecutionSession {
     }
 
     @Override
-    public void printSimStartMessage(int totalItemsConsidered, double totalCombinations) {
-        System.out.println("Testing " + totalItemsConsidered + " items in a maximum");
-        System.out.println("of " + NumberFormat.readableLargeNumber(totalCombinations) + " possible combinations");
+    public void printSimStartMessage(int totalItemsConsidered, int totalSlots, double totalCombinations) {
+        System.out.println("Testing " + totalItemsConsidered + " items over " + totalSlots);
+        System.out.println("item slots in a maximum of");
+        System.out.println(NumberFormat.readableLargeNumber(totalCombinations) + " possible combinations");
         System.out.println("for the next " + NumberFormat.readableLongTime(this.duration) + ".");
     }
 }

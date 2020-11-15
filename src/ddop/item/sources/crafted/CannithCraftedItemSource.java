@@ -8,7 +8,6 @@ import ddop.item.Item;
 import ddop.item.ItemSlot;
 import ddop.item.PropertiesList;
 import ddop.optimizer.valuation.ArmorType;
-import ddop.stat.Stat;
 import ddop.stat.StatFilter;
 import util.NumberFormat;
 
@@ -170,7 +169,7 @@ public class CannithCraftedItemSource {
             for(String affixSlot : new ArrayList<>(this.options.keySet())) {
                 List<String> affixes = this.options.get(affixSlot);
 
-                affixes.removeIf(stat -> ! statsFilter.contains(Stat.parseStat(stat).category));
+                affixes.removeIf(enchantment -> ! statsFilter.containsEnchantment(enchantment));
 
                 if(affixes.size() == 0) this.options.remove(affixSlot);
             }
