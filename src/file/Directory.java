@@ -8,7 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * The Directory class is used to assist with operations upon a Windows 7 directory and its contents.
+ * The Directory class is used to assist with operations upon a Windows 7-10 directory and its contents.
  * The primary function is to list all the files in a folder, optionally preforming some limited preprocessing on that list.
  * 
  * @author Espoire
@@ -20,41 +20,27 @@ public class Directory {
 	 * @param directory The directory to list.
 	 * @return A Set&lt;String&gt; containing one filename per String, excluding subdirectories.
 	 */
-	public static Set<String> getContents(String directory) {
-		return getContentsImplementation(directory, false);
-	}
-
-	/**
-	 * Lists the full path to each file in a given directory.
-	 *
-	 * @param directory The directory to list.
-	 * @return A Set&lt;String&gt; containing one filepath per String, excluding subdirectories.
-	 */
-	public static Set<String> getContentsAsFilepaths(String directory) {
-		return getContentsImplementation(directory, true);
-	}
-
-	private static Set<String> getContentsImplementation(String directory, boolean includeFullPath) {
+	public static Set<String> getContentsAsFilenames(String directory) {
 		File[] files = new File(directory).listFiles();
 		Set<String> ret = new LinkedHashSet<>();
 
 		if(files != null) for(File f : files) {
 			if(f.isDirectory()) continue;
-			ret.add((includeFullPath ? directory + "\\" : "") + f.getName());
+			ret.add(f.getName());
 		}
 
 		return ret;
 	}
 
-	private static Set<String> getContentsItemLinks() {
-		Set<String> fileNames = getContents(ddop.Settings.OUTPUT_DIRECTORY);
+	private static Set<String> getContentsItemLinks(String directory) {
+		Set<String> fileNames = getContentsAsFilenames(directory);
 		Set<String> shortLinks = WgetScripter.convertDownloadedFileNamesToShortWikiLinks(fileNames);
 		
 		return shortLinks;
 	}
 
-	static Set<String> filterDuplicateLinks(Set<String> shortLinks) {
-		Set<String> directoryLinks = getContentsItemLinks();
+	static Set<String> filterDuplicateLinks(String directory, Set<String> shortLinks) {
+		Set<String> directoryLinks = getContentsItemLinks(directory);
 		Set<String> ret = new HashSet<>();
 		
 		for(String shortLink : shortLinks) {

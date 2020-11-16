@@ -5,8 +5,8 @@ import ddop.item.Item;
 import ddop.item.ItemList;
 import ddop.item.sources.crafted.NearlyFinished;
 import file.CompileHTML;
-import file.Directory;
 import file.LinkReader;
+import file.Reader;
 import util.NumberFormat;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class UpdateItemFiles {
 	public static void update(Set<String> reloadUpdates) {
-		String updateScript = LinkReader.getScriptFromUpdatePages(Directory.getContents(Settings.SOURCE_DIRECTORY), reloadUpdates);
+		String updateScript = LinkReader.getScriptFromUpdatePages(Reader.getEntireDirectory(Settings.SOURCE_DIRECTORY), reloadUpdates);
 		
 		if(updateScript != null) {
 			System.out.println(updateScript);

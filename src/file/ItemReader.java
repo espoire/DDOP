@@ -25,20 +25,6 @@ public class ItemReader {
 		return new Gson().fromJson(json, listType);
 	}
 
-	public static Item loadFromWikiHTMLFile(String folder, String infile) {
-		String filepath = folder + infile;
-		String html = file.Reader.getEntireFile(filepath);
-		String wikiItemSummary = cleanupHTML(html);
-		
-		Item ret = loadFromWikiSummary(wikiItemSummary, filepath);
-		
-		if(ret == null) {
-			System.out.println("Not equipment, or wiki format not supported: " + infile);
-		}
-		
-		return ret;
-	}
-	
 	private static final String WIKI_HEADER_REGEX              = "(?s)^.*?<div id=\"mw-content-text\"";
 	private static final String HTML_HIDDEN_SPAN_REGEX         = "<span style=\"display: none;\">.*?</span>";
 	private static final String WIKI_TOOLTIP_SPAN_REGEX        = "<span[^>]*?class=\"tooltip\".*";
@@ -73,18 +59,9 @@ public class ItemReader {
 		
 		return plainText;
 	}
-	
-	public static Item loadFromWikiFile(String directory, String filename) {
-		return ItemReader.loadFromWikiFile(directory + "\\" + filename);
-	}
-	
-	private static Item loadFromWikiFile(String filepath) {
-		String summary = Reader.getEntireFile(filepath);
-		return ItemReader.loadFromWikiSummary(summary, filepath);
-	}
 
-	public static Item loadFromWikiSummary(String summary, String filepath) {
-		return loadFromWikiSummary(summary.split("\n"), filepath);
+	public static Item loadFromWikiSummary(String summary) {
+		return loadFromWikiSummary(summary.split("\n"));
 	}
 	
 	private static Map<String, Integer> KEYS;
@@ -144,7 +121,7 @@ public class ItemReader {
 		return ret;
 	}
 
-	private static Item loadFromWikiSummary(String[] lines, String filepath) {
+	private static Item loadFromWikiSummary(String[] lines) {
 		if(ItemReader.KEYS == null) ItemReader.KEYS = generateKeysMap();
 		PropertiesList wikiProperties = new PropertiesList();
 		
@@ -263,7 +240,7 @@ public class ItemReader {
 			if(mods == null) return null;
 		}
 		
-		for(String mod : mods.toArray(new String[mods.size()])) {
+		for(String mod : mods.toArray(new String[] {})) {
             if(mod.startsWith("* ")) {
             	mods.remove(mod);
             	mod = mod.substring(2);

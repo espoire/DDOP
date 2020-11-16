@@ -46,16 +46,16 @@ public class WgetScripter {
 	/** Converts downloaded wiki item filenames to the short relative wiki link format.<br />
 	 * For example, <b>Item%3ADuality,_the_Moral_Compass.html</b> would become <b>/page/I:Duality,_the_Moral_Compass</b>
 	 * 
-	 * @param files - An ArrayList&lt;String> containing file names.
+	 * @param filenames - A Set&lt;String> containing file names.
 	 * @return ArrayList&lt;String> a new list of short wiki links.
 	 */
-	static Set<String> convertDownloadedFileNamesToShortWikiLinks(Set<String> files) {
+	static Set<String> convertDownloadedFileNamesToShortWikiLinks(Set<String> filenames) {
 		HashSet<String> ret = new HashSet<>();
 		
-		for(String file : files) {
-			if(!file.matches(DOWNLOADED_FILENAME_ITEM_REGEX)) continue;
-			file = file.replaceFirst("^I(tem)?(%3A|:)", "/page/I:").replaceFirst("\\.html$", "");
-			ret.add(file);
+		for(String filename : filenames) {
+			if(!filename.matches(DOWNLOADED_FILENAME_ITEM_REGEX)) continue;
+			filename = filename.replaceFirst("^I(tem)?(%3A|:)", "/page/I:").replaceFirst("\\.html$", "");
+			ret.add(filename);
 		}
 		
 		return ret;

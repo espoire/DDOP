@@ -7,7 +7,6 @@ import ddop.optimizer.ScoredItemList;
 import ddop.optimizer.valuation.ArmorType;
 import ddop.optimizer.valuation.ValuationContext;
 import ddop.stat.Stat;
-import file.Directory;
 import file.ItemReader;
 import org.jetbrains.annotations.NotNull;
 import util.Random;
@@ -28,17 +27,6 @@ public class ItemList implements Cloneable, Iterable<Item> {
 
 		ret.addAll(another);
 
-		return ret;
-	}
-
-	public static ItemList loadWikiitemsDirectory(String directoryPath) {
-		ItemList ret = new ItemList();
-		
-		Set<String> fileNames = Directory.getContents(directoryPath);
-		for(String filename : fileNames) {
-			ret.addItem(ItemReader.loadFromWikiFile(directoryPath, filename));
-		}
-		
 		return ret;
 	}
 
@@ -143,7 +131,8 @@ outer:	for(Item i : items) for(ItemSlot slot : includedItemSlots) if(i.slots.con
 
 		return ret;
 	}
-	
+
+	@SuppressWarnings("unused")
 	public Map<ArmorType, ItemList> mapByArmorType() {
 		Map<ArmorType, ItemList> ret = new LinkedHashMap<>();
 		for(ArmorType type : ArmorType.all) ret.put(type, this.filterBy(type));
@@ -174,7 +163,8 @@ outer:	for(Item i : items) for(ItemSlot slot : includedItemSlots) if(i.slots.con
 		} catch (Exception ignored) {}
 		return ret;
 	}
-	
+
+	@SuppressWarnings("unused")
 	public Item getRandom() {
 		return (Item) Random.random(this.items);
 	}

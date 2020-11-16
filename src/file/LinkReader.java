@@ -1,9 +1,11 @@
 package file;
 
-import java.util.*;
-
-import ddop.Settings;
 import util.Array;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * The LinkReader class reads an HTML file and extracts URLs from "a" tag href arguments.
@@ -14,17 +16,19 @@ import util.Array;
  *
  */
 public class LinkReader {
-	public static String getScriptFromUpdatePages(Set<String> inputFiles, Set<String> forceReloadFiles) {
+	public static String getScriptFromUpdatePages(Map<String, String> inputFiles, Set<String> forceReloadFiles) {
 		if(inputFiles == null || inputFiles.size() == 0) return null;
 		
 		Set<String> urls = new HashSet<>();
 		
-		for(String file : inputFiles) {
-			Set<String> itemLinks = loadItemLinksFromWikiHTMLFile(file);
+		for(Map.Entry<String, String> inputFile : inputFiles.entrySet()) {
+			String filename = inputFile.getKey();
+			String htmlContent = inputFile.getValue();
+
+			Set<String> itemLinks = loadItemLinksFromWikiHTMLFile(htmlContent);
 			
-			if(!forceReloadFiles.contains(file)) {
-				itemLinks = Directory.filterDuplicateLinks(itemLinks);
-			}
+			if(!forceReloadFiles.contains(filename))
+				itemLinks = Directory.filterDuplicateLinks(ddop.Settings.OUTPUT_DIRECTORY, itemLinks);
 			
 			Collection<String> newUrls = WgetScripter.convertWikiItemLinksToFullURL(itemLinks);
 			urls.addAll(newUrls);
@@ -38,13 +42,11 @@ public class LinkReader {
 	
 	/** Takes a DDOWiki HTML file, and outputs a list of all "Item:" pages link by it.
 	 * 
-	 * @param fileName - The file name to be loaded
+	 * @param htmlContent - The full HTML text to parse.
 	 * @return An ArrayList&lt;String&gt; containing one link href per String, with no duplicates. Mostly relative links, not full URLs.
 	 */
-	private static Set<String> loadItemLinksFromWikiHTMLFile(String fileName) {
-		String filePath = Settings.SOURCE_DIRECTORY + "\\" + fileName;
-		String html = file.Reader.getEntireFile(filePath);
-		Set<String> wikiLinkList = WgetScripter.shortenWikiItemLinks(getAllItemLinks(html));
+	private static Set<String> loadItemLinksFromWikiHTMLFile(String htmlContent) {
+		Set<String> wikiLinkList = WgetScripter.shortenWikiItemLinks(getAllItemLinks(htmlContent));
 		
 		return wikiLinkList;
 	}

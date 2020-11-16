@@ -2,7 +2,6 @@ package file;
 
 import ddop.item.Item;
 
-import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -20,20 +19,21 @@ public class CompileHTML {
 	public static List<Item> loadAllItems(String directory) {
 		System.out.println("Attempting to compile to item summaries all files in: " + directory);
 		
-		Set<String> files = Directory.getContents(directory);
-		int filesRead = files.size();
+		Set<String> filenames = Directory.getContentsAsFilenames(directory);
+		int filesRead = filenames.size();
 		
 		System.out.println(filesRead + " files found. Compiling...");
 		
 		List<Item> ret = new ArrayList<>();
 		
-outer:	for(String filename : files) {
+outer:	for(String filename : filenames) {
 			Item i = CompileHTML.loadItemFromHTML(directory, filename);
 
 			if(i == null) continue;
 			for(Item existing : ret)
-				if(existing.name == i.name && existing.minLevel == i.minLevel)
-					continue outer;
+				if(existing.name.equals(i.name))
+					if(existing.minLevel == i.minLevel)
+						continue outer;
 
 			ret.add(i);
 		}
@@ -60,11 +60,10 @@ outer:	for(String filename : files) {
 		
 		String filePath = directory + "\\" + filename;
 		String html = file.Reader.getEntireFile(filePath);
-		FileTime sourceTimestamp = file.Reader.getModifiedTime(filePath);
 		String wikiItemSummary = ItemReader.cleanupHTML(html);
 		
 		if(wikiItemSummary == null) return null;
-		Item i = ItemReader.loadFromWikiSummary(wikiItemSummary, filePath);
+		Item i = ItemReader.loadFromWikiSummary(wikiItemSummary);
 
 		return i;
 	}

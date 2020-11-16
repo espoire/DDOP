@@ -12,13 +12,13 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public class Reader {
-	/** Returns the contents of the specified directory as a mapping from filename to content. Skips subdirectories. */
+	/** Maps filename -> content for the specified directory. Skips subdirectories. */
 	public static Map<String, String> getEntireDirectory(String directory) {
 		Map<String, String> ret = new HashMap<>();
-		Set<String> files = Directory.getContents(directory);
+		Set<String> filenames = Directory.getContentsAsFilenames(directory);
 
-		for(String file : files)
-			ret.put(file, getEntireFile(directory + "\\" + file));
+		for(String filename : filenames)
+			ret.put(filename, getEntireFile(directory + "\\" + filename));
 
 		return ret;
 	}

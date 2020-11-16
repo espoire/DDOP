@@ -1,7 +1,5 @@
 TODO
-    Feywild set definitions
-        Load set definitions from JSONs
-        Move all set bonuses over to JSONs
+    Move all set bonuses over to JSONs
     Import Feywild items
     Implement augments
         (EquipmentLoadout, StatScorer) -> Set<Augment>
