@@ -1,0 +1,65 @@
+{
+  "seasons of the feywild": {
+    "2": [ "artifact hp +10" ],
+    "3": [ "artifact sp +50" ],
+    "4": [ "artifact well rounded +1" ],
+    "5": [ "artifact dodge +1%" ],
+    "6": [ "artifact spell focus mastery +1" ],
+    "7": [ "artifact sheltering +5" ]
+  } ,
+  "eminence of winter": {
+    "2": [ "artifact prr +25" ],
+    "3": [
+      "artifact healing amplification +15",
+      "artifact repair amplification +15",
+      "artifact negative amplification +15"
+    ],
+    "4": [ "legendary percent hp +20%" ],
+    "5": [ "artifact incite +100%" ],
+    "6": [ "artifact constitution +4" ],
+    "7": [ "artifact percent ac +15%" ]
+  },
+  "eminence of spring": {
+    "2": [ "artifact missile deflection +10%" ],
+    "3": [ "artifact damage vs helpless +15%" ],
+    "4": [ "legendary dodge cap +3%" ],
+    "5": [ "artifact sneak attack dice +3" ],
+    "6": [
+      "artifact doublestrike +15%",
+      "artifact doubleshot +15%"
+    ],
+    "7": [
+      "artifact melee power +25",
+      "artifact ranged power +25"
+    ]
+  },
+  "eminence of summer": {
+    "2": [ "artifact mrr +25" ],
+    "3": [ "artifact armor-piercing +25%" ],
+    "4": [
+      "artifact combat mastery +5",
+      "artifact qp dc +5"
+    ],
+    "5": [ "artifact damage vs helpless +15%" ],
+    "6": [
+      "artifact doublestrike +15%",
+      "artifact doubleshot +15%"
+    ],
+    "7": [
+      "artifact melee power +25",
+      "artifact ranged power +25"
+    ]
+  },
+  "eminence of autumn": {
+    "2": [ "artifact potency +50" ],
+    "3": [ "artifact arcane lore +5%" ],
+    "4": [ "legendary percent sp +20%" ],
+    "5": [
+      "artifact intelligence +4",
+      "artifact wisdom +4",
+      "artifact charisma +4"
+    ],
+    "6": [ "artifact spell focus mastery +3" ],
+    "7": [ "legendary universal spell critical damage +15%" ]
+  }
+}
