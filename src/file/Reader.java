@@ -6,9 +6,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class Reader {
+	/** Returns the contents of the specified directory as a mapping from filename to content. Skips subdirectories. */
+	public static Map<String, String> getEntireDirectory(String directory) {
+		Map<String, String> ret = new HashMap<>();
+		Set<String> files = Directory.getContents(directory);
+
+		for(String file : files)
+			ret.put(file, getEntireFile(directory + "\\" + file));
+
+		return ret;
+	}
+
 	public static String getEntireFile(String filepath) {
 		StringBuilder contentBuilder = new StringBuilder();
 

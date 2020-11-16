@@ -17,7 +17,7 @@ import java.util.Set;
 @SuppressWarnings("all")
 public class SandboxMain {
     public static void main(String... s) {
-        printItemSetStats();
+        SetBonus.printAllSetsDebug();
     }
 
     private static void printAllUnvaluedStats(StatScorer scorer) {

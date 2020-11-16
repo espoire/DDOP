@@ -1,12 +1,13 @@
 package ddop.stat.conversions;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import ddop.Settings;
 import ddop.stat.Stat;
 import ddop.stat.StatMap;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public class SetBonus {
 	private static final Map<String, SetBonus> all = new HashMap<>();
@@ -17,11 +18,6 @@ public class SetBonus {
 	private SetBonus(String name) {
 		this.name = name;
 		SetBonus.all.put(this.name, this);
-	}
-
-	public static boolean isSetBonus(Stat s) { return SetBonus.isSetBonus(s.category); }
-	public static boolean isSetBonus(String s) {
-		return SetBonus.all.containsKey(s);
 	}
 
     private SetBonus addBonus(int piecesRequirement, Stat s) {
@@ -185,10 +181,44 @@ public class SetBonus {
 
 		// TODO Feywild sets
 
+		importSetBonusJsons();
 
 		//.addBonus(5, new Stat("name", "type", 0))
 	}
 
+	private static void importSetBonusJsons() {
+		Collection<String> jsons = file.Reader.getEntireDirectory(Settings.SET_BONUS_DEFINITIONS_JSON_DIRECTORY).values();
+
+		for(String json : jsons) {
+			Map<String, Map<Integer, List<String>>> map = loadJson(json);
+
+			for(Map.Entry<String, Map<Integer, List<String>>> entry : map.entrySet()) {
+				String name = entry.getKey();
+				Map<Integer, List<String>> bonuses = entry.getValue();
+
+				SetBonus setBonus = new SetBonus(name);
+
+				for(Map.Entry<Integer, List<String>> subentry : bonuses.entrySet()) {
+					int piecesRequirement = subentry.getKey();
+					List<String> enchantments = subentry.getValue();
+
+					for(String enchantment : enchantments) {
+						setBonus.addBonus(piecesRequirement, Stat.parseStat(enchantment));
+					}
+				}
+			}
+		}
+	}
+
+	private static Map<String, Map<Integer, List<String>>> loadJson(String json) {
+		Type type = new TypeToken<Map<String, Map<Integer, List<String>>>>() {}.getType();
+		return new Gson().fromJson(json, type);
+	}
+
+	public static boolean isSetBonus(Stat s) { return SetBonus.isSetBonus(s.category); }
+	public static boolean isSetBonus(String category) {
+		return SetBonus.all.containsKey(category);
+	}
 
 	public static List<Stat> convertAll(List<Stat> baseStats) {
 		List<Stat> ret = new ArrayList<>(baseStats);
@@ -237,9 +267,35 @@ public class SetBonus {
 
 	private static int getCounts(String setName, List<Stat> stats) {
 		int ret = 0;
-		for(Stat s : stats) {
-			if(s.category.equals(setName)) ret++;
-		}
+
+		for(Stat s : stats)
+			if(s.category.equals(setName))
+				ret++;
+
 		return ret;
+	}
+
+
+
+	public String toString() {
+		StringBuilder ret = new StringBuilder(this.name + "\n");
+
+		List<Integer> bonusTiers = new ArrayList<>(this.bonus.keySet());
+		bonusTiers.sort(null);
+
+		for(Integer countsRequired : bonusTiers) {
+			ret.append("  • ").append(countsRequired).append(" Pieces Equipped:\n");
+
+			for(Stat s : this.bonus.get(countsRequired)) {
+				ret.append("    • ").append(s.toString()).append("\n");
+			}
+		}
+
+		return ret.toString();
+	}
+
+	public static void printAllSetsDebug() {
+		for(SetBonus s : all.values())
+			System.out.println(s);
 	}
 }
