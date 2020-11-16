@@ -10,7 +10,14 @@ public class ScoredLoadout {
     public double score = -Double.MAX_VALUE;
     public EquipmentLoadout loadout;
     public Map<ItemSlot, RandomAccessScoredItemList> context;
-    
+
+    public ScoredLoadout() {}
+    public ScoredLoadout(ScoredLoadout another) {
+        this.score = another.score;
+        this.loadout = new EquipmentLoadout(another.loadout);
+        this.context = another.context;
+    }
+
     public static ScoredLoadout score(EquipmentLoadout loadout, StatScorer scorer) {
         ScoredLoadout ret = new ScoredLoadout();
 
@@ -33,5 +40,16 @@ public class ScoredLoadout {
 
     public int size() {
         return this.loadout.size();
+    }
+
+
+    public EquipmentLoadout swap(ScoredLoadout another) {
+        EquipmentLoadout ret = this.loadout;
+
+        this.score = another.score;
+        this.loadout = another.loadout;
+        this.context = another.context;
+
+        return ret;
     }
 }

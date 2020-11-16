@@ -87,35 +87,23 @@ public class RunnableAnnealingSim extends RunnableSim {
         double ratio = trial.score / this.current.score;
         double probability = Math.exp(- (1 - ratio) / this.temperature);
 
-        if(Random.roll(probability)) {
-            this.current = trial;
-            this.working = new EquipmentLoadout(trial.loadout);
-        }
+        if(Random.roll(probability))
+            this.working = this.current.swap(trial); // Swap to avoid memory reallocation.
 
         if(trial.score > this.best.score) this.best = trial;
     }
 
     private ScoredLoadout simLoadout() {
-        EquipmentLoadout trialLoadout = mutateCurrentEquipmentLoadout();
-
-        int size = trialLoadout.size();
-
-        ScoredLoadout ret = ScoredLoadout.score(trialLoadout, this.ss);
-
-        if(trialLoadout.size() != size)
-            throw new Error();
-
-        return ret;
+        mutateCurrentEquipmentLoadout();
+        return ScoredLoadout.score(this.working, this.ss);
     }
 
-    private EquipmentLoadout mutateCurrentEquipmentLoadout() {
+    private void mutateCurrentEquipmentLoadout() {
         this.working.loadItems(current.loadout);
 
         ItemSlot slot = (ItemSlot) Random.random(unskippedItemSlots);
         Item item = itemMap.get(slot).getRandomUnweighted();
         this.working.put(item, slot);
-
-        return this.working;
     }
 
     private static List<ItemSlot> generateUnskippedSlots(List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap) {
