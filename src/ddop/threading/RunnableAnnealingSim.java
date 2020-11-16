@@ -31,7 +31,9 @@ import java.util.Map;
  * a reduction in equipment performance.
  *
  * This should hopefully result in the system behaving initially-randomly, before hill
- * climbing to a nearby local maximum on one of the highest peaks. */
+ * climbing to a nearby local maximum on one of the widest peaks. Actual performance
+ * depends on wide peaks also being high peaks.
+ * */
 public class RunnableAnnealingSim extends RunnableSim {
     private final StatScorer ss;
     private final List<Item> fixedItems;
@@ -83,15 +85,14 @@ public class RunnableAnnealingSim extends RunnableSim {
         ScoredLoadout trial = this.simLoadout();
 
         double ratio = trial.score / this.current.score;
-        if(ratio >= 1) {
+        double probability = Math.exp(- (1 - ratio) / this.temperature);
+
+        if(Random.roll(probability)) {
             this.current = trial;
             this.working = new EquipmentLoadout(trial.loadout);
-
-            if(trial.score > this.best.score) this.best = trial;
-        } else {
-            double probability = Math.exp(- (1 - ratio) / this.temperature);
-            if(Random.roll(probability)) this.current = trial;
         }
+
+        if(trial.score > this.best.score) this.best = trial;
     }
 
     private ScoredLoadout simLoadout() {

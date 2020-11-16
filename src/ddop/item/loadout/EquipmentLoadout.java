@@ -20,8 +20,7 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 	public EquipmentLoadout(Item[] items) { this.put(items); }
 	public EquipmentLoadout(Iterable<Item> items) { this.put(items); }
 	public EquipmentLoadout(EquipmentLoadout toCopy) {
-		this.items = new HashMap<>(toCopy.items);
-		this.items.replaceAll((k, v) -> new ArrayList<>(v));
+		this.loadItems(toCopy);
 	}
 	
 	public EquipmentLoadout put(String... strings) {
@@ -233,7 +232,9 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 	 *  in another. No error checking; it is assumed safe to copy the state
 	 *  of an already-valid state. */
 	public void loadItems(EquipmentLoadout another) {
-		if(this == another) return;
+		if(this == another)
+			return;
+//			throw new Error();
 
 		for(ArrayList<Item> equippedInSlot : this.items.values())
 			equippedInSlot.clear();

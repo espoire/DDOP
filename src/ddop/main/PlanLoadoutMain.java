@@ -29,12 +29,12 @@ public class PlanLoadoutMain {
 
 	// Recommended duration: 50ms per candidate item.
 	private static final ExecutionSession EXECUTION_LENGTH =
-			new DurationSession(15 * Time.SECOND);
-//			new DurationSession(10 * Time.MINUTE);
+//			new DurationSession(15 * Time.SECOND);
+			new DurationSession(3 * Time.MINUTE);
 //			new DurationSession(1 * Time.HOUR);
 //			new DurationSession(6 * Time.HOUR);
 
-	private static final boolean MULTI_THREAD = false;
+	private static final boolean MULTI_THREAD = true;
 	private static final int THREADS =
 			Runtime.getRuntime().availableProcessors() -1;
 //			2;
@@ -178,6 +178,12 @@ public class PlanLoadoutMain {
 
 		ret.put("quiver of alacrity");
 
+		ret.put("staggershockers");
+		ret.put("silver dragonscale capelet ([insightful dexterity +10] version)");
+		ret.put("signet of the solstice (lamannia - feywild raid)");
+		ret.put("legendary slave rags");
+
+
 //		ret.put("legendary omniscience");
 //		ret.put("legendary tumbleweed");
 
@@ -186,14 +192,14 @@ public class PlanLoadoutMain {
 //		ret.put("legendary braided cutcord");
 //		ret.put("staggershockers");
 
-		ret.put("legendary turncoat");
-		ret.put("legendary family recruit sigil");
-		ret.put("legendary hammerfist");
+//		ret.put("legendary turncoat");
+//		ret.put("legendary family recruit sigil");
+//		ret.put("legendary hammerfist");
 
-		ret.put("the cornerstone champion ([quality wisdom +5] version)");
+//		ret.put("the cornerstone champion ([quality wisdom +5] version)");
 
 
-		ret.put("legendary moonrise bracers");
+//		ret.put("legendary moonrise bracers");
 //		ret.put("legendary collective sight ([wisdom +21, insightful constitution +10] version)");
 //		ret.put("doctor leroux's curious implant");
 

@@ -8,11 +8,17 @@ public class SimResultContext {
     public final ScoredLoadout best;
     public final int trialsCompleted;
     public final long elapsedTime;
+    private final int threadsIncluded;
 
     public SimResultContext(ScoredLoadout best, int trialsCompleted, long elapsedTime) {
+        this(best, trialsCompleted, elapsedTime, 1);
+    }
+
+    public SimResultContext(ScoredLoadout best, int trialsCompleted, long elapsedTime, int threadsIncluded) {
         this.best = best;
         this.trialsCompleted = trialsCompleted;
         this.elapsedTime = elapsedTime;
+        this.threadsIncluded = threadsIncluded;
     }
 
     public static SimResultContext merge(SimResultContext[] results) {
@@ -32,7 +38,7 @@ public class SimResultContext {
         }
 
         System.out.println("\n\nMerged results from " + count + " threads.");
-        return new SimResultContext(best, trialsCompleted, elapsedTime);
+        return new SimResultContext(best, trialsCompleted, elapsedTime, count);
     }
 
     public void printSimCompleteMessage() {
@@ -40,6 +46,7 @@ public class SimResultContext {
         System.out.println("Completed loadout sim.");
         System.out.println("Tested " + NumberFormat.readableLargeNumber(trialsCompleted) + " loadouts over " + NumberFormat.readableLongTime(elapsedTime));
         System.out.println("Throughput: " + NumberFormat.readableLargeNumber(trialsCompleted * Time.MINUTE / elapsedTime) + " loadouts/minute.");
+        System.out.println("            (" + NumberFormat.readableLargeNumber(trialsCompleted * Time.MINUTE / elapsedTime / this.threadsIncluded) + " loadouts/minute/thread.)");
         System.out.println();
     }
 }

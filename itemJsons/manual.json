@@ -8,5 +8,19 @@
       "resistance +12",
       "insightful constitution +7"
     ]
+  },
+  {
+    "name": ["signet of the solstice (lamannia - feywild raid)"],
+    "minimum level": ["29"],
+    "slot": ["trinket"],
+    "enchantments": [
+      "enhanced ki +3",
+      "wisdom +21",
+      "insightful wisdom +10",
+      "sheltering +55",
+      "yellow augment slot",
+      "green augment slot",
+      "eminence of summer"
+    ]
   }
 ]
