@@ -56,6 +56,10 @@ public abstract class WeaponAttack extends DamageSource {
 				"soul of the elements",
 				"noxious venom spike",
 				"epic noxious venom spike",
+				"alchemical water attunement",
+				"alchemical earth attunement",
+				"alchemical fire attunement",
+				"alchemical air attunement",
 
 				// On Vorpal
 				"stormreaver's thunderclap"
@@ -169,7 +173,7 @@ public abstract class WeaponAttack extends DamageSource {
 	}
 
 	private static final double d6 = 3.5;
-	private static final double onVorpal = 1.0 / 20.0;
+	private static final double perCent  = 1.0 / 100.0;
 
 	private static final Map<String, Double> DAMAGE_MODS = WeaponAttack.generateDamageMods();
 	private static Map<String, Double> generateDamageMods() {
@@ -179,6 +183,21 @@ public abstract class WeaponAttack extends DamageSource {
 		ret.put("soul of the elements", 15.0);
 		ret.put("noxious venom spike", 1 * d6);
 		ret.put("epic noxious venom spike", 2 * d6);
+
+		// X% on hit/spell to deal stacking cold DoT.
+		// DPS value assume to be the same as fire/air until more data becomes available.
+		ret.put("alchemical water attunement", 24.2);
+		ret.put("alchemical earth attunement", 24.2);
+
+		// Experimental:
+		// 1000 crossbow bolts (assumed 950 hits): 10 fire procs, 13 lightning procs,
+		// ~1300-2700 damage each. No apparent damage difference between elements.
+		// No spellpower scaling observed (very different spellpower across the two elements, same apparent damage).
+		// No cooldown observed (under 2 seconds).
+		// Summary:
+		// 1.21% on hit, 2000 [type] damage.
+		ret.put("alchemical fire attunement", 2000 * 1.21 * perCent);
+		ret.put("alchemical air attunement",  2000 * 1.21 * perCent);
 
 		return ret;
 	}
