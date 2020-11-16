@@ -34,7 +34,7 @@ public abstract class AbstractStatList {
         return this;
     }
 
-    protected AbstractStatList addAll(Collection<Stat> stats) {
+    public AbstractStatList addAll(Collection<Stat> stats) {
         for(Stat s : stats) this.add(s);
         return this;
     }

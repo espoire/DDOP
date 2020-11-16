@@ -30,6 +30,7 @@ public class NamedStat {
     }
 
     /** Returns a List of elementary stats into which the provided compound stat decomposes.
+     * If the provided stat does not decompose, it will instead be returned as the sole element.
      *
      * @param toConvert - The stat to convert.
      * @return Stat[].
@@ -169,32 +170,33 @@ public class NamedStat {
         new NamedStat("spell save")    .addBonus("spell saves",     null, 0);
         new NamedStat("seeker").addBonus("critical confirmation",	null, 0)
                                .addBonus("critical damage",		null, 0);
-        new NamedStat("all skills") .addBonus("balance",			null, 0)
-                                    .addBonus("bluff",				null, 0)
-                                    .addBonus("concentration",		null, 0)
-                                    .addBonus("diplomacy",			null, 0)
-                                    .addBonus("disable device",	null, 0)
-                                    .addBonus("haggle",			null, 0)
-                                    .addBonus("heal",				null, 0)
-                                    .addBonus("hide",				null, 0)
-                                    .addBonus("intimidate",		null, 0)
-                                    .addBonus("jump",				null, 0)
-                                    .addBonus("listen",			null, 0)
-                                    .addBonus("move silently",		null, 0)
-                                    .addBonus("open lock",			null, 0)
-                                    .addBonus("perform",			null, 0)
-                                    .addBonus("repair",			null, 0)
-                                    .addBonus("search",			null, 0)
-                                    .addBonus("spellcraft",		null, 0)
-                                    .addBonus("spot",				null, 0)
-                                    .addBonus("swim",				null, 0)
-                                    .addBonus("tumble",			null, 0)
-                                    .addBonus("use magic device",	null, 0);
-        new NamedStat("alluring skills bonus")	.addBonus("bluff",				null, 0)
-                                                .addBonus("diplomacy",			null, 0)
+        new NamedStat("all skills").addBonus("all skills except umd", null, 0)
+                                   .addBonus("use magic device",      null, 0);
+        new NamedStat("all skills except umd").addBonus("balance",			null, 0)
+                                              .addBonus("bluff",			null, 0)
+                                              .addBonus("concentration",	null, 0)
+                                              .addBonus("diplomacy",		null, 0)
+                                              .addBonus("disable device",	null, 0)
+                                              .addBonus("haggle",			null, 0)
+                                              .addBonus("heal",				null, 0)
+                                              .addBonus("hide",				null, 0)
+                                              .addBonus("intimidate",		null, 0)
+                                              .addBonus("jump",				null, 0)
+                                              .addBonus("listen",			null, 0)
+                                              .addBonus("move silently",	null, 0)
+                                              .addBonus("open lock",		null, 0)
+                                              .addBonus("perform",			null, 0)
+                                              .addBonus("repair",			null, 0)
+                                              .addBonus("search",			null, 0)
+                                              .addBonus("spellcraft",		null, 0)
+                                              .addBonus("spot",				null, 0)
+                                              .addBonus("swim",				null, 0)
+                                              .addBonus("tumble",			null, 0);
+        new NamedStat("alluring skills bonus")	.addBonus("bluff",			null, 0)
+                                                .addBonus("diplomacy",		null, 0)
                                                 .addBonus("haggle",			null, 0)
                                                 .addBonus("intimidate",		null, 0)
-                                                .addBonus("perform",			null, 0);
+                                                .addBonus("perform",		null, 0);
         new NamedStat("wizardry").addBonus("gear sp", null, 0);
         new NamedStat("power")   .addBonus("gear sp", null, 0);
         new NamedStat("magi")    .addBonus("gear sp", null, 100);

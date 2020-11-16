@@ -1,5 +1,6 @@
 package ddop.optimizer.valuation;
 
+import ddop.builds.CommonAugmentEnchantments;
 import ddop.builds.adventurerClass.BaseAttackBonusProgression;
 import ddop.optimizer.valuation.damage.DamageSource;
 import ddop.stat.AbilityScore;
@@ -270,7 +271,7 @@ public abstract class SpecScorer extends StatScorer {
 	@Override
 	protected double score(AbstractStatList stats, Double scoreToNormalizeTo, boolean relaxArtifactConstraint) {
 		if(stats == null) stats = new FastStatList(this.getQueriedStatCategories(), (StatSource[]) null);
-		StatTotals totals = stats.add(this.build).add(this.reaperBuild).getStatTotals();
+		StatTotals totals = stats.addAll(CommonAugmentEnchantments.getStats()).add(this.build).add(this.reaperBuild).getStatTotals();
 		
 		double DPS = 1;
 		if(this.valuesDPS()) {
