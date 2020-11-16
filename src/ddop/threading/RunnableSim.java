@@ -13,7 +13,7 @@ public abstract class RunnableSim implements Runnable {
     private long startTime, elapsedTime;
     private double progress;
 
-    public SimResultContext result;
+    public volatile SimResultContext result;
 
     protected double getProgress() { return this.progress; }
     protected boolean isDone() { return this.progress >= 1.0; }
