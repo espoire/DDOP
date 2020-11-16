@@ -10,8 +10,9 @@ public class UpdateGearDefinitionsMain {
         Set<String> reloadUpdates = new HashSet<>();
 //        reloadUpdates.add("Update_45_named_items");
 //        reloadUpdates.add("Update_46_named_items");
-        reloadUpdates.add("Update_47_named_items");
-        
+//        reloadUpdates.add("Update_47_named_items");
+//        reloadUpdates.add("Update_48_named_items");
+
         UpdateItemFiles.update(reloadUpdates);
     }
 }

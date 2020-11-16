@@ -29,7 +29,7 @@ public class CompileHTML {
 outer:	for(String filename : filenames) {
 			Item i = CompileHTML.loadItemFromHTML(directory, filename);
 
-			if(i == null) continue;
+			if(i == null || i.name == null || i.slots == null) continue;
 			for(Item existing : ret)
 				if(existing.name.equals(i.name))
 					if(existing.minLevel == i.minLevel)

@@ -1,5 +1,5 @@
 TODO
-    Import Feywild items
+    Build gear set set bonuses display
     Move all set bonuses over to JSONs
     Implement augments
         (EquipmentLoadout, StatScorer) -> Set<Augment>

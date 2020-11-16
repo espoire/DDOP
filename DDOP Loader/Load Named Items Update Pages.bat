@@ -112,6 +112,10 @@ TIMEOUT /T 1 /NOBREAK > NUL
 wget -q -nc -P src --no-check-certificate https://ddowiki.com/page/Update_47_named_items
 ECHO Update 47...
 
+TIMEOUT /T 1 /NOBREAK > NUL
+wget -q -nc -P src --no-check-certificate https://ddowiki.com/page/Update_48_named_items
+ECHO Update 48...
+
 
 ECHO Downloads complete!
 PAUSE
