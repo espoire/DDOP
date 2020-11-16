@@ -363,7 +363,7 @@ public class HalfishScorer extends SpecScorer {
 		private static final int enlargeCost = 10;
 		
 		private final int devotion, lore;
-		protected final double power, critSustain, critBurst, discount;
+		protected final double power, critMultiplier, critSustain, critBurst, discount;
 		protected final int SP;
 		
 		protected HealingStats(SpecScorer owner, StatTotals stats) {
@@ -371,8 +371,9 @@ public class HalfishScorer extends SpecScorer {
 			this.power = (this.devotion + empHealPower) / 100.0;
 			this.lore = stats.getInt("healing lore");
 			double crit = this.lore / 100.0;
-			this.critSustain = (1 + crit);
-			this.critBurst = (1 + crit * crit);  // Heal crit are much more valuable when they're reliable.
+			this.critMultiplier = 1 + stats.getInt("positive spell critical damage") / 100.0;
+			this.critSustain = (1 + crit * this.critMultiplier);
+			this.critBurst = (1 + crit * crit * this.critMultiplier);  // Heal crit are much more valuable when they're reliable.
 			this.SP = owner.getSP(stats);
 			this.discount = (stats.get("magical efficiency")) / 100.0;
 		}

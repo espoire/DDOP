@@ -269,7 +269,7 @@ public abstract class SpecScorer extends StatScorer {
 	
 	@Override
 	protected double score(AbstractStatList stats, Double scoreToNormalizeTo, boolean relaxArtifactConstraint) {
-		if(stats == null) stats = new FastStatList(this.getQueriedStatCategories(), null);
+		if(stats == null) stats = new FastStatList(this.getQueriedStatCategories(), (StatSource[]) null);
 		StatTotals totals = stats.add(this.build).add(this.reaperBuild).getStatTotals();
 		
 		double DPS = 1;
@@ -795,7 +795,8 @@ public abstract class SpecScorer extends StatScorer {
 	private static int abilityMod(int abilityScore) {
 		return (abilityScore - 10) / 2;
 	}
-	
+
+	protected static double cap(double minimum, int value, double maximum) { return cap(minimum, (double) value, maximum); }
 	protected static double cap(double minimum, double value, double maximum) {
 		return Math.min(Math.max(value, minimum), maximum);
 	}

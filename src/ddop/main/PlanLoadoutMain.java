@@ -29,8 +29,8 @@ public class PlanLoadoutMain {
 
 	// Recommended duration: 50ms per candidate item.
 	private static final ExecutionSession EXECUTION_LENGTH =
-//			new DurationSession(15 * Time.SECOND);
-			new DurationSession(3 * Time.MINUTE);
+			new DurationSession(15 * Time.SECOND);
+//			new DurationSession(3 * Time.MINUTE);
 //			new DurationSession(1 * Time.HOUR);
 //			new DurationSession(6 * Time.HOUR);
 

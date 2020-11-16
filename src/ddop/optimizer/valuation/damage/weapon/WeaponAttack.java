@@ -221,7 +221,7 @@ public abstract class WeaponAttack extends DamageSource {
 		return ret;
 	}
 
-	private static double getVorpalBonusDamage(StatTotals stats) {
+	private double getVorpalBonusDamage(StatTotals stats) {
 		double total = 0;
 
 		for(Map.Entry<String, Double> mod : VORPAL_DAMAGE_MODS.entrySet())

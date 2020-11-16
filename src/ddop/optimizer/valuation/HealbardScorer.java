@@ -364,7 +364,7 @@ public class HealbardScorer extends SpecScorer {
 			double crit = this.lore / 100.0;
 			this.critSustain = (1 + crit);
 			this.critBurst = (1 + crit * crit);  // Heal crit are much more valuable when they're reliable.
-			this.critMultiplier = (1 + stats.getInt("healing critical multiplier") / 100.0);
+			this.critMultiplier = (1 + stats.getInt("positive spell critical damage") / 100.0);
 			this.SP = owner.getSP(stats);
 			this.discount = (stats.get("magical efficiency")) / 100.0;
 		}
@@ -458,7 +458,7 @@ public class HealbardScorer extends SpecScorer {
 
 			double valuation = 0;
 
-			switch(this.role) {
+			switch(role) {
 				case MAX_EFFICIENCY:
 					valuation = this.castsWith.critSustain;
 					break;

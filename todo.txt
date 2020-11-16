@@ -1,5 +1,4 @@
 TODO
-    Profile code
     Feywild set definitions
         Move set bonuses over to JSONs
     Import Feywild items

@@ -225,6 +225,17 @@ public class NamedStat {
                 .addBonus("radiance lore",  null, 0)
                 .addBonus("repair lore",    null, 0)
                 .addBonus("sonic lore",     null, 0);
+        new NamedStat("universal spell critical damage")
+                .addBonus("fire spell critical damage", null, 0)
+                .addBonus("cold spell critical damage", null, 0)
+                .addBonus("electric spell critical damage", null, 0)
+                .addBonus("acid spell critical damage", null, 0)
+                .addBonus("sonic spell critical damage", null, 0)
+                .addBonus("force spell critical damage", null, 0)
+                .addBonus("light spell critical damage", null, 0)
+                .addBonus("positive spell critical damage", null, 0)
+                .addBonus("negative spell critical damage", null, 0)
+                .addBonus("repair spell critical damage", null, 0);
         new NamedStat("frozen storm lore").addBonus("ice lore",       "equipment", 0)
                                           .addBonus("lightning lore", "equipment", 0);
         new NamedStat("spell focus mastery")

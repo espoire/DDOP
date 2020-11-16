@@ -16,6 +16,9 @@ public class StatCollection implements StatSource {
         this.filter = filter;
     }
 
+    public StatCollection addStat(String category, int magnitude, String bonusType) {
+        return this.addStat(category, (double) magnitude, bonusType);
+    }
     public StatCollection addStat(String category, double magnitude, String bonusType) {
         if(this.filter != null && ! this.filter.contains(category)) return this;
 
