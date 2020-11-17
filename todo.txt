@@ -1,5 +1,5 @@
 TODO
-    Build gear set set bonuses display
+    Finish implementing LoadoutRefinement
     Move all set bonuses over to JSONs
     Implement augments
         (EquipmentLoadout, StatScorer) -> Set<Augment>

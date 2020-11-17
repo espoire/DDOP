@@ -3,6 +3,8 @@ package ddop.stat.conversions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import ddop.Settings;
+import ddop.item.Item;
+import ddop.item.loadout.EquipmentLoadout;
 import ddop.stat.Stat;
 import ddop.stat.StatMap;
 
@@ -238,7 +240,7 @@ public class SetBonus {
 		return SetBonus.getBonusesImplementation(stats, false);
 	}
 
-	private static List<Stat> getBonusesImplementation(List<Stat> stats, boolean suppressCountsRequirement) {
+	private static List<Stat> getBonusesImplementation(Collection<Stat> stats, boolean suppressCountsRequirement) {
 		List<Stat> ret = new ArrayList<>();
 
 		for(SetBonus sb : SetBonus.all.values()) {
@@ -265,7 +267,44 @@ public class SetBonus {
 		return ret;
 	}
 
-	private static int getCounts(String setName, List<Stat> stats) {
+	public static String listAttainment(EquipmentLoadout el) {
+		Collection<Item> items = el.toItemList();
+		Collection<Stat> stats = el.getStats();
+
+		StringBuilder ret = new StringBuilder();
+
+		for(SetBonus sb : SetBonus.all.values()) {
+			int counts = getCounts(sb.name, stats);
+
+			int highestTier = 0;
+			for(Integer countsRequired : sb.bonus.keySet())
+				if(countsRequired > highestTier)
+					if(counts >= countsRequired)
+						highestTier = countsRequired;
+
+			if(highestTier > 0) {
+				List<String> itemNames = sb.listMatchingItemNames(items);
+				ret.append(sb.toString(highestTier, String.join(", ", itemNames)));
+			}
+		}
+
+		String value = ret.toString();
+		if(value.length() == 0) return "None";
+		return value;
+	}
+
+	private List<String> listMatchingItemNames(Collection<Item> items) {
+		List<String> ret = new ArrayList<>();
+
+		for(Item i : items)
+			for(Stat s : i.getStats())
+				if(s.category.equals(this.name))
+					ret.add(i.name);
+
+		return ret;
+	}
+
+	private static int getCounts(String setName, Collection<Stat> stats) {
 		int ret = 0;
 
 		for(Stat s : stats)
@@ -275,16 +314,17 @@ public class SetBonus {
 		return ret;
 	}
 
-
-
-	public String toString() {
-		StringBuilder ret = new StringBuilder(this.name + "\n");
+	public String toString() { return this.toString(Integer.MAX_VALUE, null); }
+	private String toString(int highestTier, String itemNames) {
+		StringBuilder ret = new StringBuilder(this.name + (itemNames == null ? "" : " (" + itemNames + ")") + "\n");
 
 		List<Integer> bonusTiers = new ArrayList<>(this.bonus.keySet());
 		bonusTiers.sort(null);
 
 		for(Integer countsRequired : bonusTiers) {
-			ret.append("  • ").append(countsRequired).append(" Pieces Equipped:\n");
+			if(countsRequired > highestTier) continue;
+
+			ret.append("  • ").append(countsRequired).append(":\n");
 
 			for(Stat s : this.bonus.get(countsRequired)) {
 				ret.append("    • ").append(s.toString()).append("\n");

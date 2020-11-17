@@ -6,6 +6,7 @@ import ddop.item.ItemSlot;
 import ddop.optimizer.RandomAccessScoredItemList;
 import ddop.stat.Stat;
 import ddop.stat.StatSource;
+import ddop.stat.conversions.SetBonus;
 import ddop.stat.list.VerboseStatList;
 import util.Array;
 import util.NumberFormat;
@@ -55,10 +56,9 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 		if(i == null) return this;
 		if(! i.slots.contains(slot))
 			throw new RuntimeException("Attempted to equip item '" + i.name + "' to slot '" + slot.name + "'. It cannot equip to this slot.");
-		
-		if(slot.limit == 1) {
-			ArrayList<Item> equippedInSlot = this.items.get(slot);
 
+		ArrayList<Item> equippedInSlot = this.items.get(slot);
+		if(slot.limit == 1) {
 			if(equippedInSlot == null) {
 				equippedInSlot = new ArrayList<>();
 				equippedInSlot.add(i);
@@ -69,7 +69,6 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 				equippedInSlot.add(i);
 			}
 		} else {
-			ArrayList<Item> equippedInSlot = this.items.get(slot);
 			if(equippedInSlot == null) {
 				equippedInSlot = new ArrayList<>();
 				equippedInSlot.add(i);
@@ -195,6 +194,10 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 		for(ItemSlot slot : this.getUnfilledSlots()) {
 			ret.append("| ").append(slot.name).append(": [EMPTY]\n");
 		}
+
+		ret.append("\nSet bonuses:\n");
+		ret.append(SetBonus.listAttainment(this));
+		ret.append("\n");
 
 		return ret.toString();
 	}

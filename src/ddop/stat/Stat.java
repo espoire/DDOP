@@ -23,10 +23,12 @@ public class Stat {
 		this(category, bonusType, magnitude, null);
 	}
 
-	public Stat(String category, String bonusType, double magnitude, String source) {
+	private Stat(String category, String bonusType, double magnitude, String source) {
 		this.category = category.toLowerCase();
 
-		if(this.isSetBonus() || this.isAugmentSlot() || this.isCraftablePlaceholder()) bonusType = "stacking";
+		if(bonusType == null || !bonusType.equals("stacking"))
+			if(this.isSetBonus() || this.isAugmentSlot() || this.isCraftablePlaceholder())
+				bonusType = "stacking";
 
 		this.bonusType = bonusType;
 		this.magnitude = magnitude;
@@ -44,31 +46,54 @@ public class Stat {
 
 
 	public static final String[] SET_BONUSES = new String[] { // TODO make this generated
+
+			"curse necromancer",
+			"curse necromancer (legendary)",
+			"heavy warfare",
+			"heavy warfare (legendary)",
+			"renegade champion",
+			"renegade champion (legendary)",
+			"seasons of change",
+			"seasons of change (legendary)",
+
+			"wayward warrior",
+			"wayward warrior (legendary)",
+			"pain and suffering",
+
+			// Ravenloft
 			"adherent of the mists set (heroic)",
 			"adherent of the mists set (legendary)",
 			"beacon of magic set (heroic)",
 			"beacon of magic set (legendary)",
 			"crypt raider set (heroic)",
 			"crypt raider set (legendary)",
-			"curse necromancer",
-			"curse necromancer (legendary)",
-			"flamecleansed fury",
-			"legendary flamecleansed fury",
-			"heavy warfare",
-			"heavy warfare (legendary)",
 			"knight of the shadows set (heroic)",
 			"knight of the shadows set (legendary)",
-			"renegade champion",
-			"renegade champion (legendary)",
-			"seasons of change",
-			"seasons of change (legendary)",
 			"silent avenger set (heroic)",
 			"silent avenger set (legendary)",
-			"wayward warrior",
-			"wayward warrior (legendary)",
-			"pain and suffering",
 
-			// U47
+			// Sharn
+			"arcsteel battlemage",
+			"esoteric initiate",
+			"flamecleansed fury",
+			"guardian of the gates",
+			"hruit's influence",
+			"part of the family",
+			"wallwatch",
+			"legendary arcsteel battlemage",
+			"legendary esoteric initiate",
+			"legendary flamecleansed fury",
+			"legendary guardian of the gates",
+			"legendary hruit's influence",
+			"legendary part of the family",
+			"legendary wallwatch",
+
+			// Soul Splitter
+			"dreadkeeper",
+			"feywild dreamer",
+			"profane experiemnt",
+
+			// U47 (VoD / LoB / MA)
 			"legacy of lorikk",
 			"legacy of levikk",
 			"mind and matter",
@@ -82,10 +107,24 @@ public class Stat {
 			"fastidious fabricator",
 			"astute alchemist",
 			"conduit of the titans",
+
+			// U48
+			"seasons of the feywild",
+			"eminence of winter",
+			"eminence of spring",
+			"eminence of summer",
+			"eminence of autumn",
 	};
 	
 	private boolean isSetBonus() {
 		return util.Array.contains(SET_BONUSES, this.category);
+	}
+	private static boolean isSetBonus(String categoryOrEnchantment) {
+		for(String setBonus : SET_BONUSES)
+			if(categoryOrEnchantment.contains(setBonus))
+				return true;
+
+		return false;
 	}
 
 	public static final String[] AUGMENT_SLOTS = new String[] {
@@ -191,6 +230,7 @@ public class Stat {
 		BONUS_TYPE_TOKENS.put("enhancement", "enhancement");
 		BONUS_TYPE_TOKENS.put("equipped",    "equipment");
 		BONUS_TYPE_TOKENS.put("equipment",   "equipment");
+		BONUS_TYPE_TOKENS.put("ins",         "insight");
 		BONUS_TYPE_TOKENS.put("insight",     "insight");
 		BONUS_TYPE_TOKENS.put("insightful",  "insight");
 		BONUS_TYPE_TOKENS.put("quality",     "quality");
@@ -203,6 +243,9 @@ public class Stat {
 	}
 	
 	public static Stat parseStat(String enchantment) {
+		if(Stat.isSetBonus(enchantment))
+			return new Stat(enchantment, "stacking", 1);
+
 		String[] tokens = enchantment.split("[ ]+");
 		
 		// Remove uninformative tokens. DDOWiki sometimes formats enchantments as "Armor-Piercing - +23%". Should reduce to "Armor-Piercing 23"
@@ -233,11 +276,13 @@ public class Stat {
 		}
 		
 		String bonusType = null;
+		String consumedBonusTypeToken = null;
 		for(int i = 0; i < tokens.length; i++) {
 			String token = tokens[i];
 			if(token == null) continue;
 			if(util.Array.contains(BONUS_TYPE_TOKENS.keySet(), token)) {
 				bonusType = BONUS_TYPE_TOKENS.get(token);
+				consumedBonusTypeToken = token;
 				tokens[i] = null;
 				break;
 			}
@@ -254,7 +299,7 @@ public class Stat {
 			categoryBuilder.append(token);
 		}
 		String category = categoryBuilder.toString();
-		
+
 		Stat ret;
 		if(magnitude != null) {
 			if(bonusType != null) {

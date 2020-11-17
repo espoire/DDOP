@@ -1,5 +1,8 @@
 package ddop;
 
+import ddop.dto.LevelRange;
+import ddop.item.ItemSlot;
+
 public class Settings {
 	public static final String PROJECT_ROOT = "X:\\src\\DDOP";
 
@@ -31,4 +34,12 @@ public class Settings {
     public static final boolean DEBUG_REAPER_BUILD = false;
 
     public static final int LEVEL_CAP = 30;
+
+	public static final ItemSlot[] IGNORED_SLOTS = new ItemSlot[] {
+			ItemSlot.MAIN_HAND, ItemSlot.OFF_HAND,
+			ItemSlot.QUIVER
+	};
+
+	private static final int TARGET_ITEMS_MIN_LEVEL = 26, TARGET_ITEMS_MAX_LEVEL = 30;
+	public static final LevelRange TARGET_ITEMS_LEVEL_RANGE = new LevelRange(TARGET_ITEMS_MIN_LEVEL, TARGET_ITEMS_MAX_LEVEL);
 }

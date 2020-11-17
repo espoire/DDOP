@@ -1,22 +1,35 @@
-EquipmentLoadout (13 items):
-| Feet: slavers crafted ([constitution +17, armor-piercing +28%, tendon slice 14%, quality wisdom +4] version) - 41%
-| Quiver: quiver of alacrity
-| Finger: legendary omniscience, legendary tumbleweed
-| Eye: legendary collective sight ([wisdom +21, insightful constitution +10] version)
-| Head: legendary executioner's helm - 22%
-| Armor: patience through peril
-| Neck: doctor leroux's curious implant
-| Waist: legendary braided cutcord
-| Wrist: legendary moonrise bracers
-| Back: the invisible cloak of strahd
-| Trinket: legendary corroded iron figurine - 80%
-| Hand: staggershockers
-| Main Hand: [EMPTY]
-| Off Hand: [EMPTY]
+EquipmentLoadout (12 items):
+| Armor: legendary turncoat
+| Back: legendary cloak of summer
+| Trinket: signet of the solstice (lamannia - feywild raid)
+| Wrist: devilscale bracers
+| Hand: legendary hammerfist
+| Head: legendary umber brim
+| Finger: legendary chieftain, legendary lionheart ring
+| Eye: ir'kesslan's most prescient lens
+| Waist: legendary belt of the ram
+| Neck: legendary family recruit sigil
+| Feet: legendary sunken slippers ([quality wisdom +5] version)
+
+Set bonuses:
+eminence of summer (legendary cloak of summer, signet of the solstice (lamannia - feywild raid), legendary lionheart ring, legendary belt of the ram)
+  • 2:
+    • "mrr" 25 (artifact)
+  • 3:
+    • "armor-piercing" 25 (artifact)
+  • 4:
+    • "combat mastery" 5 (artifact)
+    • "qp dc" 5 (artifact)
+legendary part of the family (legendary turncoat, legendary hammerfist, legendary family recruit sigil)
+  • 3:
+    • "doublestrike" 15 (artifact)
+    • "melee power" 25 (artifact)
+    • "damage vs helpless" 15 (artifact)
+    • "armor-piercing" 10 (artifact)
 
 SpecScorer Overall Score Debug Log
-DPS Score: 13.6k
-DCs:       10.9k
-Defenses:  12.4k
-Saves:     90.5%
-Total:     3.4 M (114.4%)
+DPS Score: 19.2k
+DCs:       11.8k
+Defenses:  14.9k
+Saves:     90.4%
+Total:     4.6 M (114.3%)

@@ -250,7 +250,7 @@ public class ItemReader {
 			if(util.Array.matches (RANDOM_MODS_REGEX,       mod) ||
 			   util.Array.contains(FLAVOR_ENCHANTMENTS,     mod) ||
 			   util.Array.contains(UNIMPLEMENTED_META_MODS, mod) ||
-				(Settings.IGNORE_SET_BONUSES  && util.Array.contains(Stat.SET_BONUSES, mod)) ||
+				(Settings.IGNORE_SET_BONUSES  && util.Array.contains(Stat.SET_BONUSES,      mod)) ||
 				(Settings.IGNORE_DAMAGE_TYPES && util.Array.contains(DAMAGE_TYPE_MODS,      mod)) ||
 				(Settings.IGNORE_CLICKIES     && util.Array.matches (CLICKIES_REGEX,        mod)) ||
 				(Settings.IGNORE_RUNEARM_SHOT && util.Array.matches (RUNE_ARM_SHOT_REGEX,   mod)) ) {
