@@ -10,6 +10,7 @@ import ddop.stat.AbilityScore;
 import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
 import util.NumberFormat;
+import util.Pair;
 import util.StatTotals;
 
 import java.util.*;
@@ -233,7 +234,9 @@ public class ShintaoScorer extends SpecScorer {
 								TARGETS_KUKANDO        = 1;
 	
 	@Override
-	protected double scoreDCs(StatTotals stats) {
+	protected Pair<Double, String> scoreDCs(StatTotals stats) {
+		String messages = null;
+
 		int wisdom			= this.getAbilityScore(AbilityScore.WISDOM, stats);
 		int wisMod			= this.getAbilityMod(AbilityScore.WISDOM, stats);
 		int deadlyInstinct	= wisMod / 2;
@@ -314,8 +317,8 @@ public class ShintaoScorer extends SpecScorer {
 		double killsPerSecondEquivalent = quiveringPalmScore + stunningFistScore + direChargeScore + smiteTaintScore + jadeStrikeScore + jadeTombScore + kukandoScore;
 		double dcsScore = killsPerSecondEquivalent * SIM_ENEMY_HP * VALUATION_DCS * kiScore;
 		
-		if(this.verbose) {
-			System.out.println("ShintaoScorer DCs Debug Log\n"
+		if(this.verbosity == Verbosity.FULL) {
+			messages = "ShintaoScorer DCs Debug Log"
 					+ "\n+- Ki Income: " + (uncentered(stats) ? "UNCENTERED" : NumberFormat.readableLargeNumber(kiPerHit) + "/hit + " + NumberFormat.readableLargeNumber(passiveKi) + "/tick")
 					+ "\n+- Ki Satis.: " + NumberFormat.percent(kiScore) + " (" + NumberFormat.readableLargeNumber(kiIncome) + " in / " + NumberFormat.readableLargeNumber(kiSpend) + " out)"
 					+ "\n+- Wisdom:    " + wisdom          + " (+" + wisMod										+ ")"
@@ -323,10 +326,10 @@ public class ShintaoScorer extends SpecScorer {
 					+ "\n+- Stun Fist: " + stunningFistDC  + " ("  + NumberFormat.percent(stunningFistDCRate)	+ ")"
 					+ "\n+- Dire Chrg: " + direChargeDC    + " ("  + NumberFormat.percent(direChargeDCRate)		+ ")"
 					+ "\n+- Jade:      " + jadeTombDC      + " ("  + NumberFormat.percent(jadeTombDCRate)		+ ")"
-				    + "\n+- Kukan-Do:  " + kukandoDC       + " ("  + NumberFormat.percent(kukandoDCRate)		+ ")");
+				    + "\n+- Kukan-Do:  " + kukandoDC       + " ("  + NumberFormat.percent(kukandoDCRate)		+ ")\n";
 		}
 		
-		return dcsScore;
+		return new Pair<>(dcsScore, messages);
 	}
 
 	private double multihitDC(double chance, double attempts) {

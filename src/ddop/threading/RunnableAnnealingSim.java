@@ -103,7 +103,7 @@ public class RunnableAnnealingSim extends RunnableSim {
 
         ItemSlot slot = (ItemSlot) Random.random(unskippedItemSlots);
         Item item = itemMap.get(slot).getRandomUnweighted();
-        this.working.put(item, slot);
+        this.working.put(slot, item);
     }
 
     private static List<ItemSlot> generateUnskippedSlots(List<ItemSlot> skippedItemSlots, Map<ItemSlot, RandomAccessScoredItemList> itemMap) {

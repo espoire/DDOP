@@ -11,6 +11,7 @@ import ddop.stat.AbilityScore;
 import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
 import util.NumberFormat;
+import util.Pair;
 import util.StatTotals;
 
 import java.util.*;
@@ -300,7 +301,9 @@ public class HealbardScorer extends SpecScorer {
 	}
 
 	@Override
-	protected double scoreDCs(StatTotals stats) {
+	protected Pair<Double, String> scoreDCs(StatTotals stats) {
+		String messages = null;
+
 		int charisma = this.getAbilityScore(AbilityScore.CHARISMA, stats);
 		int chaMod   = this.getAbilityMod  (AbilityScore.CHARISMA, stats);
 
@@ -331,18 +334,18 @@ public class HealbardScorer extends SpecScorer {
 		double killsPerSecondEquivalent	= (massHoldScore + caperingScore + ottosIrrScore) / 2;		// Over 2, to take average (I won't CC when targets already CCd) but also to value options (I'll pick the best one).
 		double dcsScore					= killsPerSecondEquivalent * SIM_ENEMY_HP * VALUATION_DCS;
 
-		if(this.verbose) {
-			System.out.println("HealbardScorer DCs Debug Log\n"
+		if(this.verbosity == Verbosity.FULL) {
+			messages = "HealbardScorer DCs Debug Log\n"
 					+ "+- Charisma:  " + charisma			+ " (+"	+ chaMod + ")\n"
 					+ "+- Caster Lv: " + casterLevel		+ "\n"
 					+ "+- Spell Pen: " + spellPenetration   + " ("	+ NumberFormat.percent(spellPenetrationRate) + " / " + NumberFormat.percent(netSpellPen) + ")\n"
 					+ "+- Perform:   " + perform			+ "\n"
 					+ "+- Mass Hold: " + massHoldDC			+ " ("  + NumberFormat.percent(massHoldDCRate) + ")\n"
 					+ "+- Capering:  " + caperingDC			+ " ("  + NumberFormat.percent(caperingDCRate) + ")\n"
-					+ "+- Ottos Irr: No Save\n");
+					+ "+- Ottos Irr: No Save\n\n";
 		}
 
-		return dcsScore;
+		return new Pair<>(dcsScore, messages);
 	}
 
 	@Override
@@ -373,11 +376,12 @@ public class HealbardScorer extends SpecScorer {
 			return quickenCost + enlargeCost;
 		}
 		
-		public void printVerboseDebugLog() {
-			System.out.println( "+- SP:         " + this.SP);
-			System.out.println( "+- Devotion:   " + this.devotion);
-			System.out.println( "+- Heal Crit:  " + this.lore + "% / x" + NumberFormat.readableLargeNumber(1 + this.critMultiplier));
-			System.out.println( "+- Efficiency: " + NumberFormat.percent(this.discount));
+		public String getVerboseDebugLog() {
+			return
+			"+- SP:         " + this.SP + "\n" +
+			"+- Devotion:   " + this.devotion + "\n" +
+			"+- Heal Crit:  " + this.lore + "% / x" + NumberFormat.readableLargeNumber(1 + this.critMultiplier) + "\n" +
+			"+- Efficiency: " + NumberFormat.percent(this.discount) + "\n";
 		}
 	}
 	
@@ -508,10 +512,11 @@ public class HealbardScorer extends SpecScorer {
 			return this.name;
 		}
 		
-		public void printVerboseDebugLog() {
-			System.out.println( "+- " + this.getTagLine() + ": " +
-										NumberFormat.readableLargeNumber(this.getHealing()) +
-										" (" + this.getCost() + " SP)");
+		public String getVerboseDebugLog() {
+			return
+			"+- " + this.getTagLine() + ": " +
+			NumberFormat.readableLargeNumber(this.getHealing()) +
+			" (" + this.getCost() + " SP)\n";
 		}
 	}
 	
@@ -564,19 +569,22 @@ public class HealbardScorer extends SpecScorer {
 			return SP / MPS;
 		}
 		
-		public void printVerboseDebugLog() {
-			System.out.println("== Healing Spellbook \"" + this.name + "\" Debug Log ==");
+		public String getVerboseDebugLog() {
+			StringBuilder ret = new StringBuilder("== Healing Spellbook \"" + this.name + "\" Debug Log ==\n");
 			
-			this.castsWith.printVerboseDebugLog();
-			System.out.println("|");
-			for(HealingSpell spell : this.spells) {
-				spell.printVerboseDebugLog();
-			}
+			ret.append(this.castsWith.getVerboseDebugLog());
+			ret.append("|\n");
+			for(HealingSpell spell : this.spells)
+				ret.append(spell.getVerboseDebugLog());
+
+			return ret.toString();
 		}
 	}
 	
 	@Override
-	protected double scoreHealing(StatTotals stats) {
+	protected Pair<Double, String> scoreHealing(StatTotals stats) {
+		String messages = null;
+
 		HealingStats hs = new HealingStats(this, stats);
 
 		HealingSpell healSpell = new HealingSpell("Heal")
@@ -623,14 +631,14 @@ public class HealbardScorer extends SpecScorer {
 
 		double score = Math.sqrt(maxHPS * Math.pow(sustain, 0.85));
 		
-		if(verbose) {
-			bardSpells.printVerboseDebugLog();
-			System.out.println("|");
-			System.out.println("+- Max HPS:   " + (int) maxHPS);
-			System.out.println("+- Sustain:   " + (int) sustain);
+		if(verbosity == Verbosity.FULL) {
+			messages = bardSpells.getVerboseDebugLog() +
+				"|\n" +
+				"+- Max HPS:   " + (int) maxHPS + "\n" +
+				"+- Sustain:   " + (int) sustain + "\n";
 		}
 		
-		return score;
+		return new Pair<>(score, messages);
 	}
 
 	protected boolean valuesDPS() { return true; }

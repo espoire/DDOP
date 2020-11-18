@@ -1,5 +1,7 @@
 package ddop.optimizer.valuation;
 
+import ddop.item.loadout.EquipmentLoadout;
+import ddop.optimizer.ScoredLoadout;
 import ddop.stat.Stat;
 import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
@@ -17,7 +19,7 @@ public class ValuationContext {
     public ValuationContext(StatScorer scorer, StatSource stats) {
         this.scorer = scorer;
         this.stats  = stats;
-        this.baseScore = scorer.score(stats, null, true);
+        this.baseScore = scorer.score(stats, null, true).getKey();
     }
     
     public ValuationContext with(StatSource additionalStats) {
@@ -30,9 +32,20 @@ public class ValuationContext {
     
     public double score(StatSource statsToScore, boolean relaxArtifactConstraint) {
         AbstractStatList sl = new FastStatList(this.scorer.getQueriedStatCategories(), this.stats, statsToScore);
-        return scorer.score(sl, relaxArtifactConstraint) - this.baseScore;
+        return scorer.score(sl, relaxArtifactConstraint).getKey() - this.baseScore;
+    }
+    public ScoredLoadout scoreLoadout(EquipmentLoadout toRefine) {
+        return ScoredLoadout.score(toRefine, this.scorer);
     }
 
     public StatFilter getQueriedStatCategories() { return this.scorer.getQueriedStatCategories(); }
     public Set<ArmorType> getAllowedArmorTypes() { return this.scorer.getAllowedArmorTypes(); }
+
+    public void showScoreSummaryFor(StatSource ss, Double scoreToNormalizeTo, StatScorer.Verbosity verbosity) {
+        System.out.println(this.getScoreSummaryFor(ss, scoreToNormalizeTo, verbosity));
+    }
+
+    public String getScoreSummaryFor(StatSource ss, Double scoreToNormalizeTo, StatScorer.Verbosity verbosity) {
+        return scorer.getScoreSummaryFor(ss, scoreToNormalizeTo, verbosity);
+    }
 }

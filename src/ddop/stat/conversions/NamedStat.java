@@ -99,6 +99,12 @@ public class NamedStat {
         new NamedStat("physical sheltering").addBonus("prr", null, 0);
         new NamedStat("magical sheltering") .addBonus("mrr", null, 0);
         new NamedStat("magical resistance:").addBonus("mrr", null, 0);
+        new NamedStat("crown of summer").addBonus("healing amplification",  "enhancement", 15)
+                                        .addBonus("melee power",  "crown of summer", 10)
+                                        .addBonus("ranged power", "crown of summer", 5);
+        new NamedStat("lifeblood of the undead prince").addBonus("healing amplification",  "competence", 0)
+                                                       .addBonus("negative amplification", "competence", 0)
+                                                       .addBonus("repair amplification",   "competence", 0);
         new NamedStat("fortification (+50%)").addBonus("fortification", null, 50);
         new NamedStat("blurry")             .addBonus("concealment",         "default",  20);
         new NamedStat("smoke screen")       .addBonus("concealment",         "default",  20);
@@ -112,6 +118,7 @@ public class NamedStat {
         new NamedStat("shield bonus")       .addBonus("ac", "shield",        0);
         new NamedStat("template:protection").addBonus("ac", "deflection",    0);
         new NamedStat("hardened exterior")  .addBonus("ac", "profane",       0);
+        new NamedStat("rough hide")         .addBonus("ac", "primal",        0);
         new NamedStat("heightened awareness (10)").addBonus("ac", "insight", 10);
         new NamedStat("dodge bonus").addBonus("dodge", null, 0);
         new NamedStat("greater reinforced fists") .addBonus("reinforced fists", "default", 2);
@@ -122,6 +129,8 @@ public class NamedStat {
                                      .addBonus("intelligence", null, 0)
                                      .addBonus("wisdom",       null, 0)
                                      .addBonus("charisma",     null, 0);
+        new NamedStat("ram's might").addBonus("strength",     "size", 2)
+                                    .addBonus("deadly",       "size", 2);
         new NamedStat("blood rage").addBonus("strength",     "blood rage", 4)
                                    .addBonus("constitution", "blood rage", 4);
         new NamedStat("litany of the dead ability bonus").addBonus("well rounded", "profane", 1);
@@ -240,16 +249,17 @@ public class NamedStat {
                 .addBonus("repair spell critical damage", null, 0);
         new NamedStat("frozen storm lore").addBonus("ice lore",       "equipment", 0)
                                           .addBonus("lightning lore", "equipment", 0);
-        new NamedStat("spell focus mastery")
-            .addBonus("abjuration focus",		null, 0)
-            .addBonus("conjuration focus",	null, 0)
-            .addBonus("divination focus",		null, 0)
-            .addBonus("enchantment focus",	null, 0)
-            .addBonus("evocation focus",		null, 0)
-            .addBonus("illision focus",		null, 0)
-            .addBonus("necromancy focus",		null, 0)
-            .addBonus("transmutation focus",	null, 0);
-        new NamedStat("deific focus").addBonus("spell focus mastery", "sacred", 0);
+        new NamedStat("spell focus")
+                .addBonus("abjuration focus",    null, 0)
+                .addBonus("conjuration focus",   null, 0)
+                .addBonus("divination focus",    null, 0)
+                .addBonus("enchantment focus",   null, 0)
+                .addBonus("evocation focus",     null, 0)
+                .addBonus("illusion focus",      null, 0)
+                .addBonus("necromancy focus",    null, 0)
+                .addBonus("transmutation focus", null, 0);
+        new NamedStat("spell focus mastery").addBonus("spell focus", null,     0);
+        new NamedStat("deific focus")       .addBonus("spell focus", "sacred", 0);
         new NamedStat("lifesealed").addBonus("deathblock",          "default", 1)
                                    .addBonus("negative absorption", "default", 50);
         new NamedStat("build combat mastery").addBonus("combat mastery", null, 0)
@@ -276,10 +286,13 @@ public class NamedStat {
                                              .addBonus("sonic absorption",       null, 0);
         new NamedStat("chitinous covering: fire absorption").addBonus("fire absorption", null, 0);
         new NamedStat("shining silver scales (cold absorption").addBonus("cold absorption", "enhancement", 51);
+        new NamedStat("fire shield (hot)") .addBonus("cold absorption", "spell", 25); // 25% because unknown uptime of 50% abs
+        new NamedStat("fire shield (cold)").addBonus("fire absorption", "spell", 25); // 25% because unknown uptime of 50% abs
         new NamedStat("devil's bones").addBonus("fire absorption", "enhancement", 31)
                                       .addBonus("evil absorption", "enhancement", 31);
         new NamedStat("hound's bones").addBonus("acid absorption", "enhancement", 31)
                                       .addBonus("evil absorption", "enhancement", 31);
+        new NamedStat("high spirits").addBonus("exhaustion immunity");
         new NamedStat("immunity to fear").addBonus("fear immunity");
         new NamedStat("devil's blood").addBonus("curse immunity")
                                       .addBonus("poison immunity")
@@ -298,12 +311,14 @@ public class NamedStat {
 		new NamedStat("cold vulnerability")  .addBonus("vulnerability");
 		new NamedStat("acid vulnerability")  .addBonus("vulnerability");
 		new NamedStat("fetters of unreality").addBonus("vulnerability");
-        new NamedStat("invulnerability")        .addBonus("dr", "enhancement",   2.5); // DR 5/magic
-        new NamedStat("life shield")            .addBonus("dr", "life shield",   1.5); // 15 temp HPs, 10% on get-hit.
-        new NamedStat("demonic shield")         .addBonus("dr", "demonic shield",6.0); // 30 temp HPs, 20% on get-hit.
-		new NamedStat("angelic grace")          .addBonus("dr", "angelic grace", 7.5); // 150 temp HPs, 5% on get-hit, 10 sec cooldown.
-		new NamedStat("the golden curse")       .addBonus("dr", "goldskin",      10.0); // DR 30/adamantine for next 20 hits, 2% on get-hit.
-        new NamedStat("improved demonic shield").addBonus("dr", "demonic shield",24.0); // 120 temp HPs, 20% ? on get-hit.
+        new NamedStat("invulnerability")        .addBonus("dr", "enhancement",           2.5); // DR 5/magic
+        new NamedStat("life shield")            .addBonus("dr", "life shield",           1.5); // 15 temp HPs, 10% on get-hit.
+        new NamedStat("demonic shield")         .addBonus("dr", "demonic shield",        6.0); // 30 temp HPs, 20% on get-hit.
+		new NamedStat("angelic grace")          .addBonus("dr", "angelic grace",         7.5); // 150 temp HPs, 5% on get-hit, 10 sec cooldown.
+        new NamedStat("improved earthen guard") .addBonus("dr", "stoneskin",             9.5); // DR 10/adamantine for next 20 hits, 15% on get-hit.
+        new NamedStat("the golden curse")       .addBonus("dr", "goldskin",              10.0); // DR 30/adamantine for next 20 hits, 2% on get-hit.
+        new NamedStat("legendary ice barrier")  .addBonus("dr", "legendary ice barrier", 13.55); // DR 150/adamantine for next hit, 10% on get-hit, 30sec cooldown.
+        new NamedStat("improved demonic shield").addBonus("dr", "demonic shield",        24.0); // 120 temp HPs, 20% ? on get-hit.
 		new NamedStat("healers bounty") .addBonus("self healing when hit", "healers bounty", 1.8); // 90 healing, 2% on get-hit.
 
 

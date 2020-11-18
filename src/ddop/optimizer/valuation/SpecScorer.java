@@ -125,15 +125,18 @@ public abstract class SpecScorer extends StatScorer {
 
 				// Misc Defensive
 				"feat: wind through the trees",
+				"winged allure",
 				"improved quelling strikes",
 
 				// Condition Immunities
 				"poison immunity",
+				"exhaustion immunity",
 				"charm immunity",
 				"fear immunity",
 				"blindness immunity",
 				"petrification immunity",
 				"curse immunity",
+				"freedom of movement",
 				"deathblock",
 
 				// Saves
@@ -253,14 +256,17 @@ public abstract class SpecScorer extends StatScorer {
 								VALUATION_SALT			 = 0.1,
 								VALUATION_DCS            = 3.0, // 1 for the DPS-equivalent, 1 for DPS benefit to party, 1 for defenses benefit.
 								VALUATION_WIND_THROUGH_THE_TREES    = 1.015,
+								VALUATION_WINGED_ALLURE             = 1.01,
 								VALUATION_IMPROVED_QUELLING_STRIKES = 1.02, // TODO modify for weapon attack rate
-								VALUATION_IMMUNITY_POISON  = 1.002,
-								VALUATION_IMMUNITY_CHARM   = 1.002,
-								VALUATION_IMMUNITY_FEAR    = 1.005,
-								VALUATION_IMMUNITY_BLIND   = 1.005,
-								VALUATION_IMMUNITY_PETRIFY = 1.005,
-								VALUATION_IMMUNITY_CURSE   = 1.03,
-								VALUATION_IMMUNITY_DEATH   = 1.03,
+								VALUATION_IMMUNITY_POISON      = 1.002,
+								VALUATION_IMMUNITY_EXHAUSTION  = 1.002,
+								VALUATION_IMMUNITY_CHARM       = 1.002,
+								VALUATION_IMMUNITY_FEAR        = 1.005,
+								VALUATION_IMMUNITY_BLIND       = 1.005,
+								VALUATION_IMMUNITY_PETRIFY     = 1.005,
+								VALUATION_IMMUNITY_CURSE       = 1.03,
+								VALUATION_IMMUNITY_FOM         = 1.03,
+								VALUATION_IMMUNITY_DEATH       = 1.03,
 								VALUATION_TENDON_SLICE   = 0.05,
 								VALUATION_SAVES_IMPORTANCE = 0.6,
 								VALUATION_AVOIDANCE      = 0.9; // Multiplier for avoidance worth. Generally below 1, as avoidance cannot be trusted.
@@ -269,29 +275,66 @@ public abstract class SpecScorer extends StatScorer {
 	//endregion
 	
 	@Override
-	protected double score(AbstractStatList stats, Double scoreToNormalizeTo, boolean relaxArtifactConstraint) {
+	protected Pair<Double, String> score(AbstractStatList stats, Double scoreToNormalizeTo, boolean relaxArtifactConstraint) {
+		String messages = "";
+
 		if(stats == null) stats = new FastStatList(this.getQueriedStatCategories(), (StatSource[]) null);
 		StatTotals totals = stats.addAll(CommonAugmentEnchantments.getStats()).add(this.build).add(this.reaperBuild).getStatTotals();
 		
 		double DPS = 1;
 		if(this.valuesDPS()) {
-			DPS = this.scoreDPS(totals);
+			Pair<Double, String> result = this.scoreDPS(totals);
+
+			DPS = result.getKey();
+			String message = result.getValue();
+
+			if(message != null) messages += message;
 		}
 
 		double healingScore = 1;
 		if(this.valuesHealing()) {
-			healingScore = this.scoreHealing(totals);
-			if(this.verbose) System.out.println("+- Score:     " + NumberFormat.readableLargeNumber(healingScore) + "\n");
+			Pair<Double, String> result = this.scoreHealing(totals);
+			double score = result.getKey();
+			String message = result.getValue();
+
+			healingScore = score;
+			if(message != null) messages += message;
+
+			if(this.verbosity == Verbosity.FULL) System.out.println("+- Score:     " + NumberFormat.readableLargeNumber(healingScore) + "\n");
 		}
 
 		double DCs = 0;
 		if(this.hasDCs()) {
-			DCs = this.scoreDCs(totals) * Math.pow(1.2, this.skulls);
-			if(this.verbose) System.out.println("+- Score:     " + NumberFormat.readableLargeNumber(DCs) + "\n");
+			Pair<Double, String> result = this.scoreDCs(totals);
+			double score = result.getKey();
+			String message = result.getValue();
+
+			DCs = score * Math.pow(1.2, this.skulls);
+			if(message != null) messages += message;
+
+			if(this.verbosity == Verbosity.FULL) messages += "+- Score:     " + NumberFormat.readableLargeNumber(DCs) + "\n\n";
 		}
-		double defenses = this.scoreDefenses(totals);
-		double saves    = this.scoreSaves   (totals);
-		
+
+
+
+		Pair<Double, String> defensesResult = this.scoreDefenses(totals);
+
+		double defenses = defensesResult.getKey();
+		String defensesMessage = defensesResult.getValue();
+
+		if(defensesMessage != null) messages += defensesMessage;
+
+
+
+		Pair<Double, String> savesResult = this.scoreSaves(totals);
+
+		double saves = savesResult.getKey();
+		String savesMessage = savesResult.getValue();
+
+		if(savesMessage != null) messages += savesMessage;
+
+
+
 		double offensiveScore = DPS;
 		if(this.valuesHealing()) {
 			offensiveScore = DPS * 0.1 + healingScore * 0.9;
@@ -309,7 +352,7 @@ public abstract class SpecScorer extends StatScorer {
 		double score = offenseScoreTotal * Math.sqrt(defenseScoreTotal) * saves * penaltyMultiplier;
 		if(scoreToNormalizeTo == null) scoreToNormalizeTo = score;
 		
-		if(this.verbose) {
+		if(this.verbosity == Verbosity.SUMMARY || this.verbosity == Verbosity.FULL) {
 			String debugLog = "SpecScorer Overall Score Debug Log\n";
 			if(this.valuesDPS())     debugLog += "DPS Score: " + NumberFormat.readableLargeNumber(DPS)      + "\n";
 			if(this.valuesHealing()) debugLog += "Healing:   " + NumberFormat.readableLargeNumber(healingScore) + "\n";
@@ -325,10 +368,11 @@ public abstract class SpecScorer extends StatScorer {
 
 			debugLog += "Total:     " + NumberFormat.readableLargeNumber(score)    + " (" + NumberFormat.percent(score / scoreToNormalizeTo, 1) + ")\n";
 			
-			System.out.println(debugLog);
+			messages += debugLog + "\n";
 		}
-		
-		return score;
+
+		if(messages.length() == 0) messages = null;
+		return new Pair<Double, String>(score, messages);
 	}
 
 	protected List<Pair<String, Double>> getPenalties(StatTotals stats, boolean relaxArtifactConstraint) {
@@ -396,8 +440,15 @@ public abstract class SpecScorer extends StatScorer {
 
 	protected boolean valuesDPS() { return true; }
 	
-	private double scoreDPS(StatTotals stats) {
-		double combinedDPS = this.getDPS(stats);
+	private Pair<Double, String> scoreDPS(StatTotals stats) {
+		String messages = "";
+
+		Pair<Double, String> result = this.getDPS(stats);
+
+		double combinedDPS = result.getKey();
+		String message = result.getValue();
+
+		if(message != null) messages += message;
 		
 		double trueSeeingMultiplier     = 1 - (stats.get("true seeing")     > 0 ? 0                                 : 0.6 * SIM_BLURRY_PORTION);
 		double ghostTouchMultiplier     = 1 - (stats.get("ghost touch")     > 0 ? 0                                 : 0.7 * SIM_GHOSTLY_PORTION);
@@ -406,21 +457,29 @@ public abstract class SpecScorer extends StatScorer {
 		
 		double score = combinedDPS * miscMultiplier;
 		
-		if(this.verbose) {
-			System.out.println("+- Score:     " + NumberFormat.readableLargeNumber(score) + "\n");
-		}
-		
-		return score;
+		if(this.verbosity == Verbosity.FULL)
+			messages = "+- Score:     " + NumberFormat.readableLargeNumber(score) + "\n\n";
+
+		if(messages.length() == 0) messages = null;
+		return new Pair<>(score, messages);
 	}
 
-	private double getDPS(StatTotals stats) {
-		if(this.getDamageSources().size() == 0) return 0;
-		
+	private Pair<Double, String> getDPS(StatTotals stats) {
+		if(this.getDamageSources().size() == 0) return new Pair<>((double) 0, null);
+
+		String messages = "";
+
 		double totalDPS = 0;
 		double remainingActiveTime = 1;
 		for(DamageSource ds : this.getDamageSources()) {
 			ds.skulls = this.skulls;
-			double DpET = ds.getDpET(stats, this.verbose);
+			Pair<Double, String> result = ds.getDpET(stats, this.verbosity);
+
+			double DpET = result.getKey();
+			String message = result.getValue();
+
+			if(message != null) messages += message;
+
 			double activeTime = ds.getActiveTime(stats);
 			
 			double DPS = DpET * activeTime;
@@ -432,11 +491,14 @@ public abstract class SpecScorer extends StatScorer {
 			remainingActiveTime -= activeTime;
 			if(activeTime <= 0) break;
 		}
-		
-		return totalDPS;
+
+		if(messages.length() == 0) messages = null;
+		return new Pair<>(totalDPS, messages);
 	}
 	
-	protected double scoreDefenses(StatTotals stats) {
+	protected Pair<Double, String> scoreDefenses(StatTotals stats) {
+		String messages = null;
+
 		double hpScore          = this.scoreHP(stats);
 		double reductionScore   = this.scoreDamageReducers(stats);
 		double avoidanceScore   = this.scoreAvoidance(stats);
@@ -445,8 +507,8 @@ public abstract class SpecScorer extends StatScorer {
 		
 		double score = hpScore * reductionScore * avoidanceScore * healAmpScore * miscEffectsScore;
 		
-		if(this.verbose) {
-			System.out.println("SpecScorer Defenses Debug Log\n"
+		if(this.verbosity == Verbosity.FULL) {
+			messages = "SpecScorer Defenses Debug Log\n"
 					+ "+- HP:        " + this.getHP(stats) + " (+" + this.getUnconsciousnessRange(stats) + " unconscious)\n"
 					+ "+- PRR:       " + this.getPRR(stats) + "\n"
 					+ "+- MRR:       " + this.getMRR(stats) + " (" + (this.getRawMRR(stats) > this.getMRRCap(stats) ? (this.getRawMRR(stats) - this.getMRRCap(stats)) + " over cap" : (this.getMRRCap(stats) > 1000 ? "Uncapped" : "Cap: " + this.getMRRCap(stats))) + ")\n"
@@ -455,10 +517,10 @@ public abstract class SpecScorer extends StatScorer {
 				    + "+- Dodge:     " + this.getDodge(stats) + "%" + (this.getDodge(stats) > this.getMaxDodge(stats) ? " (" + (this.getDodge(stats) - this.getMaxDodge(stats)) + "% over cap)" : "") + "\n"
 				    + "+- Blurry:    " + this.getConcealment(stats) + "%\n"
 				    + "+- Ghostly:   " + this.getIncorporeal(stats) + "%\n"
-				    + "+- Score:     " + NumberFormat.readableLargeNumber(score) + "\n");
+				    + "+- Score:     " + NumberFormat.readableLargeNumber(score) + "\n\n";
 		}
 		
-		return score;
+		return new Pair<>(score, messages);
 	}
 	
 	private int getHPFromLevel() {
@@ -710,9 +772,14 @@ public abstract class SpecScorer extends StatScorer {
 	private double scoreHealAmp(StatTotals stats) {
 		return 1 + this.getHealAmpPercent(stats) * VALUATION_HEAL_AMP;
 	}
-	
+
 	private double scoreWindThroughTheTrees(StatTotals stats) {
 		if(stats.getBoolean("feat: wind through the trees")) return VALUATION_WIND_THROUGH_THE_TREES;
+		return 1;
+	}
+
+	private double scoreWingedAllure(StatTotals stats) {
+		if(stats.getBoolean("winged allure")) return VALUATION_WINGED_ALLURE;
 		return 1;
 	}
 	
@@ -725,11 +792,13 @@ public abstract class SpecScorer extends StatScorer {
 		double ret = 1.0;
 
 		if(stats.getBoolean("poison immunity"))        ret *= VALUATION_IMMUNITY_POISON;
+		if(stats.getBoolean("exhaustion immunity"))    ret *= VALUATION_IMMUNITY_POISON;
 		if(stats.getBoolean("charm immunity"))         ret *= VALUATION_IMMUNITY_CHARM;
 		if(stats.getBoolean("fear immunity"))          ret *= VALUATION_IMMUNITY_FEAR;
 		if(stats.getBoolean("blindness immunity"))     ret *= VALUATION_IMMUNITY_BLIND;
 		if(stats.getBoolean("petrification immunity")) ret *= VALUATION_IMMUNITY_PETRIFY;
 		if(stats.getBoolean("curse immunity"))         ret *= VALUATION_IMMUNITY_CURSE;
+		if(stats.getBoolean("freedom of movement"))    ret *= VALUATION_IMMUNITY_FOM;
 		if(stats.getBoolean("deathblock"))             ret *= VALUATION_IMMUNITY_DEATH;
 
 		return ret;
@@ -737,11 +806,14 @@ public abstract class SpecScorer extends StatScorer {
 	
 	private double scoreMiscEffects(StatTotals stats) {
 		return this.scoreWindThroughTheTrees(stats) *
+				this.scoreWingedAllure(stats) *
 				this.scoreImprovedQuellingStrikes(stats) *
 				this.scoreImmunities(stats);
 	}
 
-	private double scoreSaves(StatTotals stats) {
+	private Pair<Double, String> scoreSaves(StatTotals stats) {
+		String messages = null;
+
 		int dex = this.getDex(stats);
 		int con = this.getCon(stats);
 		int wis = this.getWis(stats);
@@ -771,16 +843,16 @@ public abstract class SpecScorer extends StatScorer {
 		
 		double score = VALUATION_SAVES_IMPORTANCE * allSavesRate + (1 - VALUATION_SAVES_IMPORTANCE);
 		
-		if(this.verbose) {
-			System.out.println("SpecScorer Saves Debug Log\n"
+		if(this.verbosity == Verbosity.FULL) {
+			messages = "SpecScorer Saves Debug Log\n"
 					+ "+- DEX:       " + dex + " (+" + dexMod + ")\n"
 					+ "+- CON:       " + con + " (+" + conMod + ")\n"
 					+ "+- WIS:       " + wis + " (+" + wisMod + ")\n"
 					+ "+- Saves:     " + fortSaves + "/" + reflSaves + "/" + willSaves + " (" + NumberFormat.percent(allSavesRate) + ")\n"
-				    + "+- Score:     " + NumberFormat.percent(score) + "\n");
+				    + "+- Score:     " + NumberFormat.percent(score) + "\n\n";
 		}
 		
-		return score;
+		return new Pair<>(score, messages);
 	}
 
 	protected int getReflexMod(StatTotals stats) {
@@ -824,7 +896,7 @@ public abstract class SpecScorer extends StatScorer {
 	}
 
 	/** Returns a value for this build's DC-based abilities. Intended to be overridden in a child class. */
-	protected double scoreDCs(StatTotals stats) { return 0; }
+	protected Pair<Double, String> scoreDCs(StatTotals stats) { return new Pair<Double, String>((double) 0, null); }
 	/** Must return <code>true</code> if scoreDCs is implemented. */
 	protected abstract boolean hasDCs();
 	
@@ -862,7 +934,7 @@ public abstract class SpecScorer extends StatScorer {
 	protected double getGearSPMultiplier() { return 1; }
 	
 	/** Returns a value for this build's DC-based abilities. Intended to be overridden in a child class. */
-	protected double scoreHealing(StatTotals stats) { return 0; }
+	protected Pair<Double, String> scoreHealing(StatTotals stats) { return new Pair<Double, String>((double) 0, null); }
 	/** Must return <code>true</code> if scoreHealing is implemented. */
 	protected abstract boolean valuesHealing();
 

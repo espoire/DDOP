@@ -1,6 +1,8 @@
 package ddop.optimizer.valuation.damage.weapon;
 
+import ddop.optimizer.valuation.StatScorer;
 import ddop.optimizer.valuation.damage.DamageSource;
+import util.Pair;
 import util.StatTotals;
 
 import java.util.*;
@@ -56,6 +58,7 @@ public abstract class WeaponAttack extends DamageSource {
 				"soul of the elements",
 				"noxious venom spike",
 				"epic noxious venom spike",
+				"shadow spike",
 				"alchemical water attunement",
 				"alchemical earth attunement",
 				"alchemical fire attunement",
@@ -71,7 +74,9 @@ public abstract class WeaponAttack extends DamageSource {
 	}
 
 	@Override
-	protected double getDamage(StatTotals stats, boolean verbose) {
+	protected Pair<Double, String> getDamage(StatTotals stats, StatScorer.Verbosity verbosity) {
+		String messages = null;
+
 		double weaponW = this.getWeaponW(stats);
 		double weaponBonusWs = this.getBonusWs(stats);
 		double weaponDamage = weaponW * weaponBonusWs;
@@ -150,8 +155,8 @@ public abstract class WeaponAttack extends DamageSource {
 		double dpsVsHelpless	= swingsPerSecond * damagePerSwingHelpless;
 		double dpsCombined      = swingsPerSecond * damagePerSwingCombined;
 
-		if(verbose) {
-			System.out.println("WeaponAttack DPS Debug Log\n"
+		if(verbosity == StatScorer.Verbosity.FULL) {
+			messages = "WeaponAttack DPS Debug Log\n"
 					+ "+- Weapon:    " + shortFloatText(weaponBonusWs, 5) + "[" + shortFloatText(weaponW, 4) + "] + " + deadly + " = " + (weaponBonusWs * weaponW + deadly) + "\n"
 					+ "+- Critical:  " + getCritProfileText(threatRange, critMult, overwhelmingCrit) + "\n"
 					+ "+- WeaponPwr: " + weaponPower + " (" + toPercentText(1 + weaponPower / 100.0) + ")\n"
@@ -162,10 +167,10 @@ public abstract class WeaponAttack extends DamageSource {
 				    + "+- Ave. Dmg:  " + (int) damagePerAttack + "\n"
 					+ "+- Hits/Sec:  " + shortFloatText(hitChance * swingsPerSecond * attacksPerSwing, 4) + " (" + toPercentText(hitChance) + " hit * " + shortFloatText(swingsPerSecond, 4) + " SpS * " + shortFloatText(attacksPerSwing, 4) + " DS + OH)\n"
 				    + "+- DPS:       " + (int) dps + " (" + (int) dpsVsHelpless + " helpless)\n"
-				    + "+- DpAtk:     " + (int) damagePerSwing);
+				    + "+- DpAtk:     " + (int) damagePerSwing + "\n";
 		}
 		
-		return dpsCombined;
+		return new Pair<>(dpsCombined, messages);
 	}
 
 	public double getHitsPerSecond(StatTotals stats) {
@@ -183,6 +188,7 @@ public abstract class WeaponAttack extends DamageSource {
 		ret.put("soul of the elements", 15.0);
 		ret.put("noxious venom spike", 1 * d6);
 		ret.put("epic noxious venom spike", 2 * d6);
+		ret.put("shadow spike", 2 * d6);
 
 		// X% on hit/spell to deal stacking cold DoT.
 		// DPS value assume to be the same as fire/air until more data becomes available.

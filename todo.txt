@@ -1,5 +1,12 @@
 TODO
-    Finish implementing LoadoutRefinement
+    Clean up LoadoutRefinement
+    Implement recent item named stats
+        Move all NamedStats to JSON
+        Replace Stat in NamedStat deifnitions with a DTO "StatTemplate".
+        Recent named item NamedStats
+            Left off at U47, working backwards.
+    Bug:
+        NamedStats with "legendary" (or any bonustype string) may be mis-parsing.
     Move all set bonuses over to JSONs
     Implement augments
         (EquipmentLoadout, StatScorer) -> Set<Augment>
@@ -11,6 +18,8 @@ TODO
         Fill most restricted slots first
             Use highest score that still fits in that slot
                 Strike from list
+    Optimize:
+        Pre-unpack NamedStats on Items, builds, inside SetBonuses, etc.
     Implement weapon stats, particularly Duality vs Fetters
 
 Implement automatic minor artifact flagging
@@ -36,8 +45,6 @@ Pull in U47 items
         ? Parse directly to JSON, without .wikiitem layover?
 
 Improve optimizer:
-    Profile execution
-
     Alternate algorithm:
         Implement "look ahead"
         Divide remaining run time / trials proportionally to the candidate items for the first item slot, based on their relative scores.

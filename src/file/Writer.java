@@ -10,6 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.FileTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /** The writer class simplifies writing an entire file at a time.
  * 
@@ -37,6 +40,20 @@ public class Writer {
 	 */
 	public static boolean overwrite(String filepath, Object... objects) {
 		return Writer.writeCore(filepath, true, objects);
+	}
+
+	/** Adds to the end of a file at the specified <b>filepath</b>, with the .toString() of the argument(s) appended together.
+	 * If the target file does not exists, it will be created.
+	 *
+	 * @param filepath - A full filepath to write to.
+	 * @param objects - One or more objects to append to the file.
+	 * @return <b>true</b> if successful, <b>false</b> otherwise.
+	 */
+	public static boolean append(String filepath, Object... objects) {
+		List<Object> combined = new ArrayList<Object>(Arrays.asList(objects));
+		if(new File(filepath).canRead()) combined.add(0, Reader.getEntireFile(filepath));
+
+		return Writer.overwrite(filepath, combined.toArray());
 	}
 
 	/** Writes a new file at the specified <b>filepath</b>, containing the .toString() of the argument(s) appended together.

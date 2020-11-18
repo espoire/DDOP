@@ -1,7 +1,9 @@
 package ddop.optimizer.valuation.damage.spell;
 
+import ddop.optimizer.valuation.StatScorer;
 import ddop.optimizer.valuation.damage.DamageSource;
 import util.NumberFormat;
+import util.Pair;
 import util.StatTotals;
 import util.StringFormat;
 
@@ -77,7 +79,9 @@ public class Spell extends DamageSource {
     }
 
     @Override
-    protected double getDamage(StatTotals stats, boolean verbose) {
+    protected Pair<Double, String> getDamage(StatTotals stats, StatScorer.Verbosity verbosity) {
+        String messages = null;
+
         int modifiedDamage = (int) (this.baseDamage * (1 + stats.getInt(this.scalingStat) * this.scalingWeight / 100.0));
 
         int lore = 0;
@@ -85,13 +89,13 @@ public class Spell extends DamageSource {
 
         double critAverage = modifiedDamage * (1 + lore / 100.0);
 
-        if(verbose) {
-            System.out.println("+- " + StringFormat.padStringToLength(this.name, 9) + ": "
+        if(verbosity == StatScorer.Verbosity.FULL) {
+            messages = "+- " + StringFormat.padStringToLength(this.name, 9) + ": "
                     + NumberFormat.readableLargeNumber(critAverage)
-                    + " (" + NumberFormat.readableLargeNumber(critAverage / this.getExecuteTime(stats)) + " DPeT)");
+                    + " (" + NumberFormat.readableLargeNumber(critAverage / this.getExecuteTime(stats)) + " DPeT)\n";
         }
 
-        return critAverage;
+        return new Pair<>(critAverage, messages);
     }
 
     @Override

@@ -4,6 +4,8 @@ import ddop.item.Item;
 import ddop.optimizer.valuation.ValuationContext;
 import util.Random;
 
+import java.util.List;
+
 public class RandomAccessScoredItemList {
     private final ScoredItemList inner;
     private final double totalScore;
@@ -50,5 +52,9 @@ public class RandomAccessScoredItemList {
 
     public double getScore(Item i) {
         return inner.getScore(i);
+    }
+
+    public List<Item> getItems() {
+        return this.inner.getItems();
     }
 }

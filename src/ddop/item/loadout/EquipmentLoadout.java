@@ -32,9 +32,6 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 
 		return this;
 	}
-	public EquipmentLoadout put(String itemName, ItemSlot slot) {
-		return this.put(ItemList.getAllNamedItems().getNamedItem(itemName), slot);
-	}
 	
 	public EquipmentLoadout put(Item[] items) {
 		for(Item i : items) this.put(i);
@@ -49,36 +46,40 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 		if(i.slots.size() != 1)
 			throw new RuntimeException("Attempted to add a multi-slot item to an EquipmentLoadout without specifying a slot: " + i.name);
 
-		return this.put(i, i.slots.stream().findFirst().get());
+		return this.put(i.slots.stream().findFirst().get(), i);
 	}
 
-	public EquipmentLoadout put(Item i, ItemSlot slot) {
-		if(i == null) return this;
-		if(! i.slots.contains(slot))
-			throw new RuntimeException("Attempted to equip item '" + i.name + "' to slot '" + slot.name + "'. It cannot equip to this slot.");
+	public EquipmentLoadout put(ItemSlot slot, String itemName) {
+		return this.put(slot, ItemList.getAllNamedItems().getNamedItem(itemName));
+	}
+
+	public EquipmentLoadout put(ItemSlot slot, Item item) {
+		if(item == null) return this;
+		if(! item.slots.contains(slot))
+			throw new RuntimeException("Attempted to equip item '" + item.name + "' to slot '" + slot.name + "'. It cannot equip to this slot.");
 
 		ArrayList<Item> equippedInSlot = this.items.get(slot);
 		if(slot.limit == 1) {
 			if(equippedInSlot == null) {
 				equippedInSlot = new ArrayList<>();
-				equippedInSlot.add(i);
+				equippedInSlot.add(item);
 
 				this.items.put(slot, equippedInSlot);
 			} else {
 				equippedInSlot.clear();
-				equippedInSlot.add(i);
+				equippedInSlot.add(item);
 			}
 		} else {
 			if(equippedInSlot == null) {
 				equippedInSlot = new ArrayList<>();
-				equippedInSlot.add(i);
+				equippedInSlot.add(item);
 				
 				this.items.put(slot, equippedInSlot);
-			} else if(!Array.contains(equippedInSlot, i)) {
+			} else if(!Array.contains(equippedInSlot, item)) {
 				if(equippedInSlot.size() < slot.limit) {
-					equippedInSlot.add(i);
+					equippedInSlot.add(item);
 				} else {
-					equippedInSlot.add(0, i);
+					equippedInSlot.add(0, item);
 					equippedInSlot.remove(slot.limit);
 				}
 			}
@@ -153,6 +154,7 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 		return ret;
 	}
 
+	/** Returns a List of the filled ItemSlots. Will include duplicate entries if wearing 2 rings. */
 	public List<ItemSlot> toSlotList() {
 		List<ItemSlot> ret = new ArrayList<>();
 
@@ -162,6 +164,7 @@ public class EquipmentLoadout implements Cloneable, StatSource {
 
 		return ret;
 	}
+
 	@Override
 	public String toString() { return this.toString(null); }
 	public String toString(Map<ItemSlot, RandomAccessScoredItemList> context) {

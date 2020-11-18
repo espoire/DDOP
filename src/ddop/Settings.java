@@ -6,6 +6,7 @@ import ddop.item.ItemSlot;
 public class Settings {
 	public static final String PROJECT_ROOT = "X:\\src\\DDOP";
 
+	public static final String REFINEMENT_OUTPUT_DIRECTORY = PROJECT_ROOT + "\\logs";
 	public static final String WORK_DIRECTORY    = PROJECT_ROOT + "\\DDOP Loader";
 	public static final String JSON_DIRECTORY    = PROJECT_ROOT + "\\itemJsons";
 	public static final String SOURCE_DIRECTORY  = WORK_DIRECTORY + "\\src";
@@ -40,6 +41,6 @@ public class Settings {
 			ItemSlot.QUIVER
 	};
 
-	private static final int TARGET_ITEMS_MIN_LEVEL = 26, TARGET_ITEMS_MAX_LEVEL = 30;
+    private static final int TARGET_ITEMS_MIN_LEVEL = 26, TARGET_ITEMS_MAX_LEVEL = 30;
 	public static final LevelRange TARGET_ITEMS_LEVEL_RANGE = new LevelRange(TARGET_ITEMS_MIN_LEVEL, TARGET_ITEMS_MAX_LEVEL);
 }

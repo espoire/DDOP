@@ -11,6 +11,7 @@ import ddop.stat.AbilityScore;
 import ddop.stat.StatFilter;
 import ddop.stat.StatSource;
 import util.NumberFormat;
+import util.Pair;
 import util.StatTotals;
 
 import java.util.*;
@@ -304,7 +305,9 @@ public class HalfishScorer extends SpecScorer {
 	}
 	
 	@Override
-	protected double scoreDCs(StatTotals stats) {
+	protected Pair<Double, String> scoreDCs(StatTotals stats) {
+		String messages = null;
+
 		int wisdom			= this.getAbilityScore(AbilityScore.WISDOM, stats);
 		int wisMod			= this.getAbilityMod(AbilityScore.WISDOM, stats);
 		
@@ -340,17 +343,17 @@ public class HalfishScorer extends SpecScorer {
 		double killsPerSecondEquivalent	= (glacialWrathScore + implosionScore + soundBurstScore + greaterCommandScore) / 3 + saltScore;		// First 4 over 3, to take average (I won't CC when targets already CCd) but also to value options (I'll pick the best one).
 		double dcsScore					= killsPerSecondEquivalent * SIM_ENEMY_HP * VALUATION_DCS;
 		
-		if(this.verbose) {
-			System.out.println("ShintaoScorer DCs Debug Log\n"
+		if(this.verbosity == Verbosity.FULL) {
+			messages = "HalfishScorer DCs Debug Log\n"
 					+ "+- Wisdom:    " + wisdom				+ " (+" + wisMod								+ ")\n"
 					+ "+- GlaclWrath:" + glacialWrathDC		+ " ("  + NumberFormat.percent(glacialWrathDCRate)		+ ")\n"
 					+ "+- Implosion: " + implosionDC		+ " ("  + NumberFormat.percent(implosionDCRate)		+ ")\n"
 					+ "+- SoundBurst:" + soundBurstDC		+ " ("  + NumberFormat.percent(soundBurstDCRate)		+ ")\n"
 					+ "+- GtrCommand:" + greaterCommandDC	+ " ("  + NumberFormat.percent(greaterCommandDCRate)	+ ")"
-				    + (WEAPON_LGS_SALT ? "\n+- Salt:      " + NumberFormat.percent(saltRate) : ""));
+				    + (WEAPON_LGS_SALT ? "\n+- Salt:      " + NumberFormat.percent(saltRate) : "");
 		}
 		
-		return dcsScore;
+		return new Pair<>(dcsScore, messages);
 	}
 	
 	@Override
@@ -382,11 +385,15 @@ public class HalfishScorer extends SpecScorer {
 			return empHealCost + quickenCost + enlargeCost;
 		}
 		
-		public void printVerboseDebugLog() {
-			System.out.println( "+- SP:        " + this.SP);
-			System.out.println( "+- Devotion:  " + this.devotion);
-			System.out.println( "+- Heal Lore: " + this.lore);
-			System.out.println( "+- Efficiency:" + util.NumberFormat.percent(this.discount));
+		public String getVerboseDebugLog() {
+			String ret = "";
+
+			ret += "+- SP:        " + this.SP + "\n";
+			ret += "+- Devotion:  " + this.devotion + "\n";
+			ret += "+- Heal Lore: " + this.lore + "\n";
+			ret += "+- Efficiency:" + util.NumberFormat.percent(this.discount) + "\n";
+
+			return ret;
 		}
 	}
 	
@@ -505,10 +512,10 @@ public class HalfishScorer extends SpecScorer {
 			return this.name;
 		}
 		
-		public void printVerboseDebugLog() {
-			System.out.println( "+- " + this.getTagLine() + ": " +
-										util.NumberFormat.readableLargeNumber(this.getHealing()) +
-										" (" + this.getCost() + " SP)");
+		public String getVerboseDebugLog() {
+			return "+- " + this.getTagLine() + ": " +
+					util.NumberFormat.readableLargeNumber(this.getHealing()) +
+					" (" + this.getCost() + " SP)\n";
 		}
 	}
 	
@@ -561,19 +568,23 @@ public class HalfishScorer extends SpecScorer {
 			return SP / MPS;
 		}
 		
-		public void printVerboseDebugLog() {
-			System.out.println("== Healing Spellbook \"" + this.name + "\" Debug Log ==");
+		public String getVerboseDebugLog() {
+			StringBuilder ret = new StringBuilder("== Healing Spellbook \"" + this.name + "\" Debug Log ==");
 			
-			this.castsWith.printVerboseDebugLog();
-			System.out.println("|");
+			ret.append(this.castsWith.getVerboseDebugLog());
+			ret.append("\n|");
 			for(HealingSpell spell : this.spells) {
-				spell.printVerboseDebugLog();
+				ret.append(spell.getVerboseDebugLog());
 			}
+
+			return ret.toString();
 		}
 	}
 	
 	@Override
-	protected double scoreHealing(StatTotals stats) {
+	protected Pair<Double, String> scoreHealing(StatTotals stats) {
+		String messages = null;
+
 		HealingStats hs = new HealingStats(this, stats);
 		
 		HealingSpell closeWounds = new HealingSLA("Close Wounds")
@@ -627,15 +638,15 @@ public class HalfishScorer extends SpecScorer {
 		
 		double score = Math.sqrt(hpsScore * sustainScore * efficiencyScore) * 3;
 		
-		if(verbose) {
-			favoredSoulSpells.printVerboseDebugLog();
-			System.out.println("|");
-			System.out.println("+- Max HPS:   " + (int) maxHPS);
-			System.out.println("+- Sustain:   " + (int) sustain);
-//			System.out.println("+- Capacity:  " + (int) healsPerBar); TODO
+		if(verbosity == Verbosity.FULL) {
+			messages = favoredSoulSpells.getVerboseDebugLog() +
+				"\n|" +
+				"\n+- Max HPS:   " + (int) maxHPS +
+				"\n+- Sustain:   " + (int) sustain;
+//				"\n+- Capacity:  " + (int) healsPerBar); TODO
 		}
 		
-		return score;
+		return new Pair<>(score, messages);
 	}
 	
 	@Override

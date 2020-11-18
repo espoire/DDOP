@@ -1,5 +1,7 @@
 package ddop.optimizer.valuation.damage;
 
+import ddop.optimizer.valuation.StatScorer;
+import util.Pair;
 import util.StatTotals;
 
 import java.util.Set;
@@ -7,11 +9,13 @@ import java.util.Set;
 public abstract class DamageSource {
 	public int skulls = 0;
 
-	public double getDpET(StatTotals stats, boolean verbose) {
-		double damage = this.getDamage(stats, verbose);
+	public Pair<Double, String> getDpET(StatTotals stats, StatScorer.Verbosity verbosity) {
+		Pair<Double, String> result = this.getDamage(stats, verbosity);
+
+		double damage = result.getKey();
 		double executeTime = this.getExecuteTime(stats);
 		
-		return damage / executeTime;
+		return new Pair<>(damage / executeTime, result.getValue());
 	}
 
 	public double getActiveTime(StatTotals stats) {
@@ -26,7 +30,7 @@ public abstract class DamageSource {
 	}
 	
 	/** Must return the expected mean damage per activation. */
-	protected abstract double getDamage(StatTotals stats, boolean verbose);
+	protected abstract Pair<Double, String> getDamage(StatTotals stats, StatScorer.Verbosity verbose);
 	/** Must return the minimum time between starting activations, in seconds. */
 	protected abstract double getCooldown(StatTotals stats);
 	/** Must return the minimum time before starting a different ability, in seconds. */

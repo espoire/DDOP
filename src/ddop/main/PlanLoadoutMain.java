@@ -47,7 +47,7 @@ public class PlanLoadoutMain {
 		System.out.println(currentGear);
 		scorer.showVerboseScoreFor(currentGear);
 
-		double previousGearSetScore = scorer.score(currentGear);
+		double previousGearSetScore = scorer.score(currentGear).getKey();
 
 		simLoadouts(scorer, previousGearSetScore);
 	}

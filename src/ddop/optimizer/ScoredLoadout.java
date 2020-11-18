@@ -22,7 +22,7 @@ public class ScoredLoadout {
         ScoredLoadout ret = new ScoredLoadout();
 
         ret.loadout = loadout;
-        ret.score = scorer.score(ret.loadout);
+        ret.score = scorer.score(ret.loadout).getKey();
 
         return ret;
     }
