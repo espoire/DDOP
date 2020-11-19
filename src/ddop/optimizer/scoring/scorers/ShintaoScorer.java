@@ -58,7 +58,7 @@ public class ShintaoScorer extends SpecScorer {
 				"stunning",
 				"concentration",
 				"critical threat range",
-				"ki",
+				"enhanced ki",
 				"light armor",
 				"medium armor",
 				"heavy armor"
@@ -136,8 +136,8 @@ public class ShintaoScorer extends SpecScorer {
 		build.addStat("percent hp",             30);
 		build.addStat("unconsciousness range",   15, "guild");
 		build.addStat("dr",                     10, "default");
-		build.addStat("prr",    94);
-		build.addStat("mrr",     39);
+		build.addStat("physical sheltering",    94);
+		build.addStat("magical sheltering",     39);
 		build.addStat("mrr cap",                40, "nystul");
 		build.addStat("healing amplification", 120);
 		build.addStat("dodge",                  34);
@@ -165,16 +165,16 @@ public class ShintaoScorer extends SpecScorer {
 		build.addStat("stunning",                1, "build 2");
 		
 		if(DUALITY_THE_MORAL_COMPASS)
-			build.addStat("ki", 3, "enhancement");
+			build.addStat("enhanced ki", 3);
 
 		if(ESSENCE_OF_CRACKED_CORE)
-			build.addStat("ki", 1, "enhancement");
+			build.addStat("enhanced ki", 1);
 
 		if(ESSENCE_OF_LITANY_DEAD)
 			build.addStat("well rounded", 2, "profane");
 
 		if(TOPAZ_OF_SPEED)
-			build.addStat("melee alacrity", 15, "enhancement");
+			build.addStat("melee alacrity", 15);
 
 		return build;
 	}
@@ -288,7 +288,7 @@ public class ShintaoScorer extends SpecScorer {
 		double kukandoScore       = VALUATION_STUN  * SIM_KUKANDOABLE_PORTION * kukandoDCRate       * TARGETS_KUKANDO        / COOLDOWN_KUKANDO;
 		
 		int concentration = BASE_CONCENTRATION + this.getAbilityMod(AbilityScore.CONSTITUTION, stats) + stats.getInt("concentration");
-		double kiPerHit   = BASE_KI_ON_HIT     + BASE_KI_ON_CRIT * (1 + stats.getInt("critical threat range")) / 20.0 * 0.91 + stats.get("ki");
+		double kiPerHit   = BASE_KI_ON_HIT     + BASE_KI_ON_CRIT * (1 + stats.getInt("critical threat range")) / 20.0 * 0.91 + stats.get("enhanced ki");
 		int averageKiAmount = 150;
 		double kiDrain = (double) averageKiAmount / concentration;
 		double passiveKi = BASE_KI_GENERATION - kiDrain;

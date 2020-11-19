@@ -1,16 +1,24 @@
 package ddop.stat.conversions;
 
 import ddop.stat.Stat;
+import util.Clipboard;
 
 import java.util.*;
 
 public class NamedStat {
     private static final Map<String, NamedStat> all = new HashMap<>();
+    private static final List<NamedStat> allList = new ArrayList<>();
 
+    private final String name;
     private final List<Stat> conversion = new ArrayList<>();
 
     private NamedStat(String name) {
-        if(name != null && name.length() > 0) NamedStat.all.put(name, this);
+        if(name != null && name.length() > 0) {
+            NamedStat.all.put(name, this);
+            allList.add(this);
+        }
+
+        this.name = name;
     }
 
     private NamedStat addBonus(String category) { return this.addBonus(new Stat(category)); }
@@ -91,14 +99,12 @@ public class NamedStat {
         new NamedStat("elemental energy")         .addBonus("hp", "elemental energy",          10);
         new NamedStat("improved elemental energy").addBonus("hp", "improved elemental energy", 15);
         new NamedStat("greater elemental energy") .addBonus("hp", "greater elemental energy",  20);
-        new NamedStat("don't count me out!").addBonus("unconsciousness range","enhancement", 400);
-        new NamedStat("strength of purpose").addBonus("unconsciousness range","enhancement", 128)
-                                            .addBonus("regeneration", 		  "enhancement",  16);
-        new NamedStat("sheltering")         .addBonus("prr", null, 0)
-                                            .addBonus("mrr", null, 0);
-        new NamedStat("physical sheltering").addBonus("prr", null, 0);
-        new NamedStat("magical sheltering") .addBonus("mrr", null, 0);
-        new NamedStat("magical resistance:").addBonus("mrr", null, 0);
+        new NamedStat("don't count me out!").addBonus("unconsciousness range",null, 400);
+        new NamedStat("strength of purpose").addBonus("unconsciousness range",null, 128)
+                                            .addBonus("regeneration", 		  null,  16);
+        new NamedStat("sheltering")         .addBonus("physical sheltering", null, 0)
+                                            .addBonus("magical sheltering", null, 0);
+        new NamedStat("magical resistance:").addBonus("magical sheltering", null, 0);
         new NamedStat("crown of summer").addBonus("healing amplification",  "enhancement", 15)
                                         .addBonus("melee power",  "crown of summer", 10)
                                         .addBonus("ranged power", "crown of summer", 5);
@@ -106,9 +112,10 @@ public class NamedStat {
                                                        .addBonus("negative amplification", "competence", 0)
                                                        .addBonus("repair amplification",   "competence", 0);
         new NamedStat("fortification (+50%)").addBonus("fortification", null, 50);
-        new NamedStat("blurry")             .addBonus("concealment",         "default",  20);
-        new NamedStat("smoke screen")       .addBonus("concealment",         "default",  20);
-        new NamedStat("lesser displacement").addBonus("concealment",         "default",  25);
+        new NamedStat("dusk")               .addBonus("concealment",         "enhancement",  10);
+        new NamedStat("blurry")             .addBonus("concealment",         "enhancement",  20);
+        new NamedStat("smoke screen")       .addBonus("concealment",         "enhancement",  20);
+        new NamedStat("lesser displacement").addBonus("concealment",         "enhancement",  25);
         new NamedStat("combat mastery")     .addBonus("stunning",            null,       0)
                                             .addBonus("vertigo",             null,       0)
                                             .addBonus("shatter",             null,       0);
@@ -121,8 +128,8 @@ public class NamedStat {
         new NamedStat("rough hide")         .addBonus("ac", "primal",        0);
         new NamedStat("heightened awareness (10)").addBonus("ac", "insight", 10);
         new NamedStat("dodge bonus").addBonus("dodge", null, 0);
-        new NamedStat("greater reinforced fists") .addBonus("reinforced fists", "default", 2);
-        new NamedStat("superior reinforced fists").addBonus("reinforced fists", "default", 3);
+        new NamedStat("greater reinforced fists") .addBonus("reinforced fists", null, 2);
+        new NamedStat("superior reinforced fists").addBonus("reinforced fists", null, 3);
         new NamedStat("well rounded").addBonus("strength",     null, 0)
                                      .addBonus("dexterity",    null, 0)
                                      .addBonus("constitution", null, 0)
@@ -133,17 +140,21 @@ public class NamedStat {
                                     .addBonus("deadly",       "size", 2);
         new NamedStat("blood rage").addBonus("strength",     "blood rage", 4)
                                    .addBonus("constitution", "blood rage", 4);
-        new NamedStat("litany of the dead ability bonus").addBonus("well rounded", "profane", 1);
+        new NamedStat("litany of the dead ability bonus").addBonus("well rounded", "profane", 0);
         new NamedStat("litany of the dead ii - ability bonus").addBonus("well rounded", "profane", 2);
-        new NamedStat("litany of the dead combat bonus") .addBonus("accuracy",	  "profane", 1)
-                                                         .addBonus("deadly",	      "profane", 1);
+        new NamedStat("litany of the dead combat bonus") .addBonus("accuracy",	  "profane", 0)
+                                                         .addBonus("deadly",	      "profane", 0);
         new NamedStat("litany of the dead ii - combat bonus")	.addBonus("accuracy",	"profane", 4)
                                                                 .addBonus("deadly",	"profane", 4);
         new NamedStat("attack bonus").addBonus("accuracy", null, 0);
-        new NamedStat("ghostly")                  .addBonus("incorporeal",   "default", 10)
-                                                  .addBonus("ghost touch")
-                                                  .addBonus("hide",          "enhancement", 5)
-                                                  .addBonus("move silently", "enhancement", 5);
+        new NamedStat("ghostly")         .addBonus("incorporeal",   null, 10)
+                                         .addBonus("ghost touch")
+                                         .addBonus("hide",          "enhancement", 5)
+                                         .addBonus("move silently", "enhancement", 5);
+        new NamedStat("enhanced ghostly").addBonus("incorporeal",   null, 15)
+                                         .addBonus("ghost touch")
+                                         .addBonus("hide",          "enhancement", 5)
+                                         .addBonus("move silently", "enhancement", 5);
         new NamedStat("ethereal").addBonus("ghost touch");
         new NamedStat("true sight").addBonus("true seeing");
         new NamedStat("eversight").addBonus("true seeing")
@@ -260,8 +271,8 @@ public class NamedStat {
                 .addBonus("transmutation focus", null, 0);
         new NamedStat("spell focus mastery").addBonus("spell focus", null,     0);
         new NamedStat("deific focus")       .addBonus("spell focus", "sacred", 0);
-        new NamedStat("lifesealed").addBonus("deathblock",          "default", 1)
-                                   .addBonus("negative absorption", "default", 50);
+        new NamedStat("lifesealed").addBonus("deathblock",          null, 1)
+                                   .addBonus("negative absorption", null, 50);
         new NamedStat("build combat mastery").addBonus("combat mastery", null, 0)
                                              .addBonus("qp dc",          null, 0);
         new NamedStat("electricity resistance").addBonus("electric resistance", null, 0);
@@ -269,7 +280,7 @@ public class NamedStat {
         new NamedStat("improved fire resistance").addBonus("fire resistance", null, 20);
         new NamedStat("greater fire resistance").addBonus("fire resistance", null, 30);
         new NamedStat("superior fire resistance").addBonus("fire resistance", null, 40);
-        new NamedStat("brilliant silver scales").addBonus("cold resistance", "enhancement", 83);
+        new NamedStat("brilliant silver scales").addBonus("cold resistance", null, 83);
         new NamedStat("inherent elemental resistance").addBonus("acid resistance",        "competence", 0)
                                                       .addBonus("cold resistance",        "competence", 0)
                                                       .addBonus("electric resistance",    "competence", 0)
@@ -285,13 +296,13 @@ public class NamedStat {
                                              .addBonus("fire absorption",        null, 0)
                                              .addBonus("sonic absorption",       null, 0);
         new NamedStat("chitinous covering: fire absorption").addBonus("fire absorption", null, 0);
-        new NamedStat("shining silver scales (cold absorption").addBonus("cold absorption", "enhancement", 51);
+        new NamedStat("shining silver scales (cold absorption").addBonus("cold absorption", null, 51);
         new NamedStat("fire shield (hot)") .addBonus("cold absorption", "spell", 15); // 15% because unknown uptime of 50% abs
         new NamedStat("fire shield (cold)").addBonus("fire absorption", "spell", 15); // 15% because unknown uptime of 50% abs
-        new NamedStat("devil's bones").addBonus("fire absorption", "enhancement", 31)
-                                      .addBonus("evil absorption", "enhancement", 31);
-        new NamedStat("hound's bones").addBonus("acid absorption", "enhancement", 31)
-                                      .addBonus("evil absorption", "enhancement", 31);
+        new NamedStat("devil's bones").addBonus("fire absorption", null, 31)
+                                      .addBonus("evil absorption", null, 31);
+        new NamedStat("hound's bones").addBonus("acid absorption", null, 31)
+                                      .addBonus("evil absorption", null, 31);
         new NamedStat("high spirits").addBonus("exhaustion immunity");
         new NamedStat("immunity to fear").addBonus("fear immunity");
         new NamedStat("devil's blood").addBonus("curse immunity")
@@ -301,17 +312,18 @@ public class NamedStat {
                                       .addBonus("poison immunity")
                                       .addBonus("petrification immunity");
         new NamedStat("songblade").addBonus("perform", "enhancement", 2);
-        new NamedStat("alchemical conservation").addBonus("ki", 					"enhancement", 1)
-                                                .addBonus("extra action boost", 	"default",     1)
-                                                .addBonus("turn undead attempt", 	"default",     1)
-                                                .addBonus("bard songs", 			"default",     1);
+        new NamedStat("enhanced ki");
+        new NamedStat("alchemical conservation").addBonus("enhanced ki", 			null,     0)
+                                                .addBonus("extra action boost", 	null,     0)
+                                                .addBonus("turn undead attempt", 	null,     0)
+                                                .addBonus("bard songs", 			null,     0);
         new NamedStat("completed weapon").addBonus("[w]", "completed weapon", 0.5);
-		new NamedStat("stormreaver's thunderclap:").addBonus("stormreaver's thunderclap", "default", 1);
+		new NamedStat("stormreaver's thunderclap:").addBonus("stormreaver's thunderclap", null, 0);
 		new NamedStat("fire vulnerability")  .addBonus("vulnerability");
 		new NamedStat("cold vulnerability")  .addBonus("vulnerability");
 		new NamedStat("acid vulnerability")  .addBonus("vulnerability");
 		new NamedStat("fetters of unreality").addBonus("vulnerability");
-        new NamedStat("invulnerability")        .addBonus("dr", "enhancement",           2.5); // DR 5/magic
+        new NamedStat("invulnerability")        .addBonus("dr", null,                    2.5); // DR 5/magic
         new NamedStat("life shield")            .addBonus("dr", "life shield",           1.5); // 15 temp HPs, 10% on get-hit.
         new NamedStat("demonic shield")         .addBonus("dr", "demonic shield",        6.0); // 30 temp HPs, 20% on get-hit.
 		new NamedStat("angelic grace")          .addBonus("dr", "angelic grace",         7.5); // 150 temp HPs, 5% on get-hit, 10 sec cooldown.
@@ -324,5 +336,62 @@ public class NamedStat {
 
 //		new NamedStat("").addBonus("", "", 0);
 //		new NamedStat("").addBonus("", "", 0);
+    }
+
+    public static void main(String... s) {
+        String json = allToJson();
+
+        System.out.println(json);
+        Clipboard.copy(json);
+    }
+
+    public static String allToJson() {
+        String ret = "{";
+
+        boolean isFirst = true;
+        for(NamedStat ns : allList) {
+            if(!isFirst) ret += ",";
+            isFirst = false;
+
+            ret += ns.toJson();
+        }
+
+        ret += "}";
+
+        return ret;
+    }
+
+    private String toJson() {
+        String ret = "";
+
+        ret += "\"" + this.name + "\"";
+        ret += ":";
+
+        ret += "[";
+
+        boolean isFirst = true;
+        for(Stat s : this.conversion) {
+            if(!isFirst) ret += ",";
+            isFirst = false;
+
+            ret += "{";
+
+            ret += "\"category\":" + "\"" + s.category + "\"";
+            if(s.bonusType != null && !s.bonusType.equals("Boolean"))
+                ret += "," + "\"bonusType\"" + ":" + "\"" + s.bonusType + "\"";
+            if(s.magnitude != 0 && !(s.bonusType != null && s.bonusType.equals("Boolean") && s.magnitude == 1)) {
+                if(s.magnitude == (int) s.magnitude) {
+                    ret += "," + "\"magnitude\"" + ":" + (int) s.magnitude;
+                } else {
+                    ret += "," + "\"magnitude\"" + ":" + s.magnitude;
+                }
+            }
+
+            ret += "}";
+        }
+
+        ret += "]";
+
+        return ret;
     }
 }

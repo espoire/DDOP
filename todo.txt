@@ -1,7 +1,6 @@
 TODO
-    Clean up LoadoutRefinement
     Implement recent item named stats
-        Move all NamedStats to JSON
+        Implement NamedStat loading from JSON
         Replace Stat in NamedStat deifnitions with a DTO "StatTemplate".
         Recent named item NamedStats
             Left off at U47, working backwards.

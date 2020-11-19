@@ -1,0 +1,1095 @@
+{
+  "hit points": [
+    {
+      "category": "hp"
+    }
+  ],
+  "false life": [
+    {
+      "category": "hp"
+    }
+  ],
+  "lifeforce": [
+    {
+      "category": "hp"
+    }
+  ],
+  "vitality": [
+    {
+      "category": "hp",
+      "bonusType": "vitality"
+    }
+  ],
+  "lesser false life": [
+    {
+      "category": "hp",
+      "magnitude": 5
+    }
+  ],
+  "improved false life": [
+    {
+      "category": "hp",
+      "magnitude": 20
+    }
+  ],
+  "greater false life": [
+    {
+      "category": "hp",
+      "magnitude": 30
+    }
+  ],
+  "superior false life": [
+    {
+      "category": "hp",
+      "magnitude": 40
+    }
+  ],
+  "epic false life": [
+    {
+      "category": "hp",
+      "magnitude": 45
+    }
+  ],
+  "elemental energy": [
+    {
+      "category": "hp",
+      "bonusType": "elemental energy",
+      "magnitude": 10
+    }
+  ],
+  "improved elemental energy": [
+    {
+      "category": "hp",
+      "bonusType": "improved elemental energy",
+      "magnitude": 15
+    }
+  ],
+  "greater elemental energy": [
+    {
+      "category": "hp",
+      "bonusType": "greater elemental energy",
+      "magnitude": 20
+    }
+  ],
+  "don't count me out!": [
+    {
+      "category": "unconsciousness range",
+      "magnitude": 400
+    }
+  ],
+  "strength of purpose": [
+    {
+      "category": "unconsciousness range",
+      "magnitude": 128
+    },
+    {
+      "category": "regeneration",
+      "magnitude": 16
+    }
+  ],
+  "sheltering": [
+    {
+      "category": "physical sheltering"
+    },
+    {
+      "category": "magical sheltering"
+    }
+  ],
+  "magical resistance:": [
+    {
+      "category": "magical sheltering"
+    }
+  ],
+  "crown of summer": [
+    {
+      "category": "healing amplification",
+      "bonusType": "enhancement",
+      "magnitude": 15
+    },
+    {
+      "category": "melee power",
+      "bonusType": "crown of summer",
+      "magnitude": 10
+    },
+    {
+      "category": "ranged power",
+      "bonusType": "crown of summer",
+      "magnitude": 5
+    }
+  ],
+  "lifeblood of the undead prince": [
+    {
+      "category": "healing amplification",
+      "bonusType": "competence"
+    },
+    {
+      "category": "negative amplification",
+      "bonusType": "competence"
+    },
+    {
+      "category": "repair amplification",
+      "bonusType": "competence"
+    }
+  ],
+  "fortification (+50%)": [
+    {
+      "category": "fortification",
+      "magnitude": 50
+    }
+  ],
+  "dusk": [
+    {
+      "category": "concealment",
+      "magnitude": 10
+    }
+  ],
+  "blurry": [
+    {
+      "category": "concealment",
+      "magnitude": 20
+    }
+  ],
+  "smoke screen": [
+    {
+      "category": "concealment",
+      "magnitude": 20
+    }
+  ],
+  "lesser displacement": [
+    {
+      "category": "concealment",
+      "magnitude": 25
+    }
+  ],
+  "combat mastery": [
+    {
+      "category": "stunning"
+    },
+    {
+      "category": "vertigo"
+    },
+    {
+      "category": "shatter"
+    }
+  ],
+  "natural armor": [
+    {
+      "category": "ac",
+      "bonusType": "natural armor"
+    }
+  ],
+  "natural armor bonus": [
+    {
+      "category": "ac",
+      "bonusType": "natural armor"
+    }
+  ],
+  "protection": [
+    {
+      "category": "ac",
+      "bonusType": "deflection"
+    }
+  ],
+  "shield bonus": [
+    {
+      "category": "ac",
+      "bonusType": "shield"
+    }
+  ],
+  "template:protection": [
+    {
+      "category": "ac",
+      "bonusType": "deflection"
+    }
+  ],
+  "hardened exterior": [
+    {
+      "category": "ac",
+      "bonusType": "profane"
+    }
+  ],
+  "rough hide": [
+    {
+      "category": "ac",
+      "bonusType": "primal"
+    }
+  ],
+  "heightened awareness (10)": [
+    {
+      "category": "ac",
+      "bonusType": "insight",
+      "magnitude": 10
+    }
+  ],
+  "dodge bonus": [
+    {
+      "category": "dodge"
+    }
+  ],
+  "greater reinforced fists": [
+    {
+      "category": "reinforced fists",
+      "magnitude": 2
+    }
+  ],
+  "superior reinforced fists": [
+    {
+      "category": "reinforced fists",
+      "magnitude": 3
+    }
+  ],
+  "well rounded": [
+    {
+      "category": "strength"
+    },
+    {
+      "category": "dexterity"
+    },
+    {
+      "category": "constitution"
+    },
+    {
+      "category": "intelligence"
+    },
+    {
+      "category": "wisdom"
+    },
+    {
+      "category": "charisma"
+    }
+  ],
+  "ram's might": [
+    {
+      "category": "strength",
+      "bonusType": "size",
+      "magnitude": 2
+    },
+    {
+      "category": "deadly",
+      "bonusType": "size",
+      "magnitude": 2
+    }
+  ],
+  "blood rage": [
+    {
+      "category": "strength",
+      "bonusType": "blood rage",
+      "magnitude": 4
+    },
+    {
+      "category": "constitution",
+      "bonusType": "blood rage",
+      "magnitude": 4
+    }
+  ],
+  "litany of the dead ability bonus": [
+    {
+      "category": "well rounded",
+      "bonusType": "profane"
+    }
+  ],
+  "litany of the dead ii - ability bonus": [
+    {
+      "category": "well rounded",
+      "bonusType": "profane",
+      "magnitude": 2
+    }
+  ],
+  "litany of the dead combat bonus": [
+    {
+      "category": "accuracy",
+      "bonusType": "profane"
+    },
+    {
+      "category": "deadly",
+      "bonusType": "profane"
+    }
+  ],
+  "litany of the dead ii - combat bonus": [
+    {
+      "category": "accuracy",
+      "bonusType": "profane",
+      "magnitude": 4
+    },
+    {
+      "category": "deadly",
+      "bonusType": "profane",
+      "magnitude": 4
+    }
+  ],
+  "attack bonus": [
+    {
+      "category": "accuracy"
+    }
+  ],
+  "ghostly": [
+    {
+      "category": "incorporeal",
+      "magnitude": 10
+    },
+    {
+      "category": "ghost touch"
+    },
+    {
+      "category": "hide",
+      "bonusType": "enhancement",
+      "magnitude": 5
+    },
+    {
+      "category": "move silently",
+      "bonusType": "enhancement",
+      "magnitude": 5
+    }
+  ],
+  "enhanced ghostly": [
+    {
+      "category": "incorporeal",
+      "magnitude": 15
+    },
+    {
+      "category": "ghost touch"
+    },
+    {
+      "category": "hide",
+      "bonusType": "enhancement",
+      "magnitude": 5
+    },
+    {
+      "category": "move silently",
+      "bonusType": "enhancement",
+      "magnitude": 5
+    }
+  ],
+  "ethereal": [
+    {
+      "category": "ghost touch"
+    }
+  ],
+  "true sight": [
+    {
+      "category": "true seeing"
+    }
+  ],
+  "eversight": [
+    {
+      "category": "true seeing"
+    },
+    {
+      "category": "blindness immunity"
+    }
+  ],
+  "resistance": [
+    {
+      "category": "fortitude saves"
+    },
+    {
+      "category": "reflex saves"
+    },
+    {
+      "category": "will saves"
+    }
+  ],
+  "parrying": [
+    {
+      "category": "fortitude saves",
+      "bonusType": "insight"
+    },
+    {
+      "category": "reflex saves",
+      "bonusType": "insight"
+    },
+    {
+      "category": "will saves",
+      "bonusType": "insight"
+    },
+    {
+      "category": "ac",
+      "bonusType": "insight"
+    }
+  ],
+  "riposte": [
+    {
+      "category": "parrying"
+    }
+  ],
+  "heroism": [
+    {
+      "category": "accuracy",
+      "bonusType": "morale",
+      "magnitude": 2
+    },
+    {
+      "category": "resistance",
+      "bonusType": "morale",
+      "magnitude": 2
+    },
+    {
+      "category": "all skills",
+      "bonusType": "morale",
+      "magnitude": 2
+    }
+  ],
+  "improved heroism": [
+    {
+      "category": "accuracy",
+      "bonusType": "morale",
+      "magnitude": 3
+    },
+    {
+      "category": "resistance",
+      "bonusType": "morale",
+      "magnitude": 3
+    },
+    {
+      "category": "all skills",
+      "bonusType": "morale",
+      "magnitude": 3
+    }
+  ],
+  "greater heroism": [
+    {
+      "category": "accuracy",
+      "bonusType": "morale",
+      "magnitude": 4
+    },
+    {
+      "category": "resistance",
+      "bonusType": "morale",
+      "magnitude": 4
+    },
+    {
+      "category": "all skills",
+      "bonusType": "morale",
+      "magnitude": 4
+    }
+  ],
+  "good luck": [
+    {
+      "category": "resistance",
+      "bonusType": "luck"
+    },
+    {
+      "category": "all skills",
+      "bonusType": "luck"
+    }
+  ],
+  "fortitude": [
+    {
+      "category": "fortitude saves"
+    }
+  ],
+  "fortitude save": [
+    {
+      "category": "fortitude saves"
+    }
+  ],
+  "reflex": [
+    {
+      "category": "reflex saves"
+    }
+  ],
+  "reflex save": [
+    {
+      "category": "reflex saves"
+    }
+  ],
+  "will": [
+    {
+      "category": "will saves"
+    }
+  ],
+  "will save": [
+    {
+      "category": "will saves"
+    }
+  ],
+  "spell save": [
+    {
+      "category": "spell saves"
+    }
+  ],
+  "seeker": [
+    {
+      "category": "critical confirmation"
+    },
+    {
+      "category": "critical damage"
+    }
+  ],
+  "all skills": [
+    {
+      "category": "all skills except umd"
+    },
+    {
+      "category": "use magic device"
+    }
+  ],
+  "all skills except umd": [
+    {
+      "category": "balance"
+    },
+    {
+      "category": "bluff"
+    },
+    {
+      "category": "concentration"
+    },
+    {
+      "category": "diplomacy"
+    },
+    {
+      "category": "disable device"
+    },
+    {
+      "category": "haggle"
+    },
+    {
+      "category": "heal"
+    },
+    {
+      "category": "hide"
+    },
+    {
+      "category": "intimidate"
+    },
+    {
+      "category": "jump"
+    },
+    {
+      "category": "listen"
+    },
+    {
+      "category": "move silently"
+    },
+    {
+      "category": "open lock"
+    },
+    {
+      "category": "perform"
+    },
+    {
+      "category": "repair"
+    },
+    {
+      "category": "search"
+    },
+    {
+      "category": "spellcraft"
+    },
+    {
+      "category": "spot"
+    },
+    {
+      "category": "swim"
+    },
+    {
+      "category": "tumble"
+    }
+  ],
+  "alluring skills bonus": [
+    {
+      "category": "bluff"
+    },
+    {
+      "category": "diplomacy"
+    },
+    {
+      "category": "haggle"
+    },
+    {
+      "category": "intimidate"
+    },
+    {
+      "category": "perform"
+    }
+  ],
+  "wizardry": [
+    {
+      "category": "gear sp"
+    }
+  ],
+  "power": [
+    {
+      "category": "gear sp"
+    }
+  ],
+  "magi": [
+    {
+      "category": "gear sp",
+      "magnitude": 100
+    }
+  ],
+  "archmagi": [
+    {
+      "category": "gear sp",
+      "magnitude": 200
+    }
+  ],
+  "universal spell power": [
+    {
+      "category": "potency"
+    }
+  ],
+  "spellcasting implement": [
+    {
+      "category": "potency",
+      "bonusType": "implement"
+    }
+  ],
+  "potency": [
+    {
+      "category": "combustion"
+    },
+    {
+      "category": "corrosion"
+    },
+    {
+      "category": "devotion"
+    },
+    {
+      "category": "glaciation"
+    },
+    {
+      "category": "impulse"
+    },
+    {
+      "category": "magnetism"
+    },
+    {
+      "category": "nullification"
+    },
+    {
+      "category": "radiance"
+    },
+    {
+      "category": "reconstruction"
+    },
+    {
+      "category": "resonance"
+    }
+  ],
+  "power of the frozen storm": [
+    {
+      "category": "glaciation",
+      "bonusType": "equipment"
+    },
+    {
+      "category": "magnetism",
+      "bonusType": "equipment"
+    }
+  ],
+  "universal spell lore": [
+    {
+      "category": "arcane lore"
+    }
+  ],
+  "arcane lore": [
+    {
+      "category": "fire lore"
+    },
+    {
+      "category": "acid lore"
+    },
+    {
+      "category": "healing lore"
+    },
+    {
+      "category": "kinetic lore"
+    },
+    {
+      "category": "ice lore"
+    },
+    {
+      "category": "lightning lore"
+    },
+    {
+      "category": "void lore"
+    },
+    {
+      "category": "radiance lore"
+    },
+    {
+      "category": "repair lore"
+    },
+    {
+      "category": "sonic lore"
+    }
+  ],
+  "universal spell critical damage": [
+    {
+      "category": "fire spell critical damage"
+    },
+    {
+      "category": "cold spell critical damage"
+    },
+    {
+      "category": "electric spell critical damage"
+    },
+    {
+      "category": "acid spell critical damage"
+    },
+    {
+      "category": "sonic spell critical damage"
+    },
+    {
+      "category": "force spell critical damage"
+    },
+    {
+      "category": "light spell critical damage"
+    },
+    {
+      "category": "positive spell critical damage"
+    },
+    {
+      "category": "negative spell critical damage"
+    },
+    {
+      "category": "repair spell critical damage"
+    }
+  ],
+  "frozen storm lore": [
+    {
+      "category": "ice lore",
+      "bonusType": "equipment"
+    },
+    {
+      "category": "lightning lore",
+      "bonusType": "equipment"
+    }
+  ],
+  "spell focus": [
+    {
+      "category": "abjuration focus"
+    },
+    {
+      "category": "conjuration focus"
+    },
+    {
+      "category": "divination focus"
+    },
+    {
+      "category": "enchantment focus"
+    },
+    {
+      "category": "evocation focus"
+    },
+    {
+      "category": "illusion focus"
+    },
+    {
+      "category": "necromancy focus"
+    },
+    {
+      "category": "transmutation focus"
+    }
+  ],
+  "spell focus mastery": [
+    {
+      "category": "spell focus"
+    }
+  ],
+  "deific focus": [
+    {
+      "category": "spell focus",
+      "bonusType": "sacred"
+    }
+  ],
+  "lifesealed": [
+    {
+      "category": "deathblock",
+      "magnitude": 1
+    },
+    {
+      "category": "negative absorption",
+      "magnitude": 50
+    }
+  ],
+  "build combat mastery": [
+    {
+      "category": "combat mastery"
+    },
+    {
+      "category": "qp dc"
+    }
+  ],
+  "electricity resistance": [
+    {
+      "category": "electric resistance"
+    }
+  ],
+  "lesser fire resistance": [
+    {
+      "category": "fire resistance",
+      "magnitude": 5
+    }
+  ],
+  "improved fire resistance": [
+    {
+      "category": "fire resistance",
+      "magnitude": 20
+    }
+  ],
+  "greater fire resistance": [
+    {
+      "category": "fire resistance",
+      "magnitude": 30
+    }
+  ],
+  "superior fire resistance": [
+    {
+      "category": "fire resistance",
+      "magnitude": 40
+    }
+  ],
+  "brilliant silver scales": [
+    {
+      "category": "cold resistance",
+      "magnitude": 83
+    }
+  ],
+  "inherent elemental resistance": [
+    {
+      "category": "acid resistance",
+      "bonusType": "competence"
+    },
+    {
+      "category": "cold resistance",
+      "bonusType": "competence"
+    },
+    {
+      "category": "electric resistance",
+      "bonusType": "competence"
+    },
+    {
+      "category": "fire resistance",
+      "bonusType": "competence"
+    }
+  ],
+  "elemental resistance": [
+    {
+      "category": "acid resistance"
+    },
+    {
+      "category": "cold resistance"
+    },
+    {
+      "category": "electric resistance"
+    },
+    {
+      "category": "fire resistance"
+    },
+    {
+      "category": "sonic resistance"
+    }
+  ],
+  "elemental absorption": [
+    {
+      "category": "acid absorption"
+    },
+    {
+      "category": "cold absorption"
+    },
+    {
+      "category": "electricity absorption"
+    },
+    {
+      "category": "fire absorption"
+    },
+    {
+      "category": "sonic absorption"
+    }
+  ],
+  "chitinous covering: fire absorption": [
+    {
+      "category": "fire absorption"
+    }
+  ],
+  "shining silver scales (cold absorption": [
+    {
+      "category": "cold absorption",
+      "magnitude": 51
+    }
+  ],
+  "fire shield (hot)": [
+    {
+      "category": "cold absorption",
+      "bonusType": "spell",
+      "magnitude": 15
+    }
+  ],
+  "fire shield (cold)": [
+    {
+      "category": "fire absorption",
+      "bonusType": "spell",
+      "magnitude": 15
+    }
+  ],
+  "devil's bones": [
+    {
+      "category": "fire absorption",
+      "magnitude": 31
+    },
+    {
+      "category": "evil absorption",
+      "magnitude": 31
+    }
+  ],
+  "hound's bones": [
+    {
+      "category": "acid absorption",
+      "magnitude": 31
+    },
+    {
+      "category": "evil absorption",
+      "magnitude": 31
+    }
+  ],
+  "high spirits": [
+    {
+      "category": "exhaustion immunity"
+    }
+  ],
+  "immunity to fear": [
+    {
+      "category": "fear immunity"
+    }
+  ],
+  "devil's blood": [
+    {
+      "category": "curse immunity"
+    },
+    {
+      "category": "poison immunity"
+    },
+    {
+      "category": "fear immunity"
+    }
+  ],
+  "hound's blood": [
+    {
+      "category": "charm immunity"
+    },
+    {
+      "category": "poison immunity"
+    },
+    {
+      "category": "petrification immunity"
+    }
+  ],
+  "songblade": [
+    {
+      "category": "perform",
+      "bonusType": "enhancement",
+      "magnitude": 2
+    }
+  ],
+  "enhanced ki": [],
+  "alchemical conservation": [
+    {
+      "category": "enhanced ki"
+    },
+    {
+      "category": "extra action boost"
+    },
+    {
+      "category": "turn undead attempt"
+    },
+    {
+      "category": "bard songs"
+    }
+  ],
+  "completed weapon": [
+    {
+      "category": "[w]",
+      "bonusType": "completed weapon",
+      "magnitude": 0.5
+    }
+  ],
+  "stormreaver's thunderclap:": [
+    {
+      "category": "stormreaver's thunderclap"
+    }
+  ],
+  "fire vulnerability": [
+    {
+      "category": "vulnerability"
+    }
+  ],
+  "cold vulnerability": [
+    {
+      "category": "vulnerability"
+    }
+  ],
+  "acid vulnerability": [
+    {
+      "category": "vulnerability"
+    }
+  ],
+  "fetters of unreality": [
+    {
+      "category": "vulnerability"
+    }
+  ],
+  "invulnerability": [
+    {
+      "category": "dr",
+      "magnitude": 2.5
+    }
+  ],
+  "life shield": [
+    {
+      "category": "dr",
+      "bonusType": "life shield",
+      "magnitude": 1.5
+    }
+  ],
+  "demonic shield": [
+    {
+      "category": "dr",
+      "bonusType": "demonic shield",
+      "magnitude": 6
+    }
+  ],
+  "angelic grace": [
+    {
+      "category": "dr",
+      "bonusType": "angelic grace",
+      "magnitude": 7.5
+    }
+  ],
+  "improved earthen guard": [
+    {
+      "category": "dr",
+      "bonusType": "stoneskin",
+      "magnitude": 9.5
+    }
+  ],
+  "the golden curse": [
+    {
+      "category": "dr",
+      "bonusType": "goldskin",
+      "magnitude": 10
+    }
+  ],
+  "legendary ice barrier": [
+    {
+      "category": "dr",
+      "bonusType": "legendary ice barrier",
+      "magnitude": 13.55
+    }
+  ],
+  "improved demonic shield": [
+    {
+      "category": "dr",
+      "bonusType": "demonic shield",
+      "magnitude": 24
+    }
+  ],
+  "healers bounty": [
+    {
+      "category": "self healing when hit",
+      "bonusType": "healers bounty",
+      "magnitude": 1.8
+    }
+  ]
+}

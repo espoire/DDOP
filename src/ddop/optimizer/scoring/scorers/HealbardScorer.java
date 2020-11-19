@@ -155,9 +155,9 @@ public class HealbardScorer extends SpecScorer {
 		build.addStat("ac", 15, "armor"); //TODO armor stats
 		build.addStat("ac",  2, "warchanter rough and ready");
 		build.addStat("ac",  3, "fatesinger fourth harmonic chord");
-		build.addStat("prr",  2, "warchanter rough and ready");
-		build.addStat("prr",  3, "fatesinger third harmonic chord");
-		build.addStat("prr", 10, "fatesinger divine hymn");
+		build.addStat("physical sheltering",  2, "warchanter rough and ready");
+		build.addStat("physical sheltering",  3, "fatesinger third harmonic chord");
+		build.addStat("physical sheltering", 10, "fatesinger divine hymn");
 		build.addStat("healing amplification", 10, "fatesinger third harmonic chord");
 		build.addStat("force of personality", 1, "feat");
 		build.addStat("resistance",   1, "fatesinger glitter of fame");
@@ -229,10 +229,10 @@ public class HealbardScorer extends SpecScorer {
 		build.addStat("ac", 4, "bard inspire heroics buff");
 		build.addStat("ac", 6, "fatesinger grandeur buff");
 		build.addStat("ac", 3, "fatesinger fourth harmonic chord buff");
-		build.addStat("prr", 3, "bard inspire greatness buff");
-		build.addStat("prr", 6, "warchanter ironskin buff");
-		build.addStat("prr", 6, "fatesinger grandeur buff");
-		build.addStat("prr", 3, "fatesinger third harmonic chord buff");
+		build.addStat("physical sheltering", 3, "bard inspire greatness buff");
+		build.addStat("physical sheltering", 6, "warchanter ironskin buff");
+		build.addStat("physical sheltering", 6, "fatesinger grandeur buff");
+		build.addStat("physical sheltering", 3, "fatesinger third harmonic chord buff");
 		build.addStat("healing amplification",  10, "bard inspire greatness buff");
 		build.addStat("healing amplification",  10, "fatesinger third harmonic chord buff");
 		build.addStat("negative amplification", 10, "spellsinger music of the dead buff");

@@ -159,9 +159,9 @@ public class HalfishScorer extends SpecScorer {
 		build.addStat("hp",                       20, "guild");
 		build.addStat("unconsciousness range",    15, "guild");
 		build.addStat("dr",                       10, "default");
-		build.addStat("prr",      11);
-		build.addStat("mrr",        1);
-		build.addStat("mrr",       20, "quality");
+		build.addStat("physical sheltering",      11);
+		build.addStat("magical sheltering",        1);
+		build.addStat("magical sheltering",       20, "quality");
 		build.addStat("healing amplification",    60);
 		build.addStat("dodge",                     4);
 		build.addStat("maximum dodge",             4);
@@ -228,7 +228,7 @@ public class HalfishScorer extends SpecScorer {
 			build.addStat("ranged alacrity",			40, "endless fusillade"); // simulated alacrity reduced to 27% uptime; real effect is fixed 213 attacks per minute while up
 			build.addStat("overwhelming critical",		 1, "legendary dreadnought devastating critical");
 			build.addStat("ranged power",		 		70, "legendary dreadnought master's blitz");
-			build.addStat("prr",		30, "legendary dreadnought master's blitz");
+			build.addStat("physical sheltering",		30, "legendary dreadnought master's blitz");
 			build.addStat("constitution",				 6, "legendary dreadnought");
 		}
 		
@@ -256,8 +256,8 @@ public class HalfishScorer extends SpecScorer {
 			build.addStat("deadly",					 7, "sentient filigree");
 			build.addStat("doubleshot",				 8, "sentient filigree");
 			build.addStat("armor-piercing",			 5, "sentient filigree");
-			build.addStat("prr",	15, "sentient filigree");
-			build.addStat("mrr",		 7, "sentient filigree");
+			build.addStat("physical sheltering",	15, "sentient filigree");
+			build.addStat("magical sheltering",		 7, "sentient filigree");
 			build.addStat("reflex saves",			 2, "sentient filigree");
 			build.addStat("fire absorption",		 5, "sentient filigree");
 			build.addStat("diplomacy",				15, "sentient filigree");

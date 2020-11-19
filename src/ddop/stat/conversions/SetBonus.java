@@ -37,7 +37,7 @@ public class SetBonus {
 	
 	static {
 		new SetBonus("adherent of the mists set (legendary)")
-			.addBonus(5, new Stat("prr",    "profane", 20))
+			.addBonus(5, new Stat("physical sheltering",    "profane", 20))
 			.addBonus(5, new Stat("healing amplification",  "profane", 20))
 			.addBonus(5, new Stat("negative amplification", "profane", 20))
 			.addBonus(5, new Stat("repair amplification",   "profane", 20))
@@ -106,11 +106,11 @@ public class SetBonus {
 				.addBonus(2, new Stat("radiance lore", "artifact", 10));
 		new SetBonus("legacy of levikk")
 				.addBonus(2, new Stat("percent ac", "artifact", 10))
-				.addBonus(2, new Stat("prr", "artifact", 25))
+				.addBonus(2, new Stat("physical sheltering", "artifact", 25))
 				.addBonus(2, new Stat("incite", "artifact", 75));
 		new SetBonus("mind and matter")
-				.addBonus(2, new Stat("prr", "artifact", 10))
-				.addBonus(2, new Stat("mrr", "artifact", 10))
+				.addBonus(2, new Stat("physical sheltering", "artifact", 10))
+				.addBonus(2, new Stat("magical sheltering", "artifact", 10))
 				.addBonus(2, new Stat("mrr cap", "artifact", 20))
 				.addBonus(2, new Stat("healing amplification", "artifact", 10))
 				.addBonus(2, new Stat("negative amplification", "artifact", 10))
@@ -133,8 +133,8 @@ public class SetBonus {
 				.addBonus(2, new Stat("sneak attack dice", "artifact", 3))
 				.addBonus(2, new Stat("doublestrike", "artifact", 10))
 				.addBonus(2, new Stat("doubleshot", "artifact", 10))
-				.addBonus(2, new Stat("prr", "artifact", 20))
-				.addBonus(2, new Stat("mrr", "artifact", 20));
+				.addBonus(2, new Stat("physical sheltering", "artifact", 20))
+				.addBonus(2, new Stat("magical sheltering", "artifact", 20));
 //		new SetBonus("one with the swarm") BEES!
 		new SetBonus("chained elementals")
 				.addBonus(2, new Stat("fire lore", "artifact", 10))
@@ -161,7 +161,7 @@ public class SetBonus {
 				.addBonus(2, new Stat("concentration", "artifact", 5));
 		new SetBonus("fastidious fabricator")
 				.addBonus(2, new Stat("percent ac", "artifact", 10))
-				.addBonus(2, new Stat("mrr", "artifact", 25))
+				.addBonus(2, new Stat("magical sheltering", "artifact", 25))
 				.addBonus(2, new Stat("mrr cap", "artifact", 10))
 				.addBonus(2, new Stat("balance", "artifact", 5))
 				.addBonus(2, new Stat("repair", "artifact", 5));

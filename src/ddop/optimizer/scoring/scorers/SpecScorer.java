@@ -79,8 +79,8 @@ public abstract class SpecScorer extends StatScorer {
 				"hp",
 				"percent hp",
 				"unconsciousness range",
-				"prr",
-				"mrr",
+				"physical sheltering",
+				"magical sheltering",
 				"mrr cap",
 				"fortification",
 				"healing amplification",
@@ -559,7 +559,7 @@ public abstract class SpecScorer extends StatScorer {
 	private int getPRR(StatTotals stats) {
 		int armorPrr = this.getArmorPrr(stats);
 		int shieldPrr = this.getShieldPrrMrr(stats);
-		return stats.getInt("prr") + armorPrr + shieldPrr;
+		return stats.getInt("physical sheltering") + armorPrr + shieldPrr;
 	}
 
 	private int getArmorPrr(StatTotals stats) {
@@ -590,7 +590,7 @@ public abstract class SpecScorer extends StatScorer {
 	
 	private int getRawMRR(StatTotals stats) {
 		int shieldMrr = this.getShieldPrrMrr(stats);
-		return stats.getInt("mrr") + shieldMrr;
+		return stats.getInt("magical sheltering") + shieldMrr;
 	}
 	
 	private int getMRRCap(StatTotals stats) {
