@@ -1,10 +1,14 @@
 TODO
-    Implement recent item named stats
-        Recent named item NamedStats
-            Left off at U47, working backwards.
-    Bug:
-        NamedStats with "legendary" (or any bonustype string) may be mis-parsing.
-    Move all set bonuses over to JSONs
+    NamedStat
+        Pre-unpack nested NamedStats
+        Bug: NamedStats with "legendary" (or any bonustype string) may be mis-parsing.
+        Implement recent item named stats
+            Recent named item NamedStats
+                Left off at U47, working backwards.
+    SetBonus cleanup
+        Move all set bonuses over to JSONs
+        Reimplement to use StatTemplates.
+        Pre-unpack nested NamedStats inside SetBonuses
     Implement augments
         (EquipmentLoadout, StatScorer) -> Set<Augment>
         Per augment series:
@@ -16,7 +20,7 @@ TODO
             Use highest score that still fits in that slot
                 Strike from list
     Optimize:
-        Pre-unpack NamedStats on Items, builds, inside SetBonuses, etc.
+        Pre-unpack NamedStats on Items, builds, etc.
     Implement weapon stats, particularly Duality vs Fetters
 
 Implement automatic minor artifact flagging
