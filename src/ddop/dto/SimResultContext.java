@@ -1,7 +1,7 @@
 package ddop.dto;
 
 import ddop.constants.Time;
-import ddop.optimizer.ScoredLoadout;
+import ddop.optimizer.scoring.scored.ScoredLoadout;
 import util.NumberFormat;
 
 public class SimResultContext {

@@ -1,11 +1,15 @@
 package ddop.main;
 
 import ddop.Settings;
+import ddop.dto.LevelRange;
 import ddop.item.Item;
 import ddop.item.ItemList;
+import ddop.item.ItemSlot;
 import ddop.item.loadout.EquipmentLoadout;
-import ddop.optimizer.valuation.ShintaoScorer;
-import ddop.optimizer.valuation.StatScorer;
+import ddop.optimizer.scoring.scored.ScoredItemList;
+import ddop.optimizer.scoring.scorers.ShintaoScorer;
+import ddop.optimizer.scoring.scorers.StatScorer;
+import ddop.optimizer.scoring.scorers.ValuationContext;
 import ddop.stat.conversions.NamedStat;
 import ddop.stat.conversions.SetBonus;
 import file.CompileHTML;
@@ -61,7 +65,6 @@ public class SandboxMain {
     }
 
     private static void customWgetScript() {
-
         String[] missingItems = new String[]{
                 "https://ddowiki.com/page/I:The_Cornerstone_Champion",
                 "https://ddowiki.com/page/I:Silver_Dragonscale_Capelet",
@@ -84,5 +87,18 @@ public class SandboxMain {
         String script = WgetScripter.generateWgetScript(Arrays.asList(missingItems));
 
         System.out.println(script);
+    }
+
+    private static void showBestItemsByLevelRangeAndSlot(ValuationContext vc, LevelRange levelRange, ItemSlot slot) {
+        ItemList items = ItemList.getAllNamedItems().filterByLevel(levelRange).filterBy(slot);
+        ScoredItemList scores = new ScoredItemList(items, vc).normalizeScoresTo(100).trim(0.15);
+        System.out.println();
+        System.out.println(scores.toString(slot.name + " item ranking:"));
+    }
+
+    protected static void displayGearPlan(EquipmentLoadout el, StatScorer ss) {
+        el.printItemNamesToConsole();
+        el.printStatTotalsToConsole();
+        ss.showVerboseScoreFor(el);
     }
 }

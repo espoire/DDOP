@@ -1,8 +1,8 @@
 package ddop.item;
 
 import ddop.constants.MinorArtifacts;
-import ddop.optimizer.valuation.ArmorType;
-import ddop.optimizer.valuation.ShieldType;
+import ddop.constants.ArmorType;
+import ddop.constants.ShieldType;
 import ddop.stat.Stat;
 import ddop.stat.StatSource;
 import ddop.stat.conversions.NamedStat;

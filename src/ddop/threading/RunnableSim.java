@@ -1,8 +1,8 @@
 package ddop.threading;
 
 import ddop.dto.SimResultContext;
-import ddop.main.session.ExecutionSession;
-import ddop.optimizer.ScoredLoadout;
+import ddop.dto.session.ExecutionSession;
+import ddop.optimizer.scoring.scored.ScoredLoadout;
 
 public abstract class RunnableSim implements Runnable {
     private final ExecutionSession session;

@@ -3,37 +3,6 @@ package ddop.item;
 import java.util.*;
 
 public class ItemSlot {
-	private static final HashMap<String, ItemSlot> byName = new HashMap<>();
-	
-	public final String name;
-	public final int limit; // 1 for most item types, 2 for Finger.
-	
-	private ItemSlot(String name) {
-		this(name, 1);
-	}
-
-	private ItemSlot(String name, int limit) {
-		this.name = name;
-		this.limit = limit;
-		
-		ItemSlot.byName.put(name.toLowerCase(), this);
-	}
-
-    public static Set<ItemSlot> getUnskippedSlots(List<ItemSlot> skipSlots) {
-		List<ItemSlot> working = new ArrayList<>(Arrays.asList(ItemSlot.getAll()));
-		working.add(ItemSlot.FINGER); // Needs to be "skipped" twice.
-
-		for(ItemSlot toRemove : skipSlots)
-			working.remove(toRemove);
-
-		return new HashSet<>(working);
-    }
-
-    private ItemSlot alias(String string) {
-		ItemSlot.byName.put(string.toLowerCase(), this);
-		return this;
-	}
-	
 	public static final ItemSlot
 			ARMOR = new ItemSlot("Armor"),
 			BACK = new ItemSlot("Back"),
@@ -51,6 +20,43 @@ public class ItemSlot {
 			WRIST = new ItemSlot("Wrist");
 
 	public static ItemSlot[] getAll() { return new ItemSlot[] {HEAD, NECK, EYE, ARMOR, WRIST, TRINKET, BACK, WAIST, FINGER, FEET, HAND, MAIN_HAND, OFF_HAND, QUIVER}; }
+	private static final HashMap<String, ItemSlot> byName = new HashMap<>();
+
+
+
+
+	public final String name;
+	public final int limit; // 1 for most item types, 2 for Finger.
+	
+	private ItemSlot(String name) {
+		this(name, 1);
+	}
+
+	private ItemSlot(String name, int limit) {
+		this.name = name;
+		this.limit = limit;
+		
+		ItemSlot.byName.put(name.toLowerCase(), this);
+	}
+
+    private ItemSlot alias(String string) {
+		ItemSlot.byName.put(string.toLowerCase(), this);
+		return this;
+	}
+
+	public static ItemSlot getSlot(String s) {
+		return ItemSlot.byName.get(s);
+	}
+
+	public static Set<ItemSlot> getUnskippedSlots(List<ItemSlot> skipSlots) {
+		List<ItemSlot> working = new ArrayList<>(Arrays.asList(ItemSlot.getAll()));
+		working.add(ItemSlot.FINGER); // Needs to be "skipped" twice.
+
+		for(ItemSlot toRemove : skipSlots)
+			working.remove(toRemove);
+
+		return new HashSet<>(working);
+	}
 
 	public static Set<ItemSlot> getSlots(PropertiesList pl) {
 		if(pl.containsKey("weapon type")) return Collections.singleton(ItemSlot.MAIN_HAND);
@@ -86,9 +92,5 @@ public class ItemSlot {
 
 		System.err.println("Slot not found for " + pl.toString("Name"));
 		return null;
-	}
-
-	public static ItemSlot getSlot(String s) {
-		return ItemSlot.byName.get(s);
 	}
 }

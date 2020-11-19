@@ -7,7 +7,7 @@ import ddop.dto.LevelRange;
 import ddop.item.Item;
 import ddop.item.ItemSlot;
 import ddop.item.PropertiesList;
-import ddop.optimizer.valuation.ArmorType;
+import ddop.constants.ArmorType;
 import ddop.stat.StatFilter;
 import util.NumberFormat;
 

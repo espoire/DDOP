@@ -4,10 +4,10 @@ import ddop.dto.SimResultContext;
 import ddop.item.Item;
 import ddop.item.ItemSlot;
 import ddop.item.loadout.EquipmentLoadout;
-import ddop.main.session.ExecutionSession;
-import ddop.optimizer.RandomAccessScoredItemList;
-import ddop.optimizer.ScoredLoadout;
-import ddop.optimizer.valuation.StatScorer;
+import ddop.dto.session.ExecutionSession;
+import ddop.optimizer.scoring.scored.RandomAccessScoredItemList;
+import ddop.optimizer.scoring.scored.ScoredLoadout;
+import ddop.optimizer.scoring.scorers.StatScorer;
 import util.Array;
 
 import java.util.List;

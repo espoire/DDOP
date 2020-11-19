@@ -1,6 +1,7 @@
 package ddop.builds;
 
 import ddop.constants.Tier;
+import ddop.stat.StatCollection;
 
 public class GuildBuffs extends StatCollection {
     public GuildBuffs(boolean includeLegacy, Tier tier) {
@@ -102,7 +103,7 @@ public class GuildBuffs extends StatCollection {
         this.addStat("damage vs helpless", 5);
 
         // Fencing Master - 43
-//        this.addStat("maximum dodge",           2); Only works if no armor?
+        this.addStat("maximum dodge", 2);
 //        this.addStat("maximum dexterity bonus", 2); Does not work?
 
         // Ninja Assassin - 44

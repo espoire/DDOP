@@ -1,5 +1,7 @@
 package ddop.builds;
 
+import ddop.stat.StatCollection;
+
 import java.util.Set;
 
 public class CharBuild extends StatCollection {

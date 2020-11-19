@@ -3,7 +3,7 @@ package ddop.item.loadout;
 import ddop.item.Item;
 import ddop.item.ItemList;
 import ddop.item.ItemSlot;
-import ddop.optimizer.RandomAccessScoredItemList;
+import ddop.optimizer.scoring.scored.RandomAccessScoredItemList;
 import ddop.stat.Stat;
 import ddop.stat.StatSource;
 import ddop.stat.conversions.SetBonus;

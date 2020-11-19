@@ -4,9 +4,9 @@ import ddop.Settings;
 import ddop.dto.LevelRange;
 import ddop.item.sources.crafted.CannithCraftedItemSource;
 import ddop.item.sources.crafted.SlaversCraftedItemSource;
-import ddop.optimizer.RandomAccessScoredItemList;
-import ddop.optimizer.ScoredItemList;
-import ddop.optimizer.valuation.ValuationContext;
+import ddop.optimizer.scoring.scored.RandomAccessScoredItemList;
+import ddop.optimizer.scoring.scored.ScoredItemList;
+import ddop.optimizer.scoring.scorers.ValuationContext;
 import util.Array;
 import util.NumberFormat;
 

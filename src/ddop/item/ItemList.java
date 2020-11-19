@@ -2,10 +2,10 @@ package ddop.item;
 
 import ddop.Settings;
 import ddop.dto.LevelRange;
-import ddop.optimizer.RandomAccessScoredItemList;
-import ddop.optimizer.ScoredItemList;
-import ddop.optimizer.valuation.ArmorType;
-import ddop.optimizer.valuation.ValuationContext;
+import ddop.optimizer.scoring.scored.RandomAccessScoredItemList;
+import ddop.optimizer.scoring.scored.ScoredItemList;
+import ddop.constants.ArmorType;
+import ddop.optimizer.scoring.scorers.ValuationContext;
 import ddop.stat.Stat;
 import file.ItemReader;
 import org.jetbrains.annotations.NotNull;
