@@ -24,14 +24,13 @@ import java.util.*;
 public class PlanLoadoutMain {
 	private static final int MILLION = 1000000;
 
-	// Recommended duration: 50ms per candidate item.
 	private static final ExecutionSession EXECUTION_LENGTH =
-			new DurationSession(15 * Time.SECOND);
-//			new DurationSession(3 * Time.MINUTE);
+//			new DurationSession(15 * Time.SECOND);
+			new DurationSession(15 * Time.MINUTE);
 //			new DurationSession(1 * Time.HOUR);
 //			new DurationSession(6 * Time.HOUR);
 
-	private static final double ITEM_QUALITY_MINIMUM_RATIO = 0.05;
+	private static final double ITEM_QUALITY_MINIMUM_RATIO = 0.25;
 
 	private static final boolean MULTI_THREAD = true;
 	private static final int THREADS =
@@ -60,11 +59,13 @@ public class PlanLoadoutMain {
 		
 		System.out.println(best);
 		ss.showVerboseScoreFor(best.loadout, baselineScore);
+
+		LoadoutRefinementMain.runQuickRefinementOn(best.loadout, new ValuationContext(ss, new EquipmentLoadout(fixedItems)));
 	}
 	
 	private static ScoredLoadout simBestLoadout(StatScorer ss, List<Item> fixedItems, List<ItemSlot> skippedItemSlots) {
         ValuationContext vc = new ValuationContext(ss, new EquipmentLoadout(fixedItems));
-		Map<ItemSlot, RandomAccessScoredItemList> itemMap = PrunedItemMapUtil.generate(vc, skippedItemSlots, ITEM_QUALITY_MINIMUM_RATIO);
+		Map<ItemSlot, RandomAccessScoredItemList> itemMap = PrunedItemMapUtil.generate(vc, skippedItemSlots, ITEM_QUALITY_MINIMUM_RATIO, PrunedItemMapUtil.IncludeSources.WIKI_SLAVERS);
 
 		int numThreads = (MULTI_THREAD ? THREADS : 1);
 		ExecutionSession session = EXECUTION_LENGTH.splitToThreads(numThreads);
@@ -126,20 +127,6 @@ public class PlanLoadoutMain {
 		EquipmentLoadout ret = new EquipmentLoadout();
 
 		ret.put("quiver of alacrity");
-
-		ret.put("legendary turncoat");
-		ret.put("legendary family recruit sigil");
-		ret.put("legendary hammerfist");
-		ret.put("signet of the solstice (lamannia - feywild raid)");
-		ret.put("legendary belt of the ram");
-		ret.put("legendary lionheart ring");
-		ret.put("devilscale bracers");
-		ret.put("legendary sunken slippers ([quality wisdom +5] version)");
-		ret.put("ir'kesslan's most prescient lens");
-		ret.put("legendary cloak of summer");
-		ret.put("legendary umber brim");
-		ret.put("legendary chieftain");
-
 
 //		ret.put("legendary omniscience");
 //		ret.put("legendary tumbleweed");

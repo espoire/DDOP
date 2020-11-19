@@ -128,6 +128,7 @@ public class LoadoutRefinementMain {
                 new RefinementRunConfig(1, 0.15, PrunedItemMapUtil.IncludeSources.WIKI_SLAVERS_CANNITH)
         };
 
+        runRefinementImplementation(toRefine, vc, runConfigs);
     }
     public static void runFullRefinementOn(EquipmentLoadout toRefine, ValuationContext vc) {
         // TODO higher bar for items by source
@@ -136,6 +137,8 @@ public class LoadoutRefinementMain {
                 new RefinementRunConfig(3, 0.15, PrunedItemMapUtil.IncludeSources.WIKI_SLAVERS),
                 new RefinementRunConfig(2, 0.15, PrunedItemMapUtil.IncludeSources.WIKI_SLAVERS_CANNITH)
         };
+
+        runRefinementImplementation(toRefine, vc, runConfigs);
     }
 
     private static void runRefinementImplementation(EquipmentLoadout toRefine, ValuationContext vc, RefinementRunConfig[] runConfigs) {

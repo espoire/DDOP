@@ -94,6 +94,7 @@ public abstract class SpecScorer extends StatScorer {
 				"dodge",
 				"concealment",
 				"incorporeal",
+				"missile deflection",
 
 				// Elemental Defenses
 				"fire resistance",
@@ -207,10 +208,12 @@ public abstract class SpecScorer extends StatScorer {
 									SIM_DAMAGE_PHYSICAL_BYPASSES_DODGE_PORTION			= 0.33,
 									SIM_DAMAGE_PHYSICAL_BYPASSES_CONCEALMENT_PORTION	= 0.8,
 									SIM_DAMAGE_PHYSICAL_BYPASSES_INCORPOREAL_PORTION	= 0.9,
+									SIM_DAMAGE_PHYSICAL_MISSILE_PORTION                 = 0.3,
 									SIM_DAMAGE_MAGICAL_BYPASSES_AC_PORTION				= 0.4,
 									SIM_DAMAGE_MAGICAL_BYPASSES_DODGE_PORTION			= 0.4,
 									SIM_DAMAGE_MAGICAL_BYPASSES_CONCEALMENT_PORTION		= 1,
 									SIM_DAMAGE_MAGICAL_BYPASSES_INCORPOREAL_PORTION		= 1,
+									SIM_DAMAGE_MAGICAL_MISSILE_PORTION                  = 0.4,
 									SIM_DEATHABLE_PORTION		= 0.35,
 									SIM_STUNNABLE_PORTION		= 0.3,
 									SIM_COMMANDABLE_PORTION		= 0.3,
@@ -745,16 +748,19 @@ public abstract class SpecScorer extends StatScorer {
 		double dodgeAvoidance = this.getDodgeAvoidance(stats);
 		double concealmentAvoidance = this.getConcealmentAvoidance(stats);
 		double incorporealAvoidance = this.getIncorporealAvoidance(stats);
+		double missileDeflection = stats.getDouble("missile deflection") / 100.0;
 		
 		
 		double physicalReduction =	(1 - (1 - SIM_DAMAGE_PHYSICAL_BYPASSES_AC_PORTION)          * acAvoidance) *
 									(1 - (1 - SIM_DAMAGE_PHYSICAL_BYPASSES_DODGE_PORTION)       * dodgeAvoidance) *
 									(1 - (1 - SIM_DAMAGE_PHYSICAL_BYPASSES_CONCEALMENT_PORTION) * concealmentAvoidance) *
-									(1 - (1 - SIM_DAMAGE_PHYSICAL_BYPASSES_INCORPOREAL_PORTION) * incorporealAvoidance);
+									(1 - (1 - SIM_DAMAGE_PHYSICAL_BYPASSES_INCORPOREAL_PORTION) * incorporealAvoidance) *
+									(1 -     (SIM_DAMAGE_PHYSICAL_MISSILE_PORTION)              * missileDeflection);
 		double magicalReduction =	(1 - (1 - SIM_DAMAGE_MAGICAL_BYPASSES_AC_PORTION)           * acAvoidance) *
 									(1 - (1 - SIM_DAMAGE_MAGICAL_BYPASSES_DODGE_PORTION)        * dodgeAvoidance) *
 									(1 - (1 - SIM_DAMAGE_MAGICAL_BYPASSES_CONCEALMENT_PORTION)  * concealmentAvoidance) *
-									(1 - (1 - SIM_DAMAGE_MAGICAL_BYPASSES_INCORPOREAL_PORTION)  * incorporealAvoidance);
+									(1 - (1 - SIM_DAMAGE_MAGICAL_BYPASSES_INCORPOREAL_PORTION)  * incorporealAvoidance) *
+									(1 -     (SIM_DAMAGE_MAGICAL_MISSILE_PORTION)               * missileDeflection);
 		
 		double resultingDamage = physicalPortion * physicalReduction + SIM_MAGIC_DAMAGE_PORTION * magicalReduction;
 		

@@ -101,7 +101,8 @@ public abstract class WeaponAttack extends DamageSource {
 		double physicalDamage    = (weaponDamage + deadly) * (1 + weaponPower / 100.0)	* physicalDamageMultiplier;
 		double bonusCritDamage   = damageOnCrit            * (1 + weaponPower / 100.0)	* physicalDamageMultiplier;
 		double sneakAttackDamage = sneakDamage             * (1 + weaponPower /  66.67)	* physicalDamageMultiplier;
-		double redAugments = stats.getInt("empty red augment slot") + stats.getInt("empty orange augment slot") + stats.getInt("empty purple augment slot");
+		double redAugments = stats.getInt("empty red augment slot") + stats.getInt("empty orange augment slot") + stats.getInt("empty purple augment slot") +
+				stats.getInt("eternal holy burst");
 
 		double nonScalingBonusDamage = this.getWeaponBonusDamage(stats)	// TODO weapon stats
 				+ WeaponAttack.getNonScalingBonusDice(stats)

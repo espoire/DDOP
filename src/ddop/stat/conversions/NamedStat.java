@@ -286,8 +286,8 @@ public class NamedStat {
                                              .addBonus("sonic absorption",       null, 0);
         new NamedStat("chitinous covering: fire absorption").addBonus("fire absorption", null, 0);
         new NamedStat("shining silver scales (cold absorption").addBonus("cold absorption", "enhancement", 51);
-        new NamedStat("fire shield (hot)") .addBonus("cold absorption", "spell", 25); // 25% because unknown uptime of 50% abs
-        new NamedStat("fire shield (cold)").addBonus("fire absorption", "spell", 25); // 25% because unknown uptime of 50% abs
+        new NamedStat("fire shield (hot)") .addBonus("cold absorption", "spell", 15); // 15% because unknown uptime of 50% abs
+        new NamedStat("fire shield (cold)").addBonus("fire absorption", "spell", 15); // 15% because unknown uptime of 50% abs
         new NamedStat("devil's bones").addBonus("fire absorption", "enhancement", 31)
                                       .addBonus("evil absorption", "enhancement", 31);
         new NamedStat("hound's bones").addBonus("acid absorption", "enhancement", 31)

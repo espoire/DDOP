@@ -33,3 +33,39 @@ DCs:       11.8k
 Defenses:  14.9k
 Saves:     90.4%
 Total:     4.6 M (114.3%)
+
+EquipmentLoadout (12 items):
+| Armor: legendary turncoat
+| Back: legendary cloak of summer
+| Trinket: signet of the solstice (lamannia - feywild raid)
+| Wrist: legendary levik's bracers
+| Hand: legendary hammerfist
+| Head: legendary wallwatch circlet
+| Finger: legendary lionheart ring, legendary celestial sapphire ring ([constitution +21] version)
+| Eye: ir'kesslan's most prescient lens
+| Waist: the cornerstone champion ([quality wisdom +5] version)
+| Neck: legendary family recruit sigil
+| Feet: legendary red dragonscale boots
+
+Set bonuses:
+eminence of summer (legendary cloak of summer, signet of the solstice (lamannia - feywild raid), legendary lionheart ring, legendary red dragonscale boots)
+  • 2:
+    • "mrr" 25 (artifact)
+  • 3:
+    • "armor-piercing" 25 (artifact)
+  • 4:
+    • "combat mastery" 5 (artifact)
+    • "qp dc" 5 (artifact)
+legendary part of the family (legendary turncoat, legendary hammerfist, legendary family recruit sigil)
+  • 3:
+    • "doublestrike" 15 (artifact)
+    • "melee power" 25 (artifact)
+    • "damage vs helpless" 15 (artifact)
+    • "armor-piercing" 10 (artifact)
+
+SpecScorer Overall Score Debug Log
+DPS Score: 19.6k
+DCs:       11.8k
+Defenses:  17.4k
+Saves:     89.1%
+Total:     4.8 M
