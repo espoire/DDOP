@@ -23,7 +23,8 @@ public class FastStatList extends AbstractStatList {
     @Override
     public void addImplementation(Stat s) {
         if(NamedStat.isNamed(s)) {
-            this.addAll(NamedStat.convert(s));
+            for(Stat converted : NamedStat.convert(s))
+                this.stats.put(converted);
         } else {
             this.stats.put(s);
         }

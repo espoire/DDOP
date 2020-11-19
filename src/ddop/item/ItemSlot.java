@@ -3,6 +3,8 @@ package ddop.item;
 import java.util.*;
 
 public class ItemSlot {
+	private static final HashMap<String, ItemSlot> byName = new HashMap<>();
+
 	public static final ItemSlot
 			ARMOR = new ItemSlot("Armor"),
 			BACK = new ItemSlot("Back"),
@@ -20,7 +22,6 @@ public class ItemSlot {
 			WRIST = new ItemSlot("Wrist");
 
 	public static ItemSlot[] getAll() { return new ItemSlot[] {HEAD, NECK, EYE, ARMOR, WRIST, TRINKET, BACK, WAIST, FINGER, FEET, HAND, MAIN_HAND, OFF_HAND, QUIVER}; }
-	private static final HashMap<String, ItemSlot> byName = new HashMap<>();
 
 
 

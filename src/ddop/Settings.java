@@ -23,6 +23,7 @@ public class Settings {
 
 	public static final String SLAVERS_RECIPE_DEFINITIONS_JSON         = JSON_DIRECTORY + "\\slavers\\recipeDefinitions.json";
 	public static final String CANNITH_RECIPE_DEFINITIONS_JSON         = JSON_DIRECTORY + "\\cannith\\recipeDefinitions.json";
+	public static final String NAMED_STAT_DEFINITIONS_JSON             = JSON_DIRECTORY + "\\namedStat\\definitions.json";
 
 	public static final String[] ITEM_SOURCES_JSON = new String[] {
 			WIKI_ITEMS_JSON,

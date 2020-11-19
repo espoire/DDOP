@@ -26,8 +26,8 @@ public class PlanLoadoutMain {
 	private static final int MILLION = 1000000;
 
 	private static final ExecutionSession EXECUTION_LENGTH =
-//			new DurationSession(15 * Time.SECOND);
-			new DurationSession(15 * Time.MINUTE);
+			new DurationSession(15 * Time.SECOND);
+//			new DurationSession(15 * Time.MINUTE);
 //			new DurationSession(1 * Time.HOUR);
 //			new DurationSession(6 * Time.HOUR);
 
