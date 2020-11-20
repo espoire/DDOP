@@ -1,6 +1,5 @@
 TODO
     NamedStat
-        Pre-unpack nested NamedStats
         Bug: NamedStats with "legendary" (or any bonustype string) may be mis-parsing.
         Implement recent item named stats
             Recent named item NamedStats
