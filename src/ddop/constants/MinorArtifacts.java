@@ -23,6 +23,12 @@ public class MinorArtifacts {
             "the golden idol",
             "the heart of suulomades",
             "the shrouded steps of the beyond",
-            "the zarash'ak ward"
+            "the zarash'ak ward",
+
+            // U48 - Feywild
+            "rosethorn necklace",
+            "strap of autumn leaves",
+            "magmatic grasp",
+            "the prince's gauntlet"
     };
 }
