@@ -1,5 +1,8 @@
 package ddop.item.loadout;
 
+import ddop.item.ItemSlot;
+import ddop.item.sources.crafted.SlaversCraftedItemSource;
+
 public class StoredLoadouts {
     public static NamedLoadout getShintaoPreSharnGear() {
         String[] itemNames = new String[] {
@@ -76,6 +79,29 @@ public class StoredLoadouts {
         };
 
         return new NamedLoadout("Shintao Soul Splitter", itemNames);
+    }
+
+    public static NamedLoadout getShintaoFeywildGear() {
+        String[] itemNames = new String[] {
+            "wildwood wrists ([wisdom +21] version)",
+            "the cornerstone champion ([quality wisdom +5] version)",
+            "legendary cloak of summer",
+            "legendary family recruit sigil",
+            "quiver of alacrity",
+            "titania's glory",
+            "legendary hammerfist",
+            "legendary celestial sapphire ring ([constitution +21] version)",
+            "legendary lionheart ring",
+            "ir'kesslan's most prescient lens",
+            "signet of the solstice (lamannia - feywild raid)",
+            "legendary turncoat"
+        };
+
+        NamedLoadout ret = new NamedLoadout("", itemNames);
+
+        ret.put(ItemSlot.FEET, SlaversCraftedItemSource.generateItem("slavers crafted ([dexterity +17, deception +14, tendon slice 14%, quality constitution +4] version)"));
+
+        return ret;
     }
 
     public static NamedLoadout getHealbardNoSetGear() {

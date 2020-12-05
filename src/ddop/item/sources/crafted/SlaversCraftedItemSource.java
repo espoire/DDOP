@@ -82,7 +82,7 @@ public class SlaversCraftedItemSource {
         PropertiesList ret = new PropertiesList();
 
         ret.put("name", "slavers crafted");
-        ret.put("minimum level", String.valueOf(selected.level));
+        if(selected != null) ret.put("minimum level", String.valueOf(selected.level));
         ret.put("slot", Arrays.asList(
                 "waist",
                 "neck",
@@ -99,6 +99,18 @@ public class SlaversCraftedItemSource {
         String json = file.Reader.getEntireFile(Settings.SLAVERS_RECIPE_DEFINITIONS_JSON);
         Type type = new TypeToken<Map<String, SlaversTier>>() {}.getType();
         return new Gson().fromJson(json, type);
+    }
+
+    public static Item generateItem(String slaversString) {
+        // "slavers crafted ([dexterity +17, deception +14, tendon slice 14%, quality constitution +4] version)"
+        PropertiesList template = generateItemTemplate(null);
+
+        String enchantments = slaversString.substring(18, slaversString.length() - 10);
+        String[] enchantmentTokens = enchantments.split(", ");
+
+        template.put("enchantments", Arrays.asList(enchantmentTokens));
+
+        return new Item(template);
     }
 
     private static void printFilteredOptionsDebug(Map<String, List<String>> options) {

@@ -69,3 +69,40 @@ DCs:       11.8k
 Defenses:  17.4k
 Saves:     89.1%
 Total:     4.8 M
+
+EquipmentLoadout (13 items):
+| Wrist: wildwood wrists ([wisdom +21] version)
+| Waist: legendary black satin waist ([quality wisdom +5] version)
+| Back: legendary cloak of summer
+| Neck: legendary family recruit sigil
+| Quiver: quiver of alacrity
+| Feet: slavers crafted ([dexterity +17, deception +14, tendon slice 14%, quality constitution +4] version)
+| Head: titania's glory
+| Hand: legendary hammerfist
+| Finger: legendary celestial sapphire ring ([constitution +21] version), legendary lionheart ring
+| Eye: ir'kesslan's most prescient lens
+| Trinket: signet of the solstice (lamannia - feywild raid)
+| Armor: legendary turncoat
+
+Set bonuses:
+eminence of summer (legendary cloak of summer, titania's glory, legendary lionheart ring, signet of the solstice (lamannia - feywild raid))
+  • 2:
+    • "mrr" 25 (artifact)
+  • 3:
+    • "armor-piercing" 25 (artifact)
+  • 4:
+    • "combat mastery" 5 (artifact)
+    • "qp dc" 5 (artifact)
+legendary part of the family (legendary family recruit sigil, legendary hammerfist, legendary turncoat)
+  • 3:
+    • "doublestrike" 15 (artifact)
+    • "melee power" 25 (artifact)
+    • "damage vs helpless" 15 (artifact)
+    • "armor-piercing" 10 (artifact)
+
+SpecScorer Overall Score Debug Log
+DPS Score: 16.9k
+DCs:       11.8k
+Defenses:  15.1k
+Saves:     95.3%
+Total:     4.5 M (100.0%)

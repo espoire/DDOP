@@ -26,8 +26,8 @@ public class PlanLoadoutMain {
 	private static final int MILLION = 1000000;
 
 	private static final ExecutionSession EXECUTION_LENGTH =
-			new DurationSession(15 * Time.SECOND);
-//			new DurationSession(15 * Time.MINUTE);
+//			new DurationSession(15 * Time.SECOND);
+			new DurationSession(15 * Time.MINUTE);
 //			new DurationSession(1 * Time.HOUR);
 //			new DurationSession(6 * Time.HOUR);
 
@@ -42,7 +42,7 @@ public class PlanLoadoutMain {
 		StatScorer scorer = ShintaoScorer.create(30).r(8);
 
 		EquipmentLoadout currentGear =
-				StoredLoadouts.getShintaoSoulSplitterGear();
+				StoredLoadouts.getShintaoFeywildGear();
 
 		System.out.println(currentGear);
 		scorer.showVerboseScoreFor(currentGear);
@@ -137,9 +137,9 @@ public class PlanLoadoutMain {
 //		ret.put("legendary braided cutcord");
 //		ret.put("staggershockers");
 
-//		ret.put("legendary turncoat");
-//		ret.put("legendary family recruit sigil");
-//		ret.put("legendary hammerfist");
+		ret.put("legendary turncoat");
+		ret.put("legendary family recruit sigil");
+		ret.put("legendary hammerfist");
 
 //		ret.put("the cornerstone champion ([quality wisdom +5] version)");
 

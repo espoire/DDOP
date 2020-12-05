@@ -21,7 +21,11 @@ import java.util.Set;
 @SuppressWarnings("all")
 public class SandboxMain {
     public static void main(String... s) {
-        SetBonus.printAllSetsDebug();
+        Item i = ItemList.getAllNamedItems().getNamedItem("legendary moonrise bracers");
+        EquipmentLoadout el = new EquipmentLoadout();
+        el.put(i);
+
+        el.printStatTotalsToConsole();
     }
 
     private static void printAllUnvaluedStats(StatScorer scorer) {

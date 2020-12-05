@@ -165,16 +165,16 @@ public class ShintaoScorer extends SpecScorer {
 		build.addStat("stunning",                1, "build 2");
 		
 		if(DUALITY_THE_MORAL_COMPASS)
-			build.addStat("enhanced ki", 3);
+			build.addStat("enhanced ki", 3, "default");
 
 		if(ESSENCE_OF_CRACKED_CORE)
-			build.addStat("enhanced ki", 1);
+			build.addStat("enhanced ki", 1, "default");
 
 		if(ESSENCE_OF_LITANY_DEAD)
 			build.addStat("well rounded", 2, "profane");
 
 		if(TOPAZ_OF_SPEED)
-			build.addStat("melee alacrity", 15);
+			build.addStat("melee alacrity", 15, "default");
 
 		return build;
 	}
@@ -288,7 +288,7 @@ public class ShintaoScorer extends SpecScorer {
 		double kukandoScore       = VALUATION_STUN  * SIM_KUKANDOABLE_PORTION * kukandoDCRate       * TARGETS_KUKANDO        / COOLDOWN_KUKANDO;
 		
 		int concentration = BASE_CONCENTRATION + this.getAbilityMod(AbilityScore.CONSTITUTION, stats) + stats.getInt("concentration");
-		double kiPerHit   = BASE_KI_ON_HIT     + BASE_KI_ON_CRIT * (1 + stats.getInt("critical threat range")) / 20.0 * 0.91 + stats.get("enhanced ki");
+		double kiPerHit   = BASE_KI_ON_HIT     + BASE_KI_ON_CRIT * (1 + stats.getInt("critical threat range")) / 20.0 * 0.85 + stats.get("enhanced ki");
 		int averageKiAmount = 150;
 		double kiDrain = (double) averageKiAmount / concentration;
 		double passiveKi = BASE_KI_GENERATION - kiDrain;

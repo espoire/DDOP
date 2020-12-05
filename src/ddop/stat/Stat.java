@@ -1,6 +1,9 @@
 package ddop.stat;
 
 import ddop.stat.conversions.NamedStat;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import util.Pair;
 import util.RomanNumeral;
 
 import java.util.*;
@@ -221,8 +224,8 @@ public class Stat {
 	}
 	
 	private static final String ARABIC_NUMERAL_REGEX = "^[0-9]+(\\.[0-9]+)?$";
-	private static final String QUALIFIED_ARABIC_NUMERAL_REGEX = "^[-+]?[0-9]+(\\.[0-9]+)?%*$";
-	private static final String UNINFORMATIVE_QUALIFIERS_REGEX = "[-+%]";
+	private static final String QUALIFIED_ARABIC_NUMERAL_REGEX = "^[(]?[-+]?[0-9]+(\\.[0-9]+)?%*[)]?$";
+	private static final String UNINFORMATIVE_QUALIFIERS_REGEX = "[-+%()]";
 	private static final String UNINFORMATIVE_TOKEN_REGEX = "^[^A-Za-z0-9]*$";
 	private static final HashMap<String, String> BONUS_TYPE_TOKENS = new HashMap<>();
 	static {
@@ -246,8 +249,32 @@ public class Stat {
 		if(Stat.isSetBonus(enchantment))
 			return new Stat(enchantment, "stacking", 1);
 
+		Pair<String, String> namedToken = NamedStat.containsNamed(enchantment);
+		if(namedToken != null) {
+			String category = namedToken.getKey();
+			String remainder = namedToken.getValue();
+
+			String[] tokens = tokenize(remainder);
+
+			Double magnitude = extractMagnitudeFrom(tokens);
+			String bonusType = extractBonusTypeFrom(tokens);
+
+			return buildStat(category, bonusType, magnitude);
+		}
+
+		String[] tokens = tokenize(enchantment);
+
+		Double magnitude = extractMagnitudeFrom(tokens);
+		String bonusType = extractBonusTypeFrom(tokens);
+		String category = extractCategoryFrom(tokens);
+
+		return buildStat(category, bonusType, magnitude);
+	}
+
+	@NotNull
+	private static String[] tokenize(String enchantment) {
 		String[] tokens = enchantment.split("[ ]+");
-		
+
 		// Remove uninformative tokens. DDOWiki sometimes formats enchantments as "Armor-Piercing - +23%". Should reduce to "Armor-Piercing 23"
 		for(int i = 0; i < tokens.length; i++) {
 			String token = tokens[i];
@@ -259,7 +286,11 @@ public class Stat {
 				tokens[i] = null;
 			}
 		}
-		
+		return tokens;
+	}
+
+	@Nullable
+	private static Double extractMagnitudeFrom(String[] tokens) {
 		Double magnitude = null;
 		for(int i = 0; i < tokens.length; i++) {
 			String token = tokens[i];
@@ -274,20 +305,41 @@ public class Stat {
 				break;
 			}
 		}
-		
+		return magnitude;
+	}
+
+	@NotNull
+	private static Stat buildStat(String category, String bonusType, Double magnitude) {
+		Stat ret;
+		if(magnitude != null) {
+			if(bonusType != null) {
+				ret = new Stat(category, bonusType, magnitude);
+			} else {
+				ret = new Stat(category, magnitude);
+			}
+		} else {
+			ret = new Stat(category);
+		}
+		return ret;
+	}
+
+	@Nullable
+	private static String extractBonusTypeFrom(String[] tokens) {
 		String bonusType = null;
-		String consumedBonusTypeToken = null;
 		for(int i = 0; i < tokens.length; i++) {
 			String token = tokens[i];
 			if(token == null) continue;
 			if(util.Array.contains(BONUS_TYPE_TOKENS.keySet(), token)) {
 				bonusType = BONUS_TYPE_TOKENS.get(token);
-				consumedBonusTypeToken = token;
 				tokens[i] = null;
 				break;
 			}
 		}
-		
+		return bonusType;
+	}
+
+	@NotNull
+	private static String extractCategoryFrom(String[] tokens) {
 		StringBuilder categoryBuilder = new StringBuilder();
 		boolean firstToken = true;
 		for (String token : tokens) {
@@ -299,21 +351,9 @@ public class Stat {
 			categoryBuilder.append(token);
 		}
 		String category = categoryBuilder.toString();
-
-		Stat ret;
-		if(magnitude != null) {
-			if(bonusType != null) {
-				ret = new Stat(category, bonusType, magnitude);
-			} else {
-				ret = new Stat(category, magnitude);
-			}
-		} else {
-			ret = new Stat(category);
-		}
-		
-		return ret;
+		return category;
 	}
-	
+
 	private static final String[] STACKING_BONUS_TYPES = new String[] {
 		"stacking",
 		"mythic",

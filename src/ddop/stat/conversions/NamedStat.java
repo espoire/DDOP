@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import ddop.Settings;
 import ddop.stat.Stat;
 import ddop.stat.StatTransformTemplate;
+import util.Pair;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -70,6 +71,22 @@ public class NamedStat {
     public static boolean isNamed(Stat s) { return NamedStat.isNamed(s.category); }
     public static boolean isNamed(String s) {
         return NamedStat.all.containsKey(s);
+    }
+
+    /** Checks if the provided enchantment string contains a named stat category token. Return null if not.
+     *
+     * @return {the named stat category, the rest of the string that wasn't part of the named stat}*/
+    public static Pair<String, String> containsNamed(String enchantment) {
+        for(String s : NamedStat.all.keySet()) {
+            int beforeToken = enchantment.indexOf(s);
+            int afterToken = beforeToken + s.length();
+            int end = enchantment.length();
+
+            if(beforeToken != -1)
+                return new Pair<>(s, enchantment.substring(0, beforeToken) + enchantment.substring(afterToken, end));
+        }
+
+        return null;
     }
 
     public String toString() {
